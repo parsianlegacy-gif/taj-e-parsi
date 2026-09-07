@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- After deploying, replace tajeparsi.game with your real domain -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://tajeparsi.surge.sh/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tajeparsi.surge.sh/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://tajeparsi.surge.sh/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://tajeparsi.surge.sh/"/>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/hero-persian-crown-keyart.jpg</image:loc>
+      <image:title>Persian king raising a flaming sword above a burning battlefield</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/isometric-castle-gameplay.jpg</image:loc>
+      <image:title>Isometric Persian castle gameplay with river and ramparts</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/world-map-kingdoms.jpg</image:loc>
+      <image:title>Overworld kingdom map with roads, forests and enemy castles</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/persian-army-banner.jpg</image:loc>
+      <image:title>Persian army lined for war with banners and war elephant</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/alliance-hall-banner.jpg</image:loc>
+      <image:title>Alliance hall with lion banners and torches</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/king-flaming-sword-art.jpg</image:loc>
+      <image:title>King with flaming sword above burning battlefield</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/legendary-commander-portrait.png</image:loc>
+      <image:title>Portrait of a legendary Persian commander</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://tajeparsi.surge.sh/assets/persian-crown-king-icon-512.png</image:loc>
+      <image:title>Persian Crown app icon — king with golden crown</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://tajeparsi.surge.sh/play/</loc>
+  </url>
+</urlset>

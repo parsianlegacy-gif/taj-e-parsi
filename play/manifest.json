@@ -1,0 +1,37 @@
+{
+  "name": "تاج پارسی — خشم پادشاهان",
+  "short_name": "تاج پارسی",
+  "description": "بازی استراتژی شهرسازی و نبرد. قلعه بساز، ارتش تشکیل بده، پادشاهی‌ها رو فتح کن و تاج پادشاهی رو به دست بیار.",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0f0c1d",
+  "theme_color": "#e0b13c",
+  "categories": [
+    "games",
+    "strategy"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

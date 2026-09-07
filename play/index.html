@@ -1,0 +1,3676 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#e0b13c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="تاج پارسی">
+<meta name="description" content="بازی استراتژی شهرسازی و نبرد — قلعه بساز، ارتش تشکیل بده و تاج پادشاهی را به دست بیاور.">
+<title>تاج پارسی — خشم پادشاهان</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* ============================================================
+   تاج پارسی — Taj-e Parsi
+   یک بازی استراتژی کامل، تک‌فایلی، بدون هیچ وابستگی خارجی
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Vazirmatn','IRANSans','Segoe UI',Tahoma,sans-serif;
+  background:#0f0c1d;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(224,177,60,.10), transparent 55%),
+    radial-gradient(circle at 85% 100%, rgba(122,58,237,.16), transparent 55%),
+    linear-gradient(180deg,rgba(22,18,40,.82) 0%,rgba(15,12,29,.94) 55%),
+    url('bg-city.jpg');
+  background-size:auto,auto,auto,cover;
+  background-position:center top;
+  background-attachment:fixed;
+  color:#f3ecdc;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+  font-size:14px;
+  line-height:1.6;
+}
+body.night{
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(90,120,255,.14), transparent 55%),
+    radial-gradient(circle at 85% 100%, rgba(60,20,120,.20), transparent 55%),
+    linear-gradient(180deg,#0a0a18 0%,#05050c 60%);
+}
+#app{height:100%;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative}
+
+/* ---------- هدر / منابع ---------- */
+header{
+  padding:8px 12px 6px;
+  padding-top:calc(8px + env(safe-area-inset-top));
+  background:linear-gradient(180deg,rgba(38,28,12,.85),rgba(20,15,35,.6));
+  border-bottom:1px solid rgba(224,177,60,.22);
+  
+  flex-shrink:0;
+}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.king{display:flex;align-items:center;gap:8px;min-width:0}
+.king .crown{font-size:22px;filter:drop-shadow(0 0 6px rgba(224,177,60,.5))}
+.king b{font-size:13px;color:#e0b13c;display:block;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.king small{font-size:10px;color:#9a8fb5;display:block;line-height:1.2}
+.hright{display:flex;align-items:center;gap:6px}
+.clock{font-size:11px;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.iconbtn{
+  width:30px;height:30px;border-radius:9px;border:1px solid rgba(224,177,60,.25);
+  background:rgba(224,177,60,.08);color:#e0b13c;font-size:14px;display:flex;
+  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0
+}
+.iconbtn:active{transform:scale(.92)}
+.resbar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.res{
+  background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.07);
+  border-radius:9px;padding:3px 4px;text-align:center;position:relative;overflow:hidden
+}
+.res .ic{font-size:13px;line-height:1}
+.res .v{font-size:12px;font-weight:700;color:#fff;line-height:1.3;font-variant-numeric:tabular-nums}
+.res .r{font-size:9px;color:#6fd68a;line-height:1.1;font-variant-numeric:tabular-nums}
+.res.flash{animation:flash .45s}
+@keyframes flash{0%{background:rgba(111,214,138,.45)}100%{background:rgba(0,0,0,.32)}}
+
+/* ---------- محتوا ---------- */
+main{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 10px 90px;-webkit-overflow-scrolling:touch}
+.view{display:none;animation:fadein .22s}
+.view.on{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.secttl{
+  font-size:12px;color:#e0b13c;font-weight:700;margin:14px 0 8px;
+  display:flex;align-items:center;gap:7px;letter-spacing:.3px
+}
+.secttl:first-child{margin-top:2px}
+.secttl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(224,177,60,.35),transparent)}
+
+/* ---------- کارت ساختمان ---------- */
+.card{
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:10px;
+  margin-bottom:8px;position:relative;overflow:hidden
+}
+.card.locked{opacity:.45}
+.card.busy{border-color:rgba(224,177,60,.35)}
+.chead{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.cico{
+  width:40px;height:40px;border-radius:11px;font-size:21px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,rgba(224,177,60,.28),rgba(0,0,0,.35));
+  border:1px solid rgba(224,177,60,.22)
+}
+.cname{flex:1;min-width:0}
+.cname b{font-size:13px;display:block;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cname small{font-size:10px;color:#9a8fb5}
+.lvl{
+  font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;
+  background:rgba(224,177,60,.14);border:1px solid rgba(224,177,60,.3);color:#e0b13c;white-space:nowrap
+}
+.stat{display:flex;justify-content:space-between;font-size:11px;color:#b8adc9;padding:1px 0}
+.stat b{color:#f3ecdc;font-weight:600}
+.stat .up{color:#6fd68a}
+.cost{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.cost span{
+  font-size:10px;padding:2px 7px;border-radius:7px;background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.07);font-variant-numeric:tabular-nums
+}
+.cost span.no{color:#ff7a7a;border-color:rgba(255,122,122,.3)}
+.btn{
+  width:100%;padding:9px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:700;color:#1a1206;
+  background:linear-gradient(180deg,#f2c95c,#d4a12e);
+  box-shadow:0 2px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .08s
+}
+.btn:active{transform:translateY(2px);box-shadow:0 0 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn:disabled{background:linear-gradient(180deg,#4a4458,#38334a);color:#8a8296;box-shadow:none;cursor:not-allowed}
+.btn.sec{background:linear-gradient(180deg,#4a4260,#352f48);color:#e8e2f2;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.btn.sec:active{transform:translateY(2px)}
+.btn.red{background:linear-gradient(180deg,#e0574f,#b53b34);color:#fff}
+.btn.ghost{background:transparent;border:1px solid rgba(224,177,60,.3);color:#e0b13c;box-shadow:none}
+.btn.sm{padding:6px 10px;font-size:11px;width:auto}
+.pbar{height:6px;border-radius:4px;background:rgba(0,0,0,.45);overflow:hidden;margin:7px 0}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#d4a12e,#f2c95c);border-radius:4px;transition:width .3s}
+.pbar.mil i{background:linear-gradient(90deg,#c0453e,#e0705f)}
+.tmr{font-size:10px;color:#e0b13c;text-align:center;font-variant-numeric:tabular-nums}
+
+/* ---------- نوار پایین ---------- */
+nav{
+  position:absolute;bottom:0;left:0;right:0;
+  display:grid;grid-template-columns:repeat(6,1fr);
+  background:linear-gradient(0deg,rgba(12,9,22,.98),rgba(18,14,32,.94));
+  border-top:1px solid rgba(224,177,60,.2);
+  padding-bottom:env(safe-area-inset-bottom);z-index:20
+}
+nav button{
+  background:none;border:none;color:#7d7490;padding:8px 2px 7px;cursor:pointer;
+  font-family:inherit;font-size:9.5px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  position:relative;transition:color .15s
+}
+nav button i{font-style:normal;font-size:19px;line-height:1;filter:grayscale(.7);transition:filter .15s}
+nav button.on{color:#e0b13c}
+nav button.on i{filter:none;transform:scale(1.08)}
+nav button .dot{
+  position:absolute;top:5px;left:22%;width:7px;height:7px;border-radius:50%;
+  background:#6fd68a;box-shadow:0 0 6px #6fd68a;display:none
+}
+nav button.alert .dot{display:block;background:#ff7a7a;box-shadow:0 0 6px #ff7a7a}
+
+/* ---------- لیست واحدها / دشمنان ---------- */
+.unit{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);margin-bottom:6px
+}
+.unit .uic{font-size:24px;width:34px;text-align:center;flex-shrink:0}
+.unit .uinfo{flex:1;min-width:0}
+.unit .uinfo b{font-size:12px;display:block}
+.unit .uinfo small{font-size:10px;color:#9a8fb5;font-variant-numeric:tabular-nums}
+.unit .ucnt{
+  font-size:13px;font-weight:700;color:#e0b13c;min-width:34px;text-align:center;
+  font-variant-numeric:tabular-nums
+}
+.foe{
+  padding:10px;border-radius:13px;margin-bottom:8px;
+  background:linear-gradient(160deg,rgba(185,58,46,.10),rgba(255,255,255,.02));
+  border:1px solid rgba(185,58,46,.22);position:relative
+}
+.foe.beaten{opacity:.5;border-color:rgba(111,214,138,.3);background:linear-gradient(160deg,rgba(111,214,138,.08),rgba(255,255,255,.02))}
+.foe .fhead{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.foe .fhead .uic{font-size:26px}
+.foe .fhead b{font-size:13px;display:block}
+.foe .fhead small{font-size:10px;color:#c9a3a0}
+.pw{display:flex;align-items:center;gap:5px;font-size:11px;margin:4px 0}
+.pw .bar{flex:1;height:5px;border-radius:3px;background:rgba(0,0,0,.4);overflow:hidden}
+.pw .bar i{display:block;height:100%}
+.mine .bar i{background:linear-gradient(90deg,#d4a12e,#f2c95c)}
+.theirs .bar i{background:linear-gradient(90deg,#b53b34,#e0705f)}
+.odds{font-size:10px;padding:2px 7px;border-radius:6px;font-weight:700}
+.odds.good{background:rgba(111,214,138,.15);color:#6fd68a}
+.odds.mid{background:rgba(224,177,60,.15);color:#e0b13c}
+.odds.bad{background:rgba(255,122,122,.15);color:#ff7a7a}
+
+/* ---------- مودال ---------- */
+.ovl{
+  position:fixed;inset:0;background:rgba(5,3,12,.82);
+  display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0
+}
+.ovl.on{display:flex;animation:fadein .18s}
+.modal{
+  width:100%;max-width:520px;max-height:86vh;overflow-y:auto;
+  background:linear-gradient(180deg,#241d3a,#171229);
+  border:1px solid rgba(224,177,60,.28);border-bottom:none;
+  border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom));
+  animation:slideup .25s cubic-bezier(.2,.9,.3,1)
+}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:none}}
+.mhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.mhead .big{font-size:30px}
+.mhead b{font-size:15px;color:#e0b13c;display:block}
+.mhead small{font-size:11px;color:#9a8fb5}
+.mhead .x{margin-right:auto}
+.divider{height:1px;background:rgba(255,255,255,.08);margin:10px 0}
+
+/* ---------- گزارش / لاگ ---------- */
+#log{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:60;
+  width:100%;max-width:520px;padding:8px 10px;pointer-events:none;
+  display:flex;flex-direction:column;gap:5px;align-items:center
+}
+.toast{
+  background:rgba(20,15,35,.95);border:1px solid rgba(224,177,60,.35);
+  border-radius:11px;padding:7px 14px;font-size:12px;max-width:94%;text-align:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);animation:toastin .25s
+}
+.toast.bad{border-color:rgba(255,122,122,.5);color:#ffb3ae}
+.toast.good{border-color:rgba(111,214,138,.5);color:#a8f0bb}
+@keyframes toastin{from{opacity:0;transform:translateY(-14px) scale(.94)}to{opacity:1;transform:none}}
+
+/* ---------- رویدادها ---------- */
+.evt{
+  display:flex;gap:8px;padding:7px 9px;border-radius:10px;margin-bottom:5px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:11px
+}
+.evt .ei{font-size:15px;flex-shrink:0}
+.evt .et{flex:1;color:#c9c0d8}
+.evt .ew{font-size:9px;color:#7d7490;white-space:nowrap;font-variant-numeric:tabular-nums}
+.evt.raid{border-color:rgba(255,122,122,.25);background:rgba(185,58,46,.08)}
+.evt.win{border-color:rgba(111,214,138,.25);background:rgba(111,214,138,.06)}
+
+/* ---------- پیشرفت کلی ---------- */
+.bigstat{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px
+}
+.bs{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:8px 5px;text-align:center
+}
+.bs b{display:block;font-size:17px;color:#e0b13c;font-variant-numeric:tabular-nums}
+.bs small{font-size:9.5px;color:#9a8fb5}
+.kp{
+  background:linear-gradient(135deg,rgba(224,177,60,.13),rgba(122,58,237,.10));
+  border:1px solid rgba(224,177,60,.28);border-radius:14px;padding:12px;margin-bottom:10px
+}
+.kp h3{font-size:13px;color:#e0b13c;margin-bottom:4px}
+.kp p{font-size:11px;color:#c9c0d8;line-height:1.7}
+.achv{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.05)}
+.achv.done{color:#e0b13c}
+.achv.off{color:#5f5870}
+.achv .ai{font-size:16px}
+.tabs{display:flex;gap:5px;margin-bottom:10px;background:rgba(0,0,0,.25);padding:4px;border-radius:11px}
+.tabs button{
+  flex:1;padding:7px;border:none;border-radius:8px;background:none;color:#8a8296;
+  font-family:inherit;font-size:11px;cursor:pointer;font-weight:600
+}
+.tabs button.on{background:rgba(224,177,60,.16);color:#e0b13c}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.hint{font-size:10.5px;color:#8a8296;line-height:1.7;padding:8px 10px;background:rgba(0,0,0,.22);border-radius:10px;border:1px solid rgba(255,255,255,.05);margin-bottom:8px}
+.hint b{color:#e0b13c}
+::-webkit-scrollbar{width:0;height:0}
+
+/* ---------- نسخه ۲: نقشه، فرمانده، ماموریت، آنلاین ---------- */
+.mapwrap{position:relative;border-radius:15px;overflow:hidden;border:1px solid rgba(224,177,60,.3);box-shadow:0 8px 28px rgba(0,0,0,.5);margin-bottom:10px}
+.mapwrap canvas{display:block;width:100%;height:auto;touch-action:none}
+.maphud{position:absolute;top:6px;right:6px;left:6px;display:flex;gap:5px;justify-content:space-between;pointer-events:none}
+.maphud span{background:rgba(10,7,20,.72);border:1px solid rgba(224,177,60,.25);border-radius:8px;padding:3px 8px;font-size:9.5px;color:#e8d9a8;backdrop-filter:blur(3px)}
+.marchbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:rgba(224,177,60,.08);border:1px solid rgba(224,177,60,.25);margin-bottom:8px;font-size:11px}
+.marchbar .pbar{flex:1;margin:0}
+.cmd{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:13px;background:linear-gradient(160deg,rgba(122,58,237,.10),rgba(255,255,255,.03));border:1px solid rgba(122,58,237,.25);margin-bottom:7px}
+.cmd .cico{width:44px;height:44px;border-radius:50%;font-size:24px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,rgba(255,215,120,.35),rgba(0,0,0,.4));border:2px solid rgba(224,177,60,.4)}
+.cmd .ci{flex:1;min-width:0}
+.cmd .ci b{font-size:12.5px;display:block}
+.cmd .ci small{font-size:10px;color:#b9a8e0}
+.cmd .cl{font-size:11px;color:#e0b13c;font-weight:700;white-space:nowrap}
+.quest{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);margin-bottom:6px;font-size:11px}
+.quest.done{opacity:.55}
+.quest .qi{font-size:17px}
+.quest .qt{flex:1}
+.quest .qt b{display:block;font-size:11.5px}
+.quest .qt small{color:#9a8fb5;font-size:10px}
+.qbtn{padding:5px 10px;border-radius:8px;border:none;background:linear-gradient(180deg,#7ee2a0,#3fae68);color:#08130c;font-weight:700;font-family:inherit;font-size:10.5px;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.qbtn:active{transform:translateY(1px)}
+.chatbox{height:190px;overflow-y:auto;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:7px;margin-bottom:6px}
+.msg{font-size:11px;margin-bottom:5px;line-height:1.6;word-break:break-word}
+.msg b{color:#e0b13c}
+.msg.sys b{color:#8f7bd8}
+.chatin{display:flex;gap:5px}
+.chatin input{flex:1;padding:9px 11px;border-radius:10px;border:1px solid rgba(224,177,60,.25);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:12px}
+.online-badge{display:inline-block;font-size:9px;padding:2px 8px;border-radius:10px;margin-right:6px}
+.online-badge.on{background:rgba(111,214,138,.15);color:#6fd68a;border:1px solid rgba(111,214,138,.35)}
+.online-badge.off{background:rgba(255,122,122,.12);color:#ff9a94;border:1px solid rgba(255,122,122,.3)}
+.lb{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;margin-bottom:4px;font-size:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+.lb.me{border-color:rgba(224,177,60,.45);background:rgba(224,177,60,.1)}
+.lb .rk{width:22px;text-align:center;font-weight:700;color:#8a8296}
+.lb .rk.top{color:#e0b13c}
+.lb .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .pw{font-variant-numeric:tabular-nums;color:#c9c0d8}
+.battlecanvas{width:100%;border-radius:12px;border:1px solid rgba(224,177,60,.25);background:#0a0714;display:block;margin-bottom:10px}
+
+/* ---------- نسخه‌ی ۳ ---------- */
+body{background-image:linear-gradient(180deg,rgba(15,12,29,.9),rgba(10,8,20,.97)),url('img/bg-load.jpg');background-size:auto,cover;background-position:center,center;background-attachment:fixed}
+#loadScreen{position:fixed;inset:0;z-index:300;background:url('img/bg-load.jpg') center/cover;display:flex;align-items:center;justify-content:center}
+#loadScreen::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,5,16,.35),rgba(8,5,16,.88))}
+.lwrap{position:relative;width:82%;max-width:380px;text-align:center}
+.llogo{font-size:64px;filter:drop-shadow(0 0 22px rgba(224,177,60,.8));animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.lname{font-size:26px;font-weight:800;color:#f2c95c;text-shadow:0 2px 14px rgba(0,0,0,.7);letter-spacing:1px}
+.lsub{font-size:11px;color:#cbb8e8;margin:4px 0 18px}
+.lbarwrap{height:12px;border-radius:8px;background:rgba(0,0,0,.55);border:1px solid rgba(224,177,60,.4);overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.6)}
+#loadBar{height:100%;width:0%;background:linear-gradient(90deg,#8a5a12,#f2c95c,#fff2c0);border-radius:8px;transition:width .12s;box-shadow:0 0 12px rgba(242,201,92,.7)}
+.lrow{display:flex;justify-content:space-between;font-size:11px;color:#e8d9a8;margin-top:7px}
+#loginScreen{position:fixed;inset:0;z-index:290;background:url('img/bg-load.jpg') center/cover;display:none;align-items:center;justify-content:center}
+#loginScreen::before{content:'';position:absolute;inset:0;background:rgba(8,5,16,.72)}
+.lgpanel{position:relative;width:86%;max-width:360px;background:linear-gradient(180deg,rgba(30,22,52,.92),rgba(14,10,26,.94));border:1px solid rgba(224,177,60,.45);border-radius:20px;padding:22px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.lgpanel input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(224,177,60,.3);background:rgba(0,0,0,.4);color:#fff;font-family:inherit;font-size:13px;text-align:center;margin-bottom:9px}
+.lgpanel .btn{margin-top:2px}
+.scene{position:relative;width:100%;aspect-ratio:1/1.02;border-radius:18px;overflow:hidden;border:2px solid rgba(224,177,60,.4);background:url('img/bg-city3.jpg') center/cover;box-shadow:0 10px 34px rgba(0,0,0,.6);margin-bottom:10px}
+.scenetitle{position:absolute;top:6px;right:8px;left:8px;text-align:center;background:rgba(10,7,20,.6);border:1px solid rgba(224,177,60,.3);border-radius:10px;padding:4px;font-size:11px;color:#f2e3b3;backdrop-filter:blur(3px);z-index:5}
+.slot{position:absolute;transform:translate(-50%,-50%);text-align:center;cursor:pointer;z-index:2;transition:transform .15s}
+.slot:active{transform:translate(-50%,-50%) scale(.93)}
+.slot img{width:100%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.6)) saturate(1.05)}
+.slot .plq{width:100%;aspect-ratio:1;border-radius:22%;background:radial-gradient(circle at 35% 30%,rgba(224,177,60,.30),rgba(10,6,20,.75));border:2px solid rgba(224,177,60,.4);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 14px rgba(0,0,0,.5),inset 0 0 18px rgba(224,177,60,.15)}
+.slot .tag{font-size:9px;color:#ffe9ad;background:rgba(10,7,20,.65);border-radius:8px;padding:1px 6px;margin-top:2px;display:inline-block;border:1px solid rgba(224,177,60,.25)}
+.slot .tag b{color:#f2c95c}
+.slot .newdot{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:linear-gradient(180deg,#7ee2a0,#3fae68);color:#06130a;font-weight:800;font-size:13px;line-height:18px;box-shadow:0 0 10px #6fd68a;animation:pulse 1.4s infinite}
+.slot .pbar{margin:3px 10% 0}
+.wscene{position:relative;width:100%;aspect-ratio:1/1.05;border-radius:18px;overflow:hidden;border:2px solid rgba(224,177,60,.4);background:url('img/bg-world2.jpg') center/cover;box-shadow:0 10px 34px rgba(0,0,0,.6);margin-bottom:10px}
+.wscene.night{filter:brightness(.75) hue-rotate(-12deg)}
+.fogcv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+.wtitle{position:absolute;top:6px;right:8px;background:rgba(10,7,20,.6);border:1px solid rgba(224,177,60,.3);border-radius:10px;padding:4px 10px;font-size:11px;color:#f2e3b3;z-index:5}
+.backcity{position:absolute;top:6px;left:8px;z-index:6;border:1px solid rgba(224,177,60,.5);background:linear-gradient(180deg,#f2c95c,#d4a12e);color:#1a1206;font-family:inherit;font-weight:800;font-size:11px;border-radius:10px;padding:6px 10px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.went{position:absolute;transform:translate(-50%,-50%);text-align:center;cursor:pointer;z-index:3}
+.went img{width:52px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.went .plq{width:44px;height:44px;font-size:22px}
+.went span{display:block;font-size:22px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.7))}
+.went small{font-size:8.5px;color:#ffe9ad;background:rgba(10,7,20,.7);border-radius:6px;padding:0 5px;border:1px solid rgba(224,177,60,.25)}
+.went.node span{font-size:19px;background:radial-gradient(circle,rgba(20,12,40,.8),rgba(20,12,40,.4));border:1px solid rgba(224,177,60,.4);border-radius:50%;width:30px;height:30px;line-height:28px;margin:0 auto}
+.went.march{z-index:5;pointer-events:none}
+.went.march span{font-size:24px;animation:pulse 1s infinite}
+.went.homee{z-index:2}
+.fab{position:absolute;bottom:76px;left:14px;z-index:25;width:50px;height:50px;border-radius:50%;border:2px solid rgba(224,177,60,.6);background:linear-gradient(180deg,#4a4260,#2c2740);font-size:22px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.6)}
+</style>
+</head>
+<body>
+<div id="loadScreen"><div class="lwrap"><div class="llogo">👑</div><div class="lname">تاج پارسی</div><div class="lsub">خشم پادشاهان · نسخه‌ی ۳</div><div class="lbarwrap"><div id="loadBar"></div></div><div class="lrow"><span id="loadPct">۰٪</span><span id="loadTip">در حال آماده‌سازی…</span></div></div></div>
+<div id="loginScreen"><div class="lgpanel"><div class="llogo">👑</div><div class="lname">تاج پارسی</div><p class="lsub">پادشاهی‌ات برای همیشه روی جیمیل تو ذخیره می‌شود</p><input id="pname" maxlength="16" placeholder="نام پادشاه"><input id="gmail" dir="ltr" placeholder="yourname@gmail.com"><button id="btnGmail" class="btn">🔗 اتصال به جیمیل و ورود</button><button id="btnOffline" class="btn ghost" style="display:none;margin-top:8px">▶ ادامه به‌صورت آفلاین</button></div></div>
+<div id="app">
+
+  <!-- ========== هدر ========== -->
+  <header>
+    <div class="hrow">
+      <div class="king">
+        <span class="crown">👑</span>
+        <div>
+          <b id="kingName">پادشاه</b>
+          <small id="kingSub">قلعه سطح ۱</small>
+        </div>
+      </div>
+      <div class="hright">
+        <span class="online-badge off" id="netDot">● آفلاین</span>
+        <span class="clock" id="clock">☀️ روز</span>
+        <button class="iconbtn" id="btnMusic" title="موسیقی">🎵</button>
+        <button class="iconbtn" id="btnSound" title="صدا">🔊</button>
+        <button class="iconbtn lordbtn" id="btnLord" title="فرمانده">🦁</button>
+        <button class="iconbtn" id="btnMenu" title="منو">⚙️</button>
+      </div>
+    </div>
+    <div class="resbar">
+      <div class="res" id="rFood"><div class="ic">🌾</div><div class="v">0</div><div class="r">+0</div></div>
+      <div class="res" id="rWood"><div class="ic">🪵</div><div class="v">0</div><div class="r">+0</div></div>
+      <div class="res" id="rStone"><div class="ic">🪨</div><div class="v">0</div><div class="r">+0</div></div>
+      <div class="res" id="rGold"><div class="ic">🪙</div><div class="v">0</div><div class="r">+0</div></div>
+    </div>
+  </header>
+
+  <!-- ========== صفحات ========== -->
+  <main id="main">
+    <section class="view on" id="v-city"></section>
+    <section class="view" id="v-army"></section>
+    <section class="view" id="v-camp"></section>
+    <section class="view" id="v-net"></section>
+    <section class="view" id="v-res"></section>
+    <section class="view" id="v-more"></section>
+  </main>
+
+  <!-- ========== نوار پایین ========== -->
+  <nav id="nav">
+    <button data-v="city" class="on"><i>🏰</i>قلعه<span class="dot"></span></button>
+    <button data-v="army"><i>⚔️</i>ارتش<span class="dot"></span></button>
+    <button data-v="camp"><i>🗺️</i>جهان<span class="dot"></span></button>
+    <button data-v="net"><i>🌐</i>اتحاد<span class="dot"></span></button>
+    <button data-v="res"><i>📜</i>تحقیق<span class="dot"></span></button>
+    <button data-v="more"><i>👑</i>پادشاه<span class="dot"></span></button>
+  </nav>
+  <div id="questbar"></div>
+
+  <button class="fab" id="fabChat" style="display:none">💬</button>
+  <div id="log"></div>
+</div>
+
+<!-- ========== مودال ========== -->
+<div class="ovl" id="ovl"><div class="modal" id="modal"></div></div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   تاج پارسی — هسته‌ی بازی
+   ========================================================================== */
+
+/* ---------- ابزارها ---------- */
+const $ = (s) => document.querySelector(s);
+const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h !== undefined) n.innerHTML = h; return n; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const FA = '۰۱۲۳۴۵۶۷۸۹';
+const fa = (n) => { const st = String(n); const L = (typeof window !== 'undefined' && window.LANGX) ? window.LANGX.cur : 'fa'; if (L === 'en') return st; const M = (L === 'ar') ? '٠١٢٣٤٥٦٧٨٩' : FA; return st.replace(/\d/g, (d) => M[d]); };
+function fmt(n) {
+  n = Math.floor(n);
+  if (n >= 1e9) return fa((n / 1e9).toFixed(n >= 1e10 ? 0 : 1)) + ' میلیارد';
+  if (n >= 1e6) return fa((n / 1e6).toFixed(n >= 1e7 ? 0 : 1)) + ' میلیون';
+  if (n >= 10000) return fa((n / 1000).toFixed(n >= 100000 ? 0 : 1)) + ' هزار';
+  return fa(n);
+}
+function fmtT(s) {
+  s = Math.max(0, Math.ceil(s));
+  if (s < 60) return fa(s) + ' ثانیه';
+  if (s < 3600) return fa(Math.floor(s / 60)) + ' دقیقه';
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  if (h < 24) return fa(h) + ' ساعت و ' + fa(m) + ' دقیقه';
+  return fa(Math.floor(h / 24)) + ' روز و ' + fa(h % 24) + ' ساعت';
+}
+
+/* ---------- تعریف ساختمان‌ها ---------- */
+const B = {
+  castle:  { n: 'قصر',        i: '🏰', d: 'قلب پادشاهی. سطح قصر، سقف سطح بقیه‌ی ساختمان‌ها را تعیین می‌کند.', base: { wood: 100, stone: 50 }, g: 1.62, t: 30, cap: 30 },
+  farm:    { n: 'مزرعه',      i: '🌾', d: 'غذای سربازان و مردم را تولید می‌کند.', base: { wood: 60, stone: 20 }, g: 1.5, t: 12, max: 8 },
+  lumber:  { n: 'چوب‌بری',    i: '🪓', d: 'چوب تولید می‌کند؛ ماده‌ی اصلی ساخت‌وساز.', base: { food: 50, stone: 20 }, g: 1.5, t: 12, max: 8 },
+  quarry:  { n: 'معدن سنگ',   i: '⛏️', d: 'سنگ تولید می‌کند؛ برای دیوار و ساختمان‌های سنگی.', base: { food: 60, wood: 60 }, g: 1.52, t: 14, max: 6 },
+  mine:    { n: 'معدن طلا',   i: '💎', d: 'طلا تولید می‌کند؛ برای ارتقای پیشرفته و تحقیق.', base: { food: 150, wood: 150, stone: 150 }, g: 1.6, t: 25, max: 4 },
+  house:   { n: 'خانه',       i: '🏠', d: 'ظرفیت سربازان را افزایش می‌دهد.', base: { wood: 80, food: 40 }, g: 1.48, t: 14, max: 6 },
+  barracks:{ n: 'سربازخانه',  i: '🎖️', d: 'میلاد و نیزه‌دار آموزش می‌دهد.', base: { wood: 150, stone: 100, food: 100 }, g: 1.55, t: 20, max: 1 },
+  range:   { n: 'میدان تیراندازی', i: '🏹', d: 'کماندار آموزش می‌دهد. نیازمند سربازخانه سطح ۳.', base: { wood: 300, stone: 200, food: 200 }, g: 1.55, t: 26, max: 1 },
+  stable:  { n: 'طویله',      i: '🐎', d: 'سوارکار آموزش می‌دهد. نیازمند سربازخانه سطح ۵.', base: { wood: 500, stone: 400, food: 400 }, g: 1.58, t: 32, max: 1 },
+  wall:    { n: 'دیوار شهر',  i: '🛡️', d: 'در دفاع، قدرت ارتش شما را چند برابر می‌کند.', base: { stone: 200, wood: 100 }, g: 1.5, t: 18, max: 1 },
+  hospital:{ n: 'بیمارستان',  i: '🏥', d: 'بخشی از سربازان کشته‌شده را نجات می‌دهد.', base: { wood: 200, food: 250, stone: 100 }, g: 1.52, t: 20, max: 1 },
+  market:  { n: 'بازار',      i: '⚖️', d: 'تبدیل منابع و تولید طلای اضافه.', base: { wood: 180, stone: 120, food: 120 }, g: 1.55, t: 22, max: 1 },
+  library: { n: 'کتابخانه',   i: '📚', d: 'ظرفیت تحقیق را باز می‌کند.', base: { wood: 250, stone: 250, gold: 50 }, g: 1.58, t: 28, max: 1 }
+};
+const ORDER = ['castle', 'farm', 'lumber', 'quarry', 'mine', 'house', 'barracks', 'range', 'stable', 'wall', 'hospital', 'market', 'library'];
+
+/* ---------- واحدهای نظامی ---------- */
+const U = {
+  militia: { n: 'میلاد',        i: '🗡️', hp: 40, atk: 5, def: 3, cost: { food: 40, gold: 8 }, t: 4, req: { barracks: 1 } },
+  spear:   { n: 'نیزه‌دار',     i: '🔱', hp: 65, atk: 9, def: 9, cost: { food: 75, gold: 16 }, t: 7, req: { barracks: 3 } },
+  sword:   { n: 'شمشیرزن',      i: '⚔️', hp: 95, atk: 17, def: 13, cost: { food: 130, gold: 30 }, t: 11, req: { barracks: 6 } },
+  archer:  { n: 'کماندار',      i: '🏹', hp: 58, atk: 21, def: 6, cost: { food: 105, gold: 26 }, t: 9, req: { range: 3 } },
+  knight:  { n: 'شوالیه',       i: '🐎', hp: 190, atk: 34, def: 27, cost: { food: 280, gold: 75 }, t: 19, req: { stable: 5 } },
+  dragon:  { n: 'جنگجوی اژدها', i: '🐉', hp: 420, atk: 78, def: 52, cost: { food: 700, gold: 220 }, t: 34, req: { castle: 20 } }
+};
+
+/* ---------- تحقیقات ---------- */
+const R = {
+  agri:  { n: 'کشاورزی',     i: '🌱', d: 'تولید غذا', per: 12, max: 20, cost: (l) => ({ food: 200 * Math.pow(1.55, l), gold: 20 * Math.pow(1.5, l) }), req: 0 },
+  log:   { n: 'جنگل‌داری',   i: '🌲', d: 'تولید چوب', per: 12, max: 20, cost: (l) => ({ wood: 150 * Math.pow(1.55, l), gold: 18 * Math.pow(1.5, l) }), req: 0 },
+  mine:  { n: 'استخراج',     i: '⛏️', d: 'تولید سنگ و طلا', per: 12, max: 20, cost: (l) => ({ stone: 180 * Math.pow(1.55, l), gold: 22 * Math.pow(1.5, l) }), req: 4 },
+  atk:   { n: 'فنون رزم',    i: '🗡️', d: 'حمله‌ی سربازان', per: 8, max: 25, cost: (l) => ({ food: 300 * Math.pow(1.5, l), gold: 45 * Math.pow(1.5, l) }), req: 3 },
+  def:   { n: 'زره‌سازی',    i: '🛡️', d: 'دفاع سربازان', per: 8, max: 25, cost: (l) => ({ stone: 260 * Math.pow(1.5, l), gold: 42 * Math.pow(1.5, l) }), req: 3 },
+  wall:  { n: 'مهندسی بارو', i: '🧱', d: 'قدرت دیوار شهر', per: 15, max: 20, cost: (l) => ({ stone: 400 * Math.pow(1.52, l), gold: 60 * Math.pow(1.5, l) }), req: 6 },
+  med:   { n: 'پزشکی',       i: '⚕️', d: 'نجات سربازان زخمی', per: 6, max: 15, cost: (l) => ({ food: 500 * Math.pow(1.55, l), gold: 80 * Math.pow(1.5, l) }), req: 8 },
+  march: { n: 'تدارکات',     i: '🥾', d: 'سرعت ساخت و آموزش', per: 5, max: 20, cost: (l) => ({ gold: 120 * Math.pow(1.5, l), food: 400 * Math.pow(1.5, l) }), req: 5 },
+  raid:  { n: 'غارت',        i: '💰', d: 'منابع غارت‌شده', per: 10, max: 15, cost: (l) => ({ gold: 150 * Math.pow(1.55, l), wood: 500 * Math.pow(1.5, l) }), req: 7 }
+};
+
+/* ---------- پادشاهی‌های دشمن ---------- */
+const FOES = [
+  { n: 'اردوگاه راهزنان', i: '🏕️', lv: 1, army: { militia: 12 }, rew: { food: 800, wood: 600, gold: 120 }, pt: 20 },
+  { n: 'قلعه‌ی سایه',      i: '🌑', lv: 3, army: { militia: 40, spear: 15 }, rew: { food: 2000, wood: 1600, stone: 900, gold: 300 }, pt: 45 },
+  { n: 'دژ سنگ‌سیاه',      i: '🗿', lv: 5, army: { militia: 50, spear: 30, archer: 18 }, rew: { food: 4000, stone: 3200, gold: 650 }, pt: 80 },
+  { n: 'جنگل الف‌ها',        i: '🧝', lv: 8, army: { spear: 45, archer: 45, sword: 15 }, rew: { wood: 8000, food: 6000, gold: 1400 }, pt: 140 },
+  { n: 'دشت سوارکاران',    i: '🐎', lv: 11, army: { sword: 40, knight: 25, archer: 35 }, rew: { gold: 3200, food: 12000, stone: 8000 }, pt: 230 },
+  { n: 'شهر آهنین',        i: '⚙️', lv: 14, army: { sword: 80, knight: 45, spear: 90, archer: 60 }, rew: { stone: 22000, gold: 7000, wood: 18000 }, pt: 380 },
+  { n: 'دژ خون',           i: '🩸', lv: 17, army: { knight: 90, sword: 140, archer: 110, spear: 120 }, rew: { gold: 16000, food: 45000, stone: 40000 }, pt: 600 },
+  { n: 'امپراتوری اژدها',  i: '🐉', lv: 20, army: { knight: 160, dragon: 35, sword: 220, archer: 180 }, rew: { gold: 45000, food: 120000, wood: 100000, stone: 100000 }, pt: 1200 }
+];
+
+/* ---------- دستاوردها ---------- */
+const ACH = [
+  { id: 'b1', i: '🏗️', n: 'سازنده', d: '۱۰ بار ساختمان ارتقا بده', c: (s) => s.stats.builds >= 10 },
+  { id: 'b2', i: '🏙️', n: 'شهرنشین', d: '۴۰ بار ساختمان ارتقا بده', c: (s) => s.stats.builds >= 40 },
+  { id: 'w1', i: '⚔️', n: 'نخستین پیروزی', d: 'یک پادشاهی را فتح کن', c: (s) => s.stats.wins >= 1 },
+  { id: 'w2', i: '🩸', n: 'فاتح', d: '۵ پادشاهی را فتح کن', c: (s) => s.stats.wins >= 5 },
+  { id: 'w3', i: '👑', n: 'شاهِ شاهان', d: 'همه‌ی ۸ پادشاهی را فتح کن', c: (s) => s.stats.wins >= 8 },
+  { id: 'c1', i: '🏰', n: 'قلعه‌دار', d: 'قصر را به سطح ۱۰ برسان', c: (s) => s.lvl.castle >= 10 },
+  { id: 'c2', i: '🌆', n: 'پایتخت', d: 'قصر را به سطح ۲۰ برسان', c: (s) => s.lvl.castle >= 20 },
+  { id: 'a1', i: '🗡️', n: 'ارتش‌دار', d: '۲۰۰ سرباز داشته باش', c: (s) => armyCount(s) >= 200 },
+  { id: 'a2', i: '🐉', n: 'افسانه', d: 'یک جنگجوی اژدها بساز', c: (s) => (s.units.dragon || 0) >= 1 },
+  { id: 'g1', i: '💰', n: 'ثروتمند', d: '۱۰٬۰۰۰ طلا جمع کن', c: (s) => s.stats.goldEarned >= 10000 },
+  { id: 'd1', i: '🛡️', n: 'شکست‌ناپذیر', d: '۳ حمله‌ی دشمن را دفع کن', c: (s) => s.stats.defends >= 3 },
+  { id: 'p1', i: '📜', n: 'دانشمند', d: '۲۵ سطح تحقیق کن', c: (s) => Object.values(s.res).reduce((a, b) => a + b, 0) >= 25 }
+];
+
+/* ---------- وضعیت بازی ---------- */
+const SAVE_KEY = 'taj-e-parsi-v1';
+let S = null;
+
+/* ساختار درست وضعیت (جلوگیری از تکرار کلید) */
+function freshState(name) {
+  const s = {
+    v: 1,
+    name: name || 'پادشاه',
+    r: { food: 1200, wood: 1200, stone: 600, gold: 400 },
+    cap: { food: 8000, wood: 8000, stone: 5000, gold: 3000 },
+    lvl: { castle: 1, farm: 1, lumber: 1, quarry: 0, mine: 0, house: 1, barracks: 0, range: 0, stable: 0, wall: 0, hospital: 0, market: 0, library: 0 },
+    units: { militia: 10, spear: 0, sword: 0, archer: 0, knight: 0, dragon: 0 },
+    wounded: { militia: 0, spear: 0, sword: 0, archer: 0, knight: 0, dragon: 0 },
+    build: null,
+    train: null,
+    heal: null,
+    research: null,
+    res: {},
+    beaten: {},
+    ach: {},
+    events: [],
+    stats: { builds: 0, wins: 0, losses: 0, defends: 0, raids: 0, goldEarned: 400, kills: 0, started: Date.now(), played: 0 },
+    last: Date.now(),
+    sound: true,
+    tut: 0,
+    cxp: { rostam: 0, darius: 0, cyrus: 0, arash: 0 },
+    q: {},
+    explored: [],
+    march: null,
+    alliance: null,
+    gear: {},
+    music: true
+  };
+  return s;
+}
+
+function save() { S.last = Date.now(); try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || !d.lvl) return null;
+    const base = freshState(d.name);
+    // ادغام امن با ساختار پایه تا نسخه‌های قدیمی هم کار کنند
+    for (const k in base) { if (d[k] === undefined) d[k] = base[k]; }
+    for (const k in base.lvl) if (d.lvl[k] === undefined) d.lvl[k] = 0;
+    for (const k in base.units) if (d.units[k] === undefined) d.units[k] = 0;
+    for (const k in base.wounded) if (d.wounded[k] === undefined) d.wounded[k] = 0;
+    for (const k in base.r) if (d.r[k] === undefined) d.r[k] = 0;
+    for (const k in base.stats) if (d.stats[k] === undefined) d.stats[k] = 0;
+    for (const k in base.cxp) if (d.cxp[k] === undefined) d.cxp[k] = 0;
+    return d;
+  } catch (e) { return null; }
+}
+
+/* ---------- صدا (WebAudio، بدون فایل خارجی) ---------- */
+let AC = null;
+function beep(f, dur, type, vol) {
+  if (!S || !S.sound) return;
+  try {
+    if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state === 'suspended') AC.resume();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.value = 0; o.connect(g); g.connect(AC.destination);
+    const t = AC.currentTime, v = vol || 0.07;
+    g.gain.linearRampToValueAtTime(v, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur + 0.02);
+  } catch (e) {}
+}
+const sfx = {
+  tap: () => beep(660, 0.06, 'triangle', 0.04),
+  build: () => { beep(420, 0.09, 'square', 0.05); setTimeout(() => beep(620, 0.12, 'square', 0.05), 80); },
+  done: () => { beep(560, 0.1, 'triangle', 0.06); setTimeout(() => beep(760, 0.1, 'triangle', 0.06), 90); setTimeout(() => beep(980, 0.16, 'triangle', 0.06), 180); },
+  win: () => { [523, 659, 784, 1046].forEach((f, i) => setTimeout(() => beep(f, 0.18, 'triangle', 0.07), i * 110)); },
+  lose: () => { [400, 330, 260].forEach((f, i) => setTimeout(() => beep(f, 0.22, 'sawtooth', 0.05), i * 150)); },
+  bad: () => beep(180, 0.14, 'sawtooth', 0.05),
+  coin: () => { beep(1200, 0.05, 'square', 0.04); setTimeout(() => beep(1600, 0.07, 'square', 0.04), 50); }
+};
+
+/* ---------- محاسبات ---------- */
+function resLevel(id) { return S.res[id] || 0; }
+function marchMult() { return 1 - resLevel('march') * 0.05; }
+function gearSum(k) { let t = 0; for (const g in (S.gear || {})) t += ((S.gear || {})[g][k] || 0); return t; }
+function atkBonus() { return 1 + resLevel('atk') * 0.08 + (S.lvl.castle - 1) * 0.02 + cmdLvl(S, 'rostam') * 0.03 + gearSum('atk') * 0.01; }
+function defBonus() { return 1 + resLevel('def') * 0.08 + cmdLvl(S, 'darius') * 0.03 + gearSum('def') * 0.01; }
+function wallMult() { return 1 + S.lvl.wall * 0.5 + resLevel('wall') * 0.15; }
+function healPct() { return Math.min(0.9, S.lvl.hospital * 0.12 + resLevel('med') * 0.06); }
+function raidMult() { return 1 + resLevel('raid') * 0.10; }
+function isNight() { const h = new Date().getHours(); return h >= 20 || h < 6; }
+function nightMult() { return isNight() ? 1.2 : 1; }
+
+function prod() {
+  const nm = nightMult();
+  const castleMul = 1 + (S.lvl.castle - 1) * 0.06;
+  const p = { food: 0, wood: 0, stone: 0, gold: 0 };
+  p.food = S.lvl.farm * 26 * (1 + resLevel('agri') * 0.12) * castleMul;
+  p.wood = S.lvl.lumber * 22 * (1 + resLevel('log') * 0.12) * castleMul;
+  p.stone = S.lvl.quarry * 18 * (1 + resLevel('mine') * 0.12) * castleMul;
+  p.gold = S.lvl.mine * 9 * (1 + resLevel('mine') * 0.12) * castleMul + S.lvl.market * 5;
+  for (const k in p) p[k] *= nm;
+  return p;
+}
+
+function capFor() {
+  const c = 1 + (S.lvl.castle - 1) * 0.30;
+  return {
+    food: Math.floor(6000 * c),
+    wood: Math.floor(6000 * c),
+    stone: Math.floor(4000 * c),
+    gold: Math.floor(2500 * c)
+  };
+}
+
+function popCap() { return 30 + S.lvl.house * 40 + S.lvl.castle * 10; }
+function armyCount(s) { s = s || S; let t = 0; for (const k in U) t += (s.units[k] || 0); return t; }
+function woundedCount() { let t = 0; for (const k in U) t += (S.wounded[k] || 0); return t; }
+
+function canAfford(cost) { for (const k in cost) if ((S.r[k] || 0) < cost[k]) return false; return true; }
+function pay(cost) { for (const k in cost) S.r[k] -= cost[k]; }
+function gain(o) {
+  const cap = capFor();
+  for (const k in o) {
+    S.r[k] = Math.min(cap[k], (S.r[k] || 0) + o[k]);
+    if (k === 'gold') S.stats.goldEarned += o[k];
+  }
+}
+
+function buildCost(id) {
+  const b = B[id], l = S.lvl[id] || 0, c = {};
+  for (const k in b.base) c[k] = Math.ceil(b.base[k] * Math.pow(b.g, l));
+  return c;
+}
+function buildTime(id) {
+  const b = B[id], l = S.lvl[id] || 0;
+  return Math.ceil(b.t * Math.pow(1.20, l) * marchMult());
+}
+function resCost(id) { return R[id].cost(resLevel(id)); }
+function resTime(id) { return Math.ceil((25 + resLevel(id) * 14) * marchMult()); }
+function trainTime(id) { return Math.ceil(U[id].t * marchMult()); }
+
+function armyPower(units, atkMul, defMul) {
+  let p = 0;
+  for (const k in U) {
+    const n = units[k] || 0;
+    if (!n) continue;
+    p += n * (U[k].atk * atkMul + U[k].def * defMul + U[k].hp * 0.12);
+  }
+  return Math.round(p);
+}
+function myPower() { return armyPower(S.units, atkBonus(), defBonus()); }
+function foePower(f) { return armyPower(f.army, 1 + (f.lv - 1) * 0.07, 1 + (f.lv - 1) * 0.06); }
+
+/* ---------- گزارش ---------- */
+function toast(msg, type) {
+  const box = $('#log');
+  const t = el('div', 'toast' + (type ? ' ' + type : ''), msg);
+  box.appendChild(t);
+  setTimeout(() => { t.style.transition = 'opacity .3s, transform .3s'; t.style.opacity = '0'; t.style.transform = 'translateY(-10px)'; }, 2400);
+  setTimeout(() => t.remove(), 2800);
+}
+function addEvent(icon, text, kind) {
+  S.events.unshift({ i: icon, t: text, ts: Date.now(), k: kind || '' });
+  if (S.events.length > 40) S.events.pop();
+}
+
+/* ==========================================================================
+   حلقه‌ی اصلی بازی
+   ========================================================================== */
+function tick(dt) {
+  S.stats.played += dt;
+  tickMarch(dt);
+  const p = prod();
+  const cap = capFor();
+  for (const k in p) S.r[k] = Math.min(cap[k], (S.r[k] || 0) + p[k] * dt);
+
+  // ساخت‌وساز
+  if (S.build) {
+    S.build.done += dt;
+    if (S.build.done >= S.build.total) {
+      const id = S.build.id;
+      S.lvl[id] = (S.lvl[id] || 0) + 1;
+      S.stats.builds++;
+      addEvent(B[id].i, B[id].n + ' به سطح ' + fa(S.lvl[id]) + ' رسید', 'win');
+      toast(B[id].i + ' ' + B[id].n + ' کامل شد — سطح ' + fa(S.lvl[id]), 'good');
+      sfx.done();
+      S.build = null;
+      checkAch();
+    }
+  }
+  // آموزش سرباز
+  if (S.train) {
+    S.train.done += dt;
+    if (S.train.done >= S.train.total) {
+      const n = S.train.n, id = S.train.id;
+      const space = popCap() - armyCount() - woundedCount();
+      const add = Math.min(n, Math.max(0, space));
+      S.units[id] = (S.units[id] || 0) + add;
+      if (add < n) toast('⚠️ جا نبود؛ ' + fa(n - add) + ' سرباز در خانه ماندند', 'bad');
+      addEvent(U[id].i, fa(add) + ' ' + U[id].n + ' به ارتش پیوستند', 'win');
+      sfx.done();
+      S.train = null;
+      checkAch();
+    }
+  }
+  // درمان
+  if (S.heal) {
+    S.heal.done += dt;
+    if (S.heal.done >= S.heal.total) {
+      const n = S.heal.n, id = S.heal.id;
+      S.wounded[id] = Math.max(0, (S.wounded[id] || 0) - n);
+      S.units[id] = (S.units[id] || 0) + n;
+      toast('🏥 ' + fa(n) + ' ' + U[id].n + ' درمان شدند', 'good');
+      sfx.done();
+      S.heal = null;
+    }
+  }
+  // تحقیق
+  if (S.research) {
+    S.research.done += dt;
+    if (S.research.done >= S.research.total) {
+      const id = S.research.id;
+      S.res[id] = resLevel(id) + 1;
+      addEvent(R[id].i, 'تحقیق «' + R[id].n + '» سطح ' + fa(S.res[id]), 'win');
+      toast('📜 ' + R[id].n + ' کامل شد — سطح ' + fa(S.res[id]), 'good');
+      sfx.done();
+      S.research = null;
+      checkAch();
+    }
+  }
+}
+
+/* ---------- پیشرفت آفلاین ---------- */
+function offline() {
+  const now = Date.now();
+  let dt = (now - (S.last || now)) / 1000;
+  if (dt < 5) return;
+  const cap = Math.min(dt, 12 * 3600);
+  tick(cap);
+  const h = Math.floor(cap / 3600), m = Math.floor((cap % 3600) / 60);
+  let txt = h > 0 ? fa(h) + ' ساعت' : '';
+  if (m > 0) txt += (txt ? ' و ' : '') + fa(m) + ' دقیقه';
+  setTimeout(() => {
+    modal('⏳', 'خوش برگشتی، ' + S.name + '!',
+      '<p style="font-size:12px;color:#c9c0d8;line-height:1.9">در ' + txt + ' ای که نبودی، پادشاهی‌ات کار کرد:</p>' +
+      '<div class="divider"></div>' +
+      statRow('🌾 غذا', fmt(S.r.food)) + statRow('🪵 چوب', fmt(S.r.wood)) +
+      statRow('🪨 سنگ', fmt(S.r.stone)) + statRow('🪙 طلا', fmt(S.r.gold)) +
+      '<div class="divider"></div>' +
+      '<p style="font-size:10.5px;color:#8a8296">حداکثر ۱۲ ساعت پیشرفت آفلاین محاسبه می‌شود.</p>',
+      [{ t: 'عالی! 👑', act: closeModal }]);
+  }, 400);
+}
+function statRow(a, b) { return '<div class="stat"><span>' + a + '</span><b>' + b + '</b></div>'; }
+
+/* ==========================================================================
+   نبرد
+   ========================================================================== */
+function simulate(myUnits, foe, defending) {
+  const mAtk = atkBonus(), mDef = defBonus() * (defending ? wallMult() : 1);
+  const fAtk = 1 + (foe.lv - 1) * 0.07, fDef = 1 + (foe.lv - 1) * 0.06;
+  let my = {}, their = {};
+  for (const k in U) my[k] = myUnits[k] || 0;
+  for (const k in U) their[k] = foe.army[k] || 0;
+
+  const mp = armyPower(my, mAtk, mDef);
+  const fp = armyPower(their, fAtk, fDef);
+  const ratio = mp / Math.max(1, fp);
+  // تلفات: برنده کم، بازنده زیاد
+  const myLossRate = clamp(0.62 / Math.pow(ratio, 0.85), 0.03, 0.92);
+  const fLossRate = clamp(0.62 * Math.pow(ratio, 0.85), 0.05, 1.0);
+  // تصادفی‌سازی جزئی
+  const jitter = 0.88 + Math.random() * 0.24;
+
+  const losses = {}, foeLosses = {};
+  let myLost = 0, fLost = 0;
+  for (const k in U) {
+    const c = Math.round((my[k] || 0) * clamp(myLossRate * jitter, 0, 1));
+    losses[k] = Math.min(my[k] || 0, c);
+    myLost += losses[k];
+    const fc = Math.round((their[k] || 0) * clamp(fLossRate / jitter, 0, 1));
+    foeLosses[k] = Math.min(their[k] || 0, fc);
+    fLost += foeLosses[k];
+  }
+  const win = mp * jitter > fp;
+  return { win, mp, fp, ratio, losses, foeLosses, myLost, fLost, my, their };
+}
+
+function applyMyLosses(losses) {
+  const hp = healPct();
+  let saved = 0;
+  for (const k in U) {
+    const l = losses[k] || 0;
+    if (!l) continue;
+    S.units[k] = Math.max(0, (S.units[k] || 0) - l);
+    const s = Math.floor(l * hp);
+    if (s > 0) { S.wounded[k] = (S.wounded[k] || 0) + s; saved += s; }
+  }
+  return saved;
+}
+
+function attackFoe(idx) {
+  const f = FOES[idx];
+  if (armyCount() < 1) { toast('🚫 هیچ سربازی نداری!', 'bad'); sfx.bad(); return; }
+  const r = simulate(S.units, f, false);
+  const saved = applyMyLosses(r.losses);
+
+  if (r.win) {
+    if (!S.beaten[idx]) { S.beaten[idx] = true; S.stats.wins++; }
+    const rew = {};
+    for (const k in f.rew) rew[k] = Math.ceil(f.rew[k] * raidMult());
+    gain(rew);
+    S.stats.kills = (S.stats.kills || 0) + r.fLost;
+    dropGear(f.lv);
+    sfx.win();
+    addEvent('🏆', 'فتح «' + f.n + '» — ' + fa(r.fLost) + ' دشمن نابود شد', 'win');
+    S.stats.raids++;
+    checkAch();
+    showBattle(f, r, rew, saved);
+  } else {
+    S.stats.losses++;
+    sfx.lose();
+    addEvent('💀', 'شکست در «' + f.n + '» — ' + fa(r.myLost) + ' سرباز از دست رفت', 'raid');
+    showBattle(f, r, null, saved);
+  }
+  save();
+  render();
+}
+
+function showBattle(f, r, rew, saved) {
+  let h = '<canvas id="batCv" class="battlecanvas" width="440" height="150"></canvas>' +
+    '<div class="kp"><h3>' + (r.win ? '🏆 پیروزی!' : '💀 شکست') + '</h3>' +
+    '<p>نبرد با «' + f.n + '» ' + (r.win ? 'به سود تو تمام شد.' : 'به سود دشمن تمام شد. ارتش را تقویت کن و دوباره حمله کن.') + '</p></div>' +
+    '<div class="pw mine"><span>👑 ' + fmt(r.mp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(r.mp / (r.mp + r.fp) * 100, 3, 97)) + '%"></i></div></div>' +
+    '<div class="pw theirs"><span>' + f.i + ' ' + fmt(r.fp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(r.fp / (r.mp + r.fp) * 100, 3, 97)) + '%"></i></div></div>' +
+    '<div class="divider"></div>' +
+    statRow('⚔️ قدرت ارتش تو', fmt(r.mp)) +
+    statRow(f.i + ' قدرت دشمن', fmt(r.fp)) +
+    statRow('📊 نسبت قدرت', fa(r.ratio.toFixed(2)) + '×') +
+    '<div class="divider"></div>';
+
+  if (r.win && rew) {
+    h += '<div class="secttl">💰 غنیمت</div>';
+    const ic = { food: '🌾', wood: '🪵', stone: '🪨', gold: '🪙' };
+    for (const k in rew) h += statRow(ic[k] + ' ' + RN[k], '+' + fmt(rew[k]));
+    h += '<div class="divider"></div>';
+  }
+  h += '<div class="secttl">💀 تلفات</div>' +
+    statRow('سربازان از دست رفته', fa(r.myLost)) +
+    statRow('🏥 نجات‌یافته در بیمارستان', fa(saved)) +
+    statRow('دشمنان نابودشده', fa(r.fLost));
+
+  modal(r.win ? '🏆' : '💀', r.win ? 'پیروزی در ' + f.n : 'شکست در ' + f.n, h, [{ t: 'باشه', act: closeModal }]);
+  setTimeout(() => { const c = $('#batCv'); if (c) battleAnim(c, r.win); }, 60);
+}
+const RN = { food: 'غذا', wood: 'چوب', stone: 'سنگ', gold: 'طلا' };
+const RI = { food: '🌾', wood: '🪵', stone: '🪨', gold: '🪙' };
+
+/* ---------- حمله‌ی دشمن ---------- */
+function enemyRaid() {
+  if (S.lvl.castle < 2 || armyCount() < 1) return;
+  const tier = clamp(Math.floor(S.lvl.castle / 3), 0, FOES.length - 2);
+  const base = FOES[Math.max(0, tier - 1)];
+  const f = { n: 'غارتگران ' + base.n, i: '⚡', lv: Math.max(1, base.lv - 1), army: {} };
+  const scale = 0.35 + Math.random() * 0.35;
+  for (const k in base.army) f.army[k] = Math.max(1, Math.round(base.army[k] * scale));
+
+  const r = simulate(S.units, f, true);
+  const saved = applyMyLosses(r.losses);
+
+  if (r.win) {
+    S.stats.defends++;
+    sfx.win();
+    addEvent('🛡️', 'حمله‌ی «' + f.n + '» دفع شد! ' + fa(r.fLost) + ' مهاجم کشته شد', 'win');
+    toast('🛡️ حمله‌ی دشمن را دفع کردی!', 'good');
+    checkAch();
+  } else {
+    const lost = {};
+    const cap = capFor();
+    const steal = 0.06 + Math.random() * 0.06;
+    for (const k in S.r) {
+      const a = Math.floor(S.r[k] * steal);
+      if (a > 0) { lost[k] = a; S.r[k] -= a; }
+    }
+    sfx.lose();
+    let t = '⚡ دشمن حمله کرد و شکست خوردی! ' + fa(r.myLost) + ' سرباز از دست رفت';
+    if (lost.gold) t += ' · ' + fmt(lost.gold) + ' طلا غارت شد';
+    addEvent('⚡', t, 'raid');
+    toast(t, 'bad');
+  }
+  save();
+  render();
+}
+
+/* ---------- دستاوردها ---------- */
+function checkAch() {
+  for (const a of ACH) {
+    if (!S.ach[a.id] && a.c(S)) {
+      S.ach[a.id] = Date.now();
+      toast('🏅 دستاورد: ' + a.n, 'good');
+      addEvent('🏅', 'دستاورد «' + a.n + '» باز شد', 'win');
+      sfx.coin();
+    }
+  }
+}
+
+/* ==========================================================================
+   رندر
+   ========================================================================== */
+let VIEW = 'city';
+
+function renderHeader() {
+  const p = prod(), cap = capFor();
+  $('#kingName').textContent = S.name;
+  $('#kingSub').textContent = 'قصر سطح ' + fa(S.lvl.castle) + ' · قدرت ' + fmt(myPower());
+  const night = isNight();
+  $('#clock').textContent = night ? '🌙 شب' : '☀️ روز';
+  const nd = $('#netDot');
+  if (nd) { nd.className = 'online-badge ' + (NET.on ? 'on' : 'off'); nd.textContent = NET.on ? '● سرور متصل' : '● آفلاین'; }
+  const mb = $('#btnMusic'); if (mb) mb.textContent = S.music ? '🎵' : '🎕';
+  document.body.classList.toggle('night', night);
+
+  const map = { rFood: 'food', rWood: 'wood', rStone: 'stone', rGold: 'gold' };
+  for (const id in map) {
+    const k = map[id], n = $('#' + id);
+    const v = n.querySelector('.v'), r = n.querySelector('.r');
+    const txt = fmt(S.r[k]);
+    if (v.textContent !== txt) { v.textContent = txt; n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); }
+    r.textContent = '+' + fmt(p[k]) + '/ث';
+    n.title = 'حداکثر: ' + fmt(cap[k]);
+  }
+  // هشدارها در نوار پایین
+  const nb = document.querySelectorAll('#nav button');
+  nb[0].classList.toggle('alert', !!S.build);
+  nb[1].classList.toggle('alert', !!S.train || woundedCount() > 0);
+  nb[3].classList.toggle('alert', !!S.research);
+}
+
+/* ---------- صفحه‌ی قلعه ---------- */
+function renderCity() {
+  const v = $('#v-city');
+  v.innerHTML = '';
+
+  const kp = el('div', 'kp');
+  const nextFoe = FOES.findIndex((f, i) => !S.beaten[i]);
+  kp.innerHTML = '<h3>👑 پادشاهی ' + S.name + '</h3><p>' +
+    'قدرت نظامی <b style="color:#e0b13c">' + fmt(myPower()) + '</b> · ' +
+    fa(armyCount()) + '/' + fa(popCap()) + ' سرباز' +
+    (nextFoe >= 0 ? ' · هدف بعدی: <b>' + FOES[nextFoe].n + '</b>' : ' · همه‌ی پادشاهی‌ها فتح شد! 🏆') +
+    '</p>';
+  v.appendChild(kp);
+
+  const nq = QUESTS.find((q) => !S.q[q.id] && q.c(S));
+  const pq = QUESTS.find((q) => !S.q[q.id]);
+  if (nq || pq) {
+    const qb = el('div', 'quest');
+    if (nq) qb.innerHTML = '<span class="qi">' + nq.i + '</span><div class="qt"><b>' + nq.n + '</b><small>' + nq.d + '</small></div><button class="qbtn" data-act="quest" data-id="' + nq.id + '">دریافت 🎁</button>';
+    else qb.innerHTML = '<span class="qi">' + pq.i + '</span><div class="qt"><b>ماموریت فعال: ' + pq.n + '</b><small>' + pq.d + '</small></div>';
+    v.appendChild(qb);
+  }
+
+  if (S.build) {
+    const b = B[S.build.id], pct = clamp(S.build.done / S.build.total * 100, 0, 100);
+    const c = el('div', 'card busy');
+    c.innerHTML = '<div class="chead"><div class="cico">' + b.i + '</div><div class="cname"><b>' + b.n + '</b><small>در حال ساخت…</small></div>' +
+      '<span class="lvl">→ ' + fa(S.build.to) + '</span></div>' +
+      '<div class="pbar"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="tmr">' + fmtT(S.build.total - S.build.done) + ' باقی‌مانده</div>';
+    v.appendChild(c);
+  }
+
+  v.appendChild(el('div', 'secttl', '🏗️ ساختمان‌ها'));
+  for (const id of ORDER) {
+    if (id === 'castle') continue;
+    v.appendChild(buildCard(id));
+  }
+  v.appendChild(el('div', 'secttl', '🏰 قصر'));
+  v.appendChild(buildCard('castle'));
+}
+
+function buildCard(id) {
+  const b = B[id], lv = S.lvl[id] || 0;
+  const castle = S.lvl.castle;
+  let locked = false, lockMsg = '';
+
+  if (id !== 'castle' && lv + 1 > castle) { locked = true; lockMsg = 'قصر باید سطح ' + fa(lv + 1) + ' باشد'; }
+  if (id === 'quarry' && castle < 2) { locked = true; lockMsg = 'قصر سطح ۲ لازم است'; }
+  if (id === 'mine' && castle < 5) { locked = true; lockMsg = 'قصر سطح ۵ لازم است'; }
+  if (id === 'barracks' && castle < 2) { locked = true; lockMsg = 'قصر سطح ۲ لازم است'; }
+  if (id === 'range' && S.lvl.barracks < 3) { locked = true; lockMsg = 'سربازخانه سطح ۳ لازم است'; }
+  if (id === 'stable' && S.lvl.barracks < 5) { locked = true; lockMsg = 'سربازخانه سطح ۵ لازم است'; }
+  if (id === 'library' && castle < 4) { locked = true; lockMsg = 'قصر سطح ۴ لازم است'; }
+  if (id === 'market' && castle < 3) { locked = true; lockMsg = 'قصر سطح ۳ لازم است'; }
+  if (b.max && lv >= b.max) { locked = true; lockMsg = 'حداکثر سطح'; }
+  if (id === 'castle' && lv >= b.cap) { locked = true; lockMsg = 'حداکثر سطح'; }
+
+  const cost = buildCost(id);
+  const afford = canAfford(cost);
+  const busy = !!S.build;
+
+  const c = el('div', 'card' + (locked ? ' locked' : ''));
+  let h = '<div class="chead"><div class="cico">' + b.i + '</div>' +
+    '<div class="cname"><b>' + b.n + '</b><small>' + b.d + '</small></div>' +
+    '<span class="lvl">' + (lv > 0 ? 'سطح ' + fa(lv) : 'ساخته نشده') + '</span></div>';
+
+  // آمار فعلی / بعدی
+  h += '<div class="stat"><span>وضعیت فعلی</span><b>' + buildingStat(id, lv) + '</b></div>';
+  if (!locked || (b.max && lv < b.max)) h += '<div class="stat"><span>در سطح بعدی</span><b class="up">' + buildingStat(id, lv + 1) + '</b></div>';
+
+  if (locked) {
+    h += '<div class="hint" style="margin-top:7px">🔒 ' + lockMsg + '</div>';
+  } else {
+    h += '<div class="cost">' + costHTML(cost) + '</div>' +
+      '<button class="btn"' + (!afford || busy ? ' disabled' : '') + ' data-act="build" data-id="' + id + '">' +
+      (lv === 0 ? '🏗️ ساختن' : '⬆️ ارتقا به سطح ' + fa(lv + 1)) + ' · ' + fmtT(buildTime(id)) + '</button>';
+    if (busy) h += '<div class="hint" style="margin-top:6px">⏳ تا پایان ساخت فعلی صبر کن</div>';
+  }
+  c.innerHTML = h;
+  return c;
+}
+
+function buildingStat(id, lv) {
+  if (lv <= 0) return '—';
+  const castleMul = 1 + (S.lvl.castle - 1) * 0.06;
+  switch (id) {
+    case 'farm': return '🌾 +' + fa(Math.round(lv * 26 * (1 + resLevel('agri') * .12) * castleMul)) + ' در ثانیه';
+    case 'lumber': return '🪵 +' + fa(Math.round(lv * 22 * (1 + resLevel('log') * .12) * castleMul)) + ' در ثانیه';
+    case 'quarry': return '🪨 +' + fa(Math.round(lv * 18 * (1 + resLevel('mine') * .12) * castleMul)) + ' در ثانیه';
+    case 'mine': return '🪙 +' + fa(Math.round(lv * 9 * (1 + resLevel('mine') * .12) * castleMul)) + ' در ثانیه';
+    case 'house': return '👥 ظرفیت ' + fa(30 + lv * 40 + S.lvl.castle * 10) + ' سرباز';
+    case 'castle': return '🏰 سقف سطح ساختمان‌ها: ' + fa(lv);
+    case 'wall': return '🛡️ قدرت دفاع ×' + (1 + lv * 0.5 + resLevel('wall') * .15).toFixed(2);
+    case 'hospital': return '🏥 نجات ' + fa(Math.round(Math.min(90, lv * 12 + resLevel('med') * 6))) + '٪ تلفات';
+    case 'market': return '🪙 +' + fa(lv * 5) + ' طلا در ثانیه';
+    case 'barracks': return '🎖️ سطح ' + fa(lv) + ' · واحدهای بهتر باز می‌شود';
+    case 'range': return '🏹 سطح ' + fa(lv) + ' · کماندار قوی‌تر';
+    case 'stable': return '🐎 سطح ' + fa(lv) + ' · شوالیه قوی‌تر';
+    case 'library': return '📚 سطح ' + fa(lv) + ' · تحقیق‌های بهتر';
+  }
+  return '';
+}
+
+function costHTML(cost) {
+  let h = '';
+  for (const k in cost) {
+    const no = (S.r[k] || 0) < cost[k];
+    h += '<span class="' + (no ? 'no' : '') + '">' + RI[k] + ' ' + fmt(cost[k]) + '</span>';
+  }
+  return h;
+}
+
+/* ---------- صفحه‌ی ارتش ---------- */
+function renderArmy() {
+  const v = $('#v-army');
+  v.innerHTML = '';
+  v.appendChild(el('div', 'tabart armyart'));
+
+  const bs = el('div', 'bigstat');
+  bs.innerHTML =
+    '<div class="bs"><b>' + fmt(myPower()) + '</b><small>قدرت کل</small></div>' +
+    '<div class="bs"><b>' + fa(armyCount()) + '</b><small>سرباز / ' + fa(popCap()) + '</small></div>' +
+    '<div class="bs"><b>' + fa(woundedCount()) + '</b><small>زخمی</small></div>';
+  v.appendChild(bs);
+
+  if (S.train) {
+    const u = U[S.train.id], pct = clamp(S.train.done / S.train.total * 100, 0, 100);
+    const c = el('div', 'card busy');
+    c.innerHTML = '<div class="chead"><div class="cico">' + u.i + '</div><div class="cname"><b>آموزش ' + u.n + '</b><small>' + fa(S.train.n) + ' نفر</small></div></div>' +
+      '<div class="pbar mil"><i style="width:' + pct + '%"></i></div><div class="tmr">' + fmtT(S.train.total - S.train.done) + ' باقی‌مانده</div>';
+    v.appendChild(c);
+  }
+
+  if (woundedCount() > 0) {
+    const c = el('div', 'card');
+    let h = '<div class="chead"><div class="cico">🏥</div><div class="cname"><b>بیمارستان</b><small>' + fa(woundedCount()) + ' سرباز زخمی</small></div></div>';
+    if (S.lvl.hospital < 1) {
+      h += '<div class="hint">برای درمان سربازان، اول <b>بیمارستان</b> را در بخش قلعه بساز.</div>';
+    } else if (S.heal) {
+      const pct = clamp(S.heal.done / S.heal.total * 100, 0, 100);
+      h += '<div class="pbar"><i style="width:' + pct + '%"></i></div><div class="tmr">' + fmtT(S.heal.total - S.heal.done) + ' باقی‌مانده</div>';
+    } else {
+      h += '<button class="btn" data-act="healall">⚕️ درمان همه (' + fa(woundedCount()) + ' سرباز)</button>';
+    }
+    c.innerHTML = h;
+    v.appendChild(c);
+  }
+
+  v.appendChild(el('div', 'secttl', '⚔️ واحدهای نظامی'));
+  for (const id in U) {
+    const u = U[id];
+    let ok = true, why = '';
+    for (const r in u.req) {
+      if ((S.lvl[r] || 0) < u.req[r]) { ok = false; why = (B[r] ? B[r].n : r) + ' سطح ' + fa(u.req[r]) + ' لازم است'; }
+    }
+    const cost = {};
+    for (const k in u.cost) cost[k] = Math.ceil(u.cost[k] * (1 + (S.lvl.castle - 1) * 0.02));
+    const afford = canAfford(cost);
+    const full = armyCount() + woundedCount() >= popCap();
+
+    const n = el('div', 'unit');
+    n.innerHTML = '<div class="uic">' + u.i + '</div>' +
+      '<div class="uinfo"><b>' + u.n + '</b><small>❤️' + u.hp + ' ⚔️' + u.atk + ' 🛡️' + u.def + '</small>' +
+      (ok ? '<small>' + costHTML(cost) + '</small>' : '<small style="color:#ff9a94">🔒 ' + why + '</small>') + '</div>' +
+      '<div class="ucnt">' + fa(S.units[id] || 0) + '</div>' +
+      (ok ? '<button class="btn sm" data-act="train" data-id="' + id + '"' + (!afford || full || !!S.train ? ' disabled' : '') + '>+۵</button>' : '');
+    v.appendChild(n);
+  }
+  if (armyCount() + woundedCount() >= popCap()) v.appendChild(el('div', 'hint', '👥 ظرفیت جمعیت پر است. <b>خانه</b> یا <b>قصر</b> را ارتقا بده.'));
+  renderCmds(v);
+  v.appendChild(el('div', 'hint', '💡 <b>نکته:</b> در نبرد، قدرت ارتش تو از مجموع حمله، دفاع و جان سربازها محاسبه می‌شود. تحقیق‌ها و فرماندهان مستقیماً قدرتت را بالا می‌برند.'));
+}
+
+/* ---------- صفحه‌ی جهان ---------- */
+function renderCamp() {
+  const v = $('#v-camp');
+  v.innerHTML = '';
+  v.appendChild(el('div', 'hint', '🗺️ به پادشاهی‌های دشمن حمله کن، منابع غارت کن و تاج پادشاهی را بگیر. هر پادشاهی فقط یک‌بار فتح می‌شود، ولی می‌توانی برای غارت دوباره حمله کنی.'));
+
+  const done = FOES.filter((f, i) => S.beaten[i]).length;
+  v.appendChild(el('div', 'kp', '<h3>🏆 فتح: ' + fa(done) + ' از ' + fa(FOES.length) + '</h3><p>' +
+    (done >= FOES.length ? 'تو شاهِ شاهانی! همه‌ی پادشاهی‌ها زیر پرچم تو هستند. 👑' : 'برای فتح بعدی، قدرت ارتشت را بالای قدرت دشمن ببر.') + '</p>'));
+
+  const mp = myPower();
+  FOES.forEach((f, i) => {
+    const fp = foePower(f);
+    const ratio = mp / Math.max(1, fp);
+    const cls = ratio > 1.4 ? 'good' : ratio > 0.85 ? 'mid' : 'bad';
+    const txt = ratio > 1.4 ? 'پیروزی آسان' : ratio > 0.85 ? 'نبرد نزدیک' : 'خطرناک';
+    const n = el('div', 'foe' + (S.beaten[i] ? ' beaten' : ''));
+    let h = '<div class="fhead"><div class="uic">' + f.i + '</div><div style="flex:1"><b>' + f.n + '</b>' +
+      '<small>سطح ' + fa(f.lv) + ' · ' + fa(Object.values(f.army).reduce((a, b) => a + b, 0)) + ' سرباز' + (S.beaten[i] ? ' · فتح شده ✓' : '') + '</small></div>' +
+      '<span class="odds ' + cls + '">' + txt + '</span></div>' +
+      '<div class="pw mine"><span>👑 ' + fmt(mp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(mp / (mp + fp) * 100, 3, 97)) + '%"></i></div></div>' +
+      '<div class="pw theirs"><span>' + f.i + ' ' + fmt(fp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(fp / (mp + fp) * 100, 3, 97)) + '%"></i></div></div>' +
+      '<div class="cost">' + Object.keys(f.rew).map((k) => '<span>' + RI[k] + ' ' + fmt(f.rew[k]) + '</span>').join('') + '</div>' +
+      '<button class="btn' + (armyCount() < 1 ? '' : ' red') + '" data-act="attack" data-i="' + i + '"' + (armyCount() < 1 ? ' disabled' : '') + '>⚔️ حمله</button>';
+    n.innerHTML = h;
+    v.appendChild(n);
+  });
+}
+
+/* ---------- صفحه‌ی تحقیق ---------- */
+function renderRes() {
+  const v = $('#v-res');
+  v.innerHTML = '';
+  if (S.lvl.library < 1) {
+    v.appendChild(el('div', 'hint', '🔒 برای باز شدن تحقیق، اول <b>کتابخانه</b> را در بخش قلعه بساز (قصر سطح ۴ لازم است).</div>'));
+    return;
+  }
+  if (S.research) {
+    const r = R[S.research.id], pct = clamp(S.research.done / S.research.total * 100, 0, 100);
+    const c = el('div', 'card busy');
+    c.innerHTML = '<div class="chead"><div class="cico">' + r.i + '</div><div class="cname"><b>' + r.n + '</b><small>در حال تحقیق…</small></div>' +
+      '<span class="lvl">→ ' + fa(resLevel(S.research.id) + 1) + '</span></div>' +
+      '<div class="pbar"><i style="width:' + pct + '%"></i></div><div class="tmr">' + fmtT(S.research.total - S.research.done) + ' باقی‌مانده</div>';
+    v.appendChild(c);
+  }
+  v.appendChild(el('div', 'secttl', '📜 درخت دانش'));
+  for (const id in R) {
+    const r = R[id], lv = resLevel(id);
+    const locked = S.lvl.library < r.req;
+    const maxed = lv >= r.max;
+    const cost = maxed ? null : resCost(id);
+    const c = el('div', 'card' + (locked || maxed ? ' locked' : ''));
+    let h = '<div class="chead"><div class="cico">' + r.i + '</div><div class="cname"><b>' + r.n + '</b><small>' + r.d + '</small></div>' +
+      '<span class="lvl">سطح ' + fa(lv) + '</span></div>' +
+      '<div class="stat"><span>اثر فعلی</span><b>+' + fa(lv * r.per) + '٪</b></div>';
+    if (!maxed) h += '<div class="stat"><span>در سطح بعدی</span><b class="up">+' + fa((lv + 1) * r.per) + '٪</b></div>';
+    if (locked) h += '<div class="hint" style="margin-top:7px">🔒 کتابخانه سطح ' + fa(r.req) + ' لازم است</div>';
+    else if (maxed) h += '<div class="hint" style="margin-top:7px">✅ به حداکثر سطح رسیده</div>';
+    else h += '<div class="cost">' + costHTML(cost) + '</div>' +
+      '<button class="btn" data-act="research" data-id="' + id + '"' + (!canAfford(cost) || S.research ? ' disabled' : '') + '>🔬 تحقیق · ' + fmtT(resTime(id)) + '</button>';
+    c.innerHTML = h;
+    v.appendChild(c);
+  }
+}
+
+/* ---------- صفحه‌ی پادشاه ---------- */
+function renderMore() {
+  const v = $('#v-more');
+  v.innerHTML = '';
+
+  const days = Math.max(1, Math.floor((Date.now() - S.stats.started) / 86400000));
+  const bs = el('div', 'bigstat');
+  bs.innerHTML =
+    '<div class="bs"><b>' + fa(S.stats.wins) + '</b><small>پیروزی</small></div>' +
+    '<div class="bs"><b>' + fa(S.stats.builds) + '</b><small>ساختمان</small></div>' +
+    '<div class="bs"><b>' + fa(Object.keys(S.ach).length) + '</b><small>دستاورد</small></div>';
+  v.appendChild(bs);
+
+  v.appendChild(el('div', 'secttl', '🏅 دستاوردها'));
+  const aw = el('div', 'card');
+  aw.innerHTML = ACH.map((a) => {
+    const on = !!S.ach[a.id];
+    return '<div class="achv ' + (on ? 'done' : 'off') + '"><span class="ai">' + (on ? a.i : '🔒') + '</span><div><b>' + a.n + '</b><br><small>' + a.d + '</small></div></div>';
+  }).join('');
+  v.appendChild(aw);
+
+  v.appendChild(el('div', 'secttl', '📖 رویدادها'));
+  const ev = el('div', 'card');
+  if (!S.events.length) ev.innerHTML = '<div class="hint">هنوز رویدادی ثبت نشده. شروع به ساخت و نبرد کن!</div>';
+  else ev.innerHTML = S.events.slice(0, 18).map((e) =>
+    '<div class="evt ' + (e.k || '') + '"><span class="ei">' + e.i + '</span><span class="et">' + e.t + '</span><span class="ew">' + ago(e.ts) + '</span></div>'
+  ).join('');
+  v.appendChild(ev);
+
+  v.appendChild(el('div', 'secttl', '⚙️ تنظیمات'));
+  const st = el('div', 'card');
+  st.innerHTML =
+    '<button class="btn sec" data-act="rename" style="margin-bottom:7px">✏️ تغییر نام پادشاه</button>' +
+    '<button class="btn sec" data-act="sound" style="margin-bottom:7px">' + (S.sound ? '🔊 صدا روشن' : '🔇 صدا خاموش') + '</button>' +
+    '<button class="btn sec" data-act="lang" style="margin-bottom:7px">🌐 زبان / Language: ' + ({ fa: 'فارسی', en: 'English', ar: 'العربية' })[LANG] + '</button>' +
+    '<button class="btn sec" data-act="help" style="margin-bottom:7px">❓ راهنمای بازی</button>' +
+    '<button class="btn ghost" data-act="install" id="btnInstall" style="margin-bottom:7px;display:none">📲 نصب روی گوشی</button>' +
+    '<button class="btn red" data-act="reset">🗑️ شروع بازی جدید</button>';
+  v.appendChild(st);
+
+  v.appendChild(el('div', 'hint', '📅 ' + fa(days) + ' روز از آغاز پادشاهی تو گذشته · بازی به‌صورت خودکار روی همین گوشی ذخیره می‌شود.'));
+}
+function ago(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'همین حالا';
+  if (s < 3600) return fa(Math.floor(s / 60)) + ' د پیش';
+  if (s < 86400) return fa(Math.floor(s / 3600)) + ' س پیش';
+  return fa(Math.floor(s / 86400)) + ' روز پیش';
+}
+
+let lastView = null;
+function render() {
+  const preserve = lastView === VIEW;
+  const m = $('#main');
+  const sc = preserve && m ? m.scrollTop : 0;
+  renderHeader();
+  const qbar = $('#questbar');
+  if (qbar) { const pq = QUESTS.find((q) => !S.q[q.id]); qbar.innerHTML = pq ? '📜 <b>' + pq.n + '</b> — ' + pq.d : '🏆 همه‌ی ماموریت‌ها انجام شد'; }
+  if (VIEW === 'city') renderCity();
+  else if (VIEW === 'army') renderArmy();
+  else if (VIEW === 'camp') renderCampV2();
+  else if (VIEW === 'net') renderNet();
+  else if (VIEW === 'res') renderRes();
+  else renderMore();
+  if (m) m.scrollTop = sc;
+  lastView = VIEW;
+}
+function go(v) {
+  VIEW = v;
+  document.querySelectorAll('.view').forEach((n) => n.classList.remove('on'));
+  $('#v-' + v).classList.add('on');
+  document.querySelectorAll('#nav button').forEach((b) => b.classList.toggle('on', b.dataset.v === v));
+  render();
+  stopMapLoop();
+  sfx.tap();
+}
+
+/* ==========================================================================
+   پنجره (مودال)
+   ========================================================================== */
+function modal(icon, title, html, buttons) {
+  const m = $('#modal');
+  m.innerHTML = '<div class="mhead"><span class="big">' + icon + '</span><div style="flex:1"><b>' + title + '</b></div>' +
+    '<button class="iconbtn x" data-act="close">✕</button></div><div id="mbody">' + html + '</div>';
+  if (buttons && buttons.length) {
+    const bw = el('div', 'row2');
+    bw.style.marginTop = '12px';
+    buttons.forEach((b) => {
+      const btn = el('button', 'btn' + (b.sec ? ' sec' : ''), b.t);
+      btn.onclick = () => { sfx.tap(); b.act(); };
+      bw.appendChild(btn);
+    });
+    m.appendChild(bw);
+  }
+  $('#ovl').classList.add('on');
+}
+function closeModal() { $('#ovl').classList.remove('on'); }
+
+/* ---------- تأیید ساخت ---------- */
+function confirmBuild(id) {
+  const b = B[id], lv = S.lvl[id] || 0, cost = buildCost(id), t = buildTime(id);
+  let h = '<p style="font-size:12px;color:#c9c0d8;line-height:1.8">' + b.d + '</p><div class="divider"></div>' +
+    statRow('سطح فعلی', lv > 0 ? fa(lv) : 'ساخته نشده') +
+    statRow('سطح بعدی', fa(lv + 1)) +
+    statRow('وضعیت فعلی', buildingStat(id, lv)) +
+    statRow('بعد از ارتقا', buildingStat(id, lv + 1)) +
+    '<div class="divider"></div><div class="secttl">💎 هزینه</div><div class="cost">' + costHTML(cost) + '</div>' +
+    statRow('⏱️ زمان ساخت', fmtT(t));
+  modal(b.i, (lv === 0 ? 'ساختن ' : 'ارتقای ') + b.n, h, [
+    { t: 'بی‌خیال', sec: true, act: closeModal },
+    { t: lv === 0 ? '🏗️ بساز' : '⬆️ ارتقا بده', act: () => { doBuild(id); closeModal(); } }
+  ]);
+}
+function doBuild(id) {
+  const cost = buildCost(id);
+  if (S.build) { toast('⏳ اول صبر کن ساخت فعلی تمام شود', 'bad'); sfx.bad(); return; }
+  if (!canAfford(cost)) { toast('🚫 منابع کافی نداری', 'bad'); sfx.bad(); return; }
+  pay(cost);
+  S.build = { id: id, to: (S.lvl[id] || 0) + 1, total: buildTime(id), done: 0 };
+  addEvent('🏗️', 'ساخت «' + B[id].n + '» آغاز شد', '');
+  sfx.build();
+  save(); render();
+}
+
+/* ---------- آموزش ---------- */
+function confirmTrain(id) {
+  const u = U[id];
+  const cost = {};
+  for (const k in u.cost) cost[k] = Math.ceil(u.cost[k] * (1 + (S.lvl.castle - 1) * 0.02));
+  const per = {};
+  for (const k in cost) per[k] = cost[k] * 5;
+  let h = '<div class="stat"><span>❤️ جان</span><b>' + u.hp + '</b></div>' +
+    statRow('⚔️ حمله', u.atk) + statRow('🛡️ دفاع', u.def) +
+    statRow('💪 سهم از قدرت', fmt(u.atk * atkBonus() + u.def * defBonus() + u.hp * 0.12)) +
+    '<div class="divider"></div><div class="secttl">💎 هزینه‌ی هر سرباز</div><div class="cost">' + costHTML(cost) + '</div>' +
+    '<div class="secttl">💎 هزینه‌ی ۵ سرباز</div><div class="cost">' + costHTML(per) + '</div>' +
+    statRow('⏱️ زمان آموزش', fmtT(trainTime(id) * 5)) +
+    statRow('👥 فضای خالی', fa(Math.max(0, popCap() - armyCount() - woundedCount())) + ' نفر');
+  modal(u.i, 'آموزش ' + u.n, h, [
+    { t: 'بی‌خیال', sec: true, act: closeModal },
+    { t: '🎖️ ۵ نفر آموزش بده', act: () => { doTrain(id, 5); closeModal(); } }
+  ]);
+}
+function doTrain(id, n) {
+  if (S.train) { toast('⏳ اول آموزش فعلی تمام شود', 'bad'); sfx.bad(); return; }
+  const u = U[id];
+  const per = {};
+  for (const k in u.cost) per[k] = Math.ceil(u.cost[k] * (1 + (S.lvl.castle - 1) * 0.02));
+  const cost = {};
+  for (const k in per) cost[k] = per[k] * n;
+  if (!canAfford(cost)) { toast('🚫 منابع کافی نداری', 'bad'); sfx.bad(); return; }
+  if (armyCount() + woundedCount() >= popCap()) { toast('🚫 ظرفیت جمعیت پر است', 'bad'); sfx.bad(); return; }
+  pay(cost);
+  S.train = { id: id, n: n, total: trainTime(id) * n, done: 0 };
+  addEvent(u.i, 'آموزش ' + fa(n) + ' ' + u.n + ' آغاز شد', '');
+  sfx.build();
+  save(); render();
+}
+
+/* ---------- تحقیق ---------- */
+function confirmRes(id) {
+  const r = R[id], lv = resLevel(id), cost = resCost(id);
+  const h = '<p style="font-size:12px;color:#c9c0d8;line-height:1.8">' + r.d + '</p><div class="divider"></div>' +
+    statRow('سطح فعلی', fa(lv)) + statRow('اثر فعلی', '+' + fa(lv * r.per) + '٪') +
+    statRow('اثر بعدی', '+' + fa((lv + 1) * r.per) + '٪') +
+    '<div class="divider"></div><div class="secttl">💎 هزینه</div><div class="cost">' + costHTML(cost) + '</div>' +
+    statRow('⏱️ زمان', fmtT(resTime(id)));
+  modal(r.i, 'تحقیق: ' + r.n, h, [
+    { t: 'بی‌خیال', sec: true, act: closeModal },
+    { t: '🔬 شروع تحقیق', act: () => { doRes(id); closeModal(); } }
+  ]);
+}
+function doRes(id) {
+  if (S.research) { toast('⏳ اول تحقیق فعلی تمام شود', 'bad'); sfx.bad(); return; }
+  const cost = resCost(id);
+  if (!canAfford(cost)) { toast('🚫 منابع کافی نداری', 'bad'); sfx.bad(); return; }
+  pay(cost);
+  S.research = { id: id, total: resTime(id), done: 0 };
+  addEvent(R[id].i, 'تحقیق «' + R[id].n + '» آغاز شد', '');
+  sfx.build();
+  save(); render();
+}
+
+/* ---------- درمان ---------- */
+function doHeal() {
+  if (S.heal) { toast('⏳ درمان در جریان است', 'bad'); return; }
+  const total = woundedCount();
+  if (!total) return;
+  const cost = { food: Math.ceil(total * 30), gold: Math.ceil(total * 10) };
+  if (!canAfford(cost)) { toast('🚫 برای درمان غذا و طلا لازم است', 'bad'); sfx.bad(); return; }
+  pay(cost);
+  // بزرگ‌ترین گروه زخمی‌ها را انتخاب کن
+  let best = null, bn = 0;
+  for (const k in U) if ((S.wounded[k] || 0) > bn) { bn = S.wounded[k]; best = k; }
+  S.heal = { id: best, n: bn, total: Math.ceil(bn * 2 * marchMult()), done: 0 };
+  addEvent('🏥', 'درمان ' + fa(bn) + ' سرباز آغاز شد', '');
+  sfx.build();
+  save(); render();
+}
+
+/* ---------- راهنما ---------- */
+function help() {
+  modal('❓', 'راهنمای بازی',
+    '<div class="hint"><b>۱) قلعه بساز.</b> مزرعه و چوب‌بری منابع می‌سازند. سطح <b>قصر</b> سقف سطح بقیه‌ی ساختمان‌هاست، پس قصر را همیشه ارتقا بده.</div>' +
+    '<div class="hint"><b>۲) ارتش بساز.</b> در بخش «ارتش» سرباز آموزش بده. ظرفیت جمعیت با <b>خانه</b> و <b>قصر</b> زیاد می‌شود.</div>' +
+    '<div class="hint"><b>۳) حمله کن.</b> در بخش «جهان» به پادشاهی‌ها حمله کن. وقتی نشان سبز «پیروزی آسان» دیدی، وقت حمله است. با غارت منابع می‌گیری.</div>' +
+    '<div class="hint"><b>۴) تحقیق کن.</b> کتابخانه را بساز و «فنون رزم» و «زره‌سازی» را بالا ببر — مستقیماً قدرت نبردت را زیاد می‌کند.</div>' +
+    '<div class="hint"><b>۵) دفاع کن.</b> <b>دیوار شهر</b> را بساز؛ دشمن هر چند دقیقه حمله می‌کند و اگر ببازی، منابعت غارت می‌شود.</div>' +
+    '<div class="hint"><b>۶) آفلاین هم کار می‌کند.</b> بازی را ببند و برگرد؛ تا ۱۲ ساعت منابع جمع شده و ساختمان‌ها کامل می‌شوند.</div>' +
+    '<div class="divider"></div><div class="hint"><b>🌙 شب و روز:</b> در شب (۲۰ تا ۶ صبح) تولید منابع ۲۰٪ بیشتر است.</div>',
+    [{ t: 'فهمیدم 👑', act: closeModal }]);
+}
+
+/* ==========================================================================
+   رویدادها و راه‌اندازی
+   ========================================================================== */
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'build') confirmBuild(b.dataset.id);
+  else if (a === 'train') confirmTrain(b.dataset.id);
+  else if (a === 'research') confirmRes(b.dataset.id);
+  else if (a === 'attack') attackFoe(+b.dataset.i);
+  else if (a === 'healall') doHeal();
+  else if (a === 'close') closeModal();
+  else if (a === 'sound') { S.sound = !S.sound; save(); render(); toast(S.sound ? '🔊 صدا روشن شد' : '🔇 صدا خاموش شد'); }
+  else if (a === 'help') help();
+  else if (a === 'rename') rename();
+  else if (a === 'reset') confirmReset();
+  else if (a === 'lang') { LANG = LANG === 'fa' ? 'en' : (LANG === 'en' ? 'ar' : 'fa'); try { localStorage.setItem('tep_lang', LANG); } catch (e) {} applyLangDoc(); toast('🌐 ' + ({ fa: 'فارسی', en: 'English', ar: 'العربية' })[LANG]); }
+  else if (a === 'music') { S.music = !S.music; save(); if (S.music) musicStart(); else musicStop(); toast(S.music ? '🎵 موسیقی روشن' : '🎕 موسیقی خاموش'); renderHeader(); }
+  else if (a === 'lord') openCmd();
+  else if (a === 'backcity') go('city');
+  else if (a === 'quest') claimQuest(b.dataset.id);
+  else if (a === 'netjoin') netRegister(($('#netName') ? $('#netName').value.trim() : '') || S.name);
+  else if (a === 'netsave') { netSave(); toast('☁️ در ابر ذخیره شد', 'good'); }
+  else if (a === 'netload') netLoadCloud();
+  else if (a === 'alcreate') netAlCreate();
+  else if (a === 'aljoin') netAlJoin(b.dataset.id);
+  else if (a === 'alleave') netAlLeave();
+  else if (a === 'chatsend') { const i = $('#chatIn'); if (i && i.value.trim()) { netChat('world', i.value.trim()); i.value = ''; } }
+  else if (a === 'achatsend') { const i = $('#achatIn'); if (i && i.value.trim() && NET.me && NET.me.alliance) { netChat('al-' + NET.me.alliance, i.value.trim()); i.value = ''; } }
+  else if (a === 'pvmap') doPvMap(b.dataset.id);
+  else if (a === 'install') doInstall();
+});
+
+function rename() {
+  modal('✏️', 'نام پادشاه', '<div class="hint">نام پادشاهی خودت را بنویس:</div><input id="nameIn" value="' + S.name.replace(/"/g, '') + '" maxlength="16" style="width:100%;padding:11px;border-radius:10px;border:1px solid rgba(224,177,60,.3);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:14px;text-align:center">',
+    [{ t: 'بی‌خیال', sec: true, act: closeModal },
+     { t: 'ذخیره', act: () => { const v = ($('#nameIn').value || '').trim(); if (v) { S.name = v; save(); toast('👑 نام تغییر کرد'); } closeModal(); render(); } }]);
+  setTimeout(() => { const i = $('#nameIn'); if (i) i.focus(); }, 320);
+}
+function confirmReset() {
+  modal('⚠️', 'شروع بازی جدید', '<div class="hint">همه‌ی پیشرفت تو پاک می‌شود: ساختمان‌ها، ارتش، تحقیق‌ها و فتح‌ها. مطمئنی؟</div>',
+    [{ t: 'نه، برگرد', sec: true, act: closeModal },
+     { t: 'بله، پاک کن', act: () => { localStorage.removeItem(SAVE_KEY); location.reload(); } }]);
+}
+
+$('#ovl').addEventListener('click', (e) => { if (e.target.id === 'ovl') closeModal(); });
+$('#nav').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) go(b.dataset.v); });
+$('#btnMenu').addEventListener('click', () => go('more'));
+$('#btnSound').addEventListener('click', () => { S.sound = !S.sound; save(); $('#btnSound').textContent = S.sound ? '🔊' : '🔇'; sfx.tap(); });
+
+/* ---------- نصب به‌عنوان اپ (PWA) ---------- */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const b = $('#btnInstall'); if (b) b.style.display = 'block'; });
+function doInstall() {
+  if (!deferredPrompt) { toast('📲 در منوی مرورگر گزینه‌ی «افزودن به صفحه‌ی اصلی» را بزن'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => { deferredPrompt = null; const b = $('#btnInstall'); if (b) b.style.display = 'none'; });
+}
+
+/* ---------- شروع ---------- */
+function onboarding() {
+  modal('👑', 'به تاج پارسی خوش آمدی!',
+    '<p style="font-size:12.5px;color:#c9c0d8;line-height:1.9">تو پادشاه یک سرزمین تازه‌ای. دشمنان در کمین‌اند و تاج پادشاهی منتظر قوی‌ترین فرمانرواست.</p>' +
+    '<div class="divider"></div>' +
+    '<div class="hint">🏗️ اول <b>مزرعه</b> و <b>چوب‌بری</b> را ارتقا بده تا منابع جریان پیدا کند.</div>' +
+    '<div class="hint">🏰 <b>قصر</b> را بالا ببر؛ سقف سطح بقیه‌ی ساختمان‌ها به قصر وابسته است.</div>' +
+    '<div class="hint">⚔️ بعد ارتش بساز و اولین <b>اردوگاه راهزنان</b> را فتح کن.</div>' +
+    '<div class="divider"></div><div class="hint">نام پادشاهی‌ات را انتخاب کن:</div>' +
+    '<input id="nameIn" placeholder="مثلاً: کوروش" maxlength="16" style="width:100%;padding:11px;border-radius:10px;border:1px solid rgba(224,177,60,.3);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:14px;text-align:center">',
+    [{ t: '👑 آغاز پادشاهی', act: () => { const v = ($('#nameIn').value || '').trim(); if (v) S.name = v; save(); closeModal(); render(); toast('👑 پادشاهی ' + S.name + ' آغاز شد!', 'good'); setTimeout(help, 700); } }]);
+}
+
+function boot() {
+  S = load();
+  const isNew = !S;
+  if (isNew) { S = freshState('پادشاه'); addEvent('👑', 'پادشاهی تأسیس شد', 'win'); }
+  else offline();
+  $('#btnSound').textContent = S.sound ? '🔊' : '🔇';
+  render();
+  if (isNew) setTimeout(onboarding, 350);
+
+  genMap();
+  netPing();
+  setInterval(() => { if (NET.on && NET.token) netPoll(); }, 8000);
+  setInterval(() => { if (NET.on && NET.token) netSave(); }, 45000);
+
+  let last = performance.now();
+  let acc = 0, slow = 0;
+  function loop(t) {
+    const dt = Math.min(2, (t - last) / 1000);
+    last = t;
+    tick(dt);
+    acc += dt;
+    if (acc >= 0.25) { renderHeader(); acc = 0; }
+    slow += dt;
+    if (slow >= 1) {
+      slow = 0;
+      render();
+      save();
+      // حمله‌ی تصادفی دشمن: هر ~۳ تا ۷ دقیقه
+      if (Math.random() < 1 / 240) enemyRaid();
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // ثبت سرویس‌ورکر برای بازی آفلاین
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+  window.addEventListener('beforeunload', save);
+}
+/* ==========================================================================
+   نسخه‌ی ۲ — فرماندهان افسانه‌ای
+   ========================================================================== */
+const CMD = {
+  rostam: { n: 'رستم',    i: '🦁', d: 'حمله‌ی ارتش +۳٪ در هر سطح', per: 3, max: 30 },
+  darius: { n: 'داریوش',  i: '🛡️', d: 'دفاع ارتش +۳٪ در هر سطح', per: 3, max: 30 },
+  cyrus:  { n: 'کوروش',   i: '👑', d: 'جمع‌آوری منابع +۴٪ در هر سطح', per: 4, max: 30 },
+  arash:  { n: 'آرش',     i: '🏹', d: 'سرعت حرکت و ساخت +۲٪ در هر سطح', per: 2, max: 30 }
+};
+function cmdLvl(s, k) { return Math.min(CMD[k].max, Math.floor(Math.sqrt((s.cxp[k] || 0) / 40))); }
+function gainXp(n) {
+  for (const k in CMD) {
+    const b = cmdLvl(S, k);
+    S.cxp[k] = (S.cxp[k] || 0) + n;
+    const a = cmdLvl(S, k);
+    if (a > b) { toast(CMD[k].i + ' ' + CMD[k].n + ' به سطح ' + fa(a) + ' رسید!', 'good'); addEvent(CMD[k].i, CMD[k].n + ' سطح ' + fa(a), 'win'); sfx.coin(); }
+  }
+}
+
+/* ==========================================================================
+   ماموریت‌ها
+   ========================================================================== */
+const QUESTS = [
+  { id: 'q1', i: '🌾', n: 'کشاورز ماهر', d: 'مزرعه را به سطح ۳ برسان', c: (s) => s.lvl.farm >= 3, rw: { wood: 500, food: 500 } },
+  { id: 'q2', i: '🎖️', n: 'نخستین سربازان', d: 'سربازخانه بساز', c: (s) => s.lvl.barracks >= 1, rw: { food: 800, gold: 100 } },
+  { id: 'q3', i: '⚔️', n: 'ارتش نوپا', d: '۲۵ سرباز داشته باش', c: (s) => armyCount(s) >= 25, rw: { gold: 300 } },
+  { id: 'q4', i: '🏆', n: 'پیروزی نخست', d: 'یک نبرد را ببر', c: (s) => s.stats.wins >= 1, rw: { gold: 400, food: 1000 } },
+  { id: 'q5', i: '🌑', n: 'سایه‌گشا', d: 'قلعه‌ی سایه را فتح کن', c: (s) => !!s.beaten[1], rw: { stone: 1500, gold: 500 } },
+  { id: 'q6', i: '📚', n: 'اهل دانش', d: 'کتابخانه بساز', c: (s) => s.lvl.library >= 1, rw: { gold: 600 } },
+  { id: 'q7', i: '🔬', n: 'پژوهشگر', d: 'یک تحقیق کامل کن', c: (s) => Object.values(s.res).reduce((a, b) => a + b, 0) >= 1, rw: { gold: 800 } },
+  { id: 'q8', i: '🦁', n: 'فرمانده‌سالار', d: 'یک فرمانده به سطح ۳ برسان', c: (s) => Object.keys(CMD).some((k) => cmdLvl(s, k) >= 3), rw: { gold: 1000 } },
+  { id: 'q9', i: '🧺', n: 'گردآورنده', d: 'از نقشه‌ی جهان منبع جمع کن', c: (s) => s.stats.gathers >= 1, rw: { wood: 2000, stone: 1500 } },
+  { id: 'q10', i: '👹', n: 'شکارچی هیولا', d: 'یک اردوی هیولاها را نابود کن', c: (s) => s.stats.hunts >= 1, rw: { gold: 1500 } },
+  { id: 'q11', i: '💪', n: 'قدرت‌نمایی', d: 'به قدرت ۲٬۰۰۰ برس', c: (s) => armyPower(s.units, 1, 1) >= 2000, rw: { gold: 2500 } },
+  { id: 'q12', i: '👑', n: 'شاهِ شاهان', d: 'هر ۸ پادشاهی را فتح کن', c: (s) => s.stats.wins >= 8, rw: { gold: 20000 } }
+];
+function claimQuest(id) {
+  const q = QUESTS.find((x) => x.id === id);
+  if (!q || S.q[id] || !q.c(S)) return;
+  S.q[id] = true;
+  gain(q.rw);
+  toast('🎁 پاداش ماموریت «' + q.n + '» دریافت شد', 'good');
+  addEvent('🎁', 'ماموریت «' + q.n + '» کامل شد', 'win');
+  sfx.coin();
+  save(); render();
+}
+
+/* ==========================================================================
+   نقشه‌ی جهان + مه + گره‌های منبع + هیولاها
+   ========================================================================== */
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+let MAP = null;
+function genMap() {
+  const r = mulberry(20260829);
+  MAP = { nodes: [], camps: [], ais: [] };
+  const types = ['food', 'wood', 'stone', 'gold'];
+  for (let i = 0; i < 18; i++) {
+    const t = types[Math.floor(r() * 4)];
+    MAP.nodes.push({ id: 'n' + i, t, x: 6 + r() * 88, y: 6 + r() * 88, amount: Math.floor(4000 + r() * 26000) });
+  }
+  for (let i = 0; i < 6; i++) {
+    const lv = [2, 4, 7, 10, 14, 18][i];
+    MAP.camps.push({ id: 'c' + i, lv, x: 8 + r() * 84, y: 8 + r() * 84, dead: false, army: campArmy(lv, r) });
+  }
+  for (let i = 0; i < 5; i++) MAP.ais.push({ id: 'a' + i, n: 'قلعه‌ی ' + ['ابر', 'خاکستر', 'یخ', 'طوفان', 'شب'][i], i: ['🏯', '🏰', '', '️', ''][i], lv: 3 + i * 3, x: 10 + r() * 80, y: 10 + r() * 80, army: campArmy(3 + i * 3, r) });
+  MAP.home = { x: 50, y: 56 };
+}
+function campArmy(lv, r) {
+  r = r || Math.random;
+  const a = {};
+  const n = Math.round(8 + lv * 6);
+  a.militia = Math.round(n * 0.5);
+  if (lv >= 3) a.spear = Math.round(n * 0.25);
+  if (lv >= 6) a.archer = Math.round(n * 0.2);
+  if (lv >= 9) a.sword = Math.round(n * 0.2);
+  if (lv >= 12) a.knight = Math.round(n * 0.12);
+  return a;
+}
+function revealR() { return 20 + S.lvl.castle * 2.2; }
+function isRevealed(x, y) {
+  const d = Math.hypot(x - MAP.home.x, y - MAP.home.y);
+  if (d <= revealR()) return true;
+  for (const e of (S.explored || [])) if (Math.hypot(x - e[0], y - e[1]) < 12) return true;
+  return false;
+}
+
+/* ---------- حرکت (March) ---------- */
+function marchTime(x, y) {
+  const d = Math.hypot(x - MAP.home.x, y - MAP.home.y);
+  return Math.max(4, Math.ceil(d * 0.5 * marchMult() * (1 - cmdLvl(S, 'arash') * 0.02)));
+}
+function gatherRate() { return (12 + armyCount() * 0.6) * (1 + cmdLvl(S, 'cyrus') * 0.04); }
+function carryCap() { return 300 + armyCount() * 25; }
+
+function startGather(nodeId) {
+  if (S.march) { toast('⏳ یک گروه در حال حرکت است', 'bad'); sfx.bad(); return; }
+  if (armyCount() < 1) { toast('🚫 سرباز لازم است', 'bad'); return; }
+  const n = MAP.nodes.find((x) => x.id === nodeId);
+  if (!n || n.amount <= 0) return;
+  const t = marchTime(n.x, n.y);
+  S.march = { kind: 'gather', id: nodeId, x: n.x, y: n.y, phase: 'go', t: 0, goT: t, workT: 0, gathered: 0, label: 'جمع‌آوری ' + RN[n.t] };
+  addEvent('🧺', 'گروه جمع‌آوری به سمت منبع ' + RN[n.t] + ' حرکت کرد', '');
+  sfx.build(); save(); render();
+}
+function startHunt(campId, isAi) {
+  if (S.march) { toast('⏳ یک گروه در حال حرکت است', 'bad'); sfx.bad(); return; }
+  if (armyCount() < 1) { toast('🚫 سرباز لازم است', 'bad'); return; }
+  const list = isAi ? MAP.ais : MAP.camps;
+  const c = list.find((x) => x.id === campId);
+  if (!c) return;
+  const t = marchTime(c.x, c.y);
+  S.march = { kind: isAi ? 'pve' : 'hunt', id: campId, x: c.x, y: c.y, phase: 'go', t: 0, goT: t, ai: !!isAi, label: 'حمله' };
+  addEvent('⚔️', 'ارتش به سمت «' + (c.n || 'اردوی هیولاها') + '» حرکت کرد', '');
+  sfx.build(); save(); render();
+}
+function startPvp(pid, x, y, name) {
+  if (S.march) { toast('⏳ یک گروه در حال حرکت است', 'bad'); return; }
+  if (armyCount() < 1) { toast('🚫 سرباز لازم است', 'bad'); return; }
+  const t = marchTime(x, y);
+  S.march = { kind: 'pvp', id: pid, x: x, y: y, phase: 'go', t: 0, goT: t, label: 'حمله به ' + name };
+  addEvent('⚔️', 'ارتش به سمت قلعه‌ی «' + name + '» حرکت کرد', '');
+  sfx.build(); save(); render();
+}
+
+function tickMarch(dt) {
+  const m = S.march;
+  if (!m) return;
+  m.t += dt;
+  if (m.phase === 'go' && m.t >= m.goT) {
+    m.phase = 'work'; m.t = 0;
+    if (m.kind !== 'gather') { resolveCombatAt(m); return; }
+  }
+  if (m.phase === 'work' && m.kind === 'gather') {
+    const node = MAP.nodes.find((n) => n.id === m.id);
+    if (!node) { S.march = null; return; }
+    const space = carryCap() - m.gathered;
+    const take = Math.min(node.amount, space, gatherRate() * dt);
+    if (take > 0) { node.amount -= take; m.gathered += take; }
+    if (node.amount <= 0 || space <= 0.5) { m.phase = 'back'; m.t = 0; }
+  }
+  if (m.phase === 'back' && m.t >= m.goT) {
+    if (m.kind === 'gather') {
+      const node = MAP.nodes.find((n) => n.id === m.id);
+      const tt = node ? node.t : 'food';
+      const g = {}; g[tt] = Math.floor(m.gathered);
+      gain(g);
+      S.stats.gathers = (S.stats.gathers || 0) + 1;
+      if (!(S.explored || []).some((e) => e[0] === m.x && e[1] === m.y)) { (S.explored = S.explored || []).push([m.x, m.y]); }
+      toast('🧺 ' + fmt(m.gathered) + ' ' + RN[tt] + ' به انبار رسید', 'good');
+      addEvent('🧺', 'کاروان با ' + fmt(m.gathered) + ' ' + RN[tt] + ' بازگشت', 'win');
+      sfx.coin(); checkAch();
+    }
+    S.march = null;
+    save(); render();
+  }
+}
+function resolveCombatAt(m) {
+  let foe = null, isPlayer = false;
+  if (m.kind === 'hunt') foe = MAP.camps.find((c) => c.id === m.id);
+  else if (m.kind === 'pve') foe = MAP.ais.find((c) => c.id === m.id);
+  else if (m.kind === 'pvp') {
+    const p = (NET.players || []).find((x) => x.id === m.id);
+    if (p && p.army) { foe = { n: p.name, i: '🌐', lv: p.castle || 5, army: p.army }; isPlayer = true; }
+  }
+  if (!foe || !foe.army) { S.march = null; return; }
+  const r = simulate(S.units, foe, false);
+  const saved = applyMyLosses(r.losses);
+  if (r.win) {
+    S.stats.wins++;
+    let rew = null;
+    if (m.kind === 'hunt') {
+      rew = { gold: Math.ceil(150 * foe.lv * raidMult()), food: Math.ceil(300 * foe.lv * raidMult()) };
+      foe.dead = true;
+      S.stats.hunts = (S.stats.hunts || 0) + 1;
+    } else if (m.kind === 'pve') {
+      rew = { gold: Math.ceil(200 * foe.lv * raidMult()), stone: Math.ceil(250 * foe.lv * raidMult()) };
+    } else if (isPlayer) {
+      rew = { gold: Math.ceil(r.fp * 0.15 * raidMult()), food: Math.ceil(r.fp * 0.2 * raidMult()) };
+      if (NET.on && NET.token) netChat('world', '⚔️ ' + S.name + ' قلعه‌ی ' + foe.n + ' را غارت کرد!');
+    }
+    if (rew) gain(rew);
+    S.stats.kills = (S.stats.kills || 0) + r.fLost;
+    dropGear(foe.lv || 3);
+    gainXp(Math.ceil(r.fp / 8) + 10);
+    sfx.win();
+    addEvent('🏆', 'پیروزی در نبرد «' + (foe.n || '') + '»', 'win');
+    showBattle(foe, r, rew, saved);
+    checkAch();
+  } else {
+    S.stats.losses++;
+    gainXp(4);
+    sfx.lose();
+    addEvent('💀', 'شکست در «' + (foe.n || '') + '»', 'raid');
+    showBattle(foe, r, null, saved);
+  }
+  S.march = { kind: 'back', id: m.id, x: m.x, y: m.y, phase: 'back', t: 0, goT: m.goT, label: 'بازگشت' };
+  save(); render();
+}
+
+/* ==========================================================================
+   نسخه‌ی ۲ — رندر نقشه‌ی جهان (Canvas + مه)
+   ========================================================================== */
+let mapAnim = null;
+const MAPIMG = new Image();
+try { MAPIMG.src = 'bg-map.jpg'; } catch (e) {}
+
+function mapPos(x, y, w, h) { return [x / 100 * w, y / 100 * h]; }
+
+function drawMap() {
+  const cv = $('#mapCv');
+  if (!cv || !MAP) return;
+  const w = cv.width, h = cv.height;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  if (MAPIMG.complete && MAPIMG.naturalWidth) ctx.drawImage(MAPIMG, 0, 0, w, h);
+  else { const g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#1c1430'); g.addColorStop(1, '#0d0a18'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
+  if (isNight()) { ctx.fillStyle = 'rgba(10,10,40,.38)'; ctx.fillRect(0, 0, w, h); }
+
+  const [hx, hy] = mapPos(MAP.home.x, MAP.home.y, w, h);
+
+  // گره‌های منبع
+  for (const n of MAP.nodes) {
+    if (n.amount <= 0) continue;
+    if (!isRevealed(n.x, n.y)) continue;
+    const [x, y] = mapPos(n.x, n.y, w, h);
+    const ic = { food: '🌾', wood: '🪵', stone: '🪨', gold: '🪙' }[n.t];
+    ctx.font = (w * 0.055) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(ic, x, y);
+  }
+  // اردوهای هیولا
+  for (const c of MAP.camps) {
+    if (c.dead || !isRevealed(c.x, c.y)) continue;
+    const [x, y] = mapPos(c.x, c.y, w, h);
+    ctx.font = (w * 0.06) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('👹', x, y);
+    ctx.font = 'bold ' + (w * 0.028) + 'px sans-serif'; ctx.fillStyle = '#ff9a94';
+    ctx.fillText(fa(c.lv), x, y + w * 0.045);
+  }
+  // قلعه‌های هوش‌مصنوعی
+  for (const a of MAP.ais) {
+    if (!isRevealed(a.x, a.y)) continue;
+    const [x, y] = mapPos(a.x, a.y, w, h);
+    ctx.font = (w * 0.06) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🏯', x, y);
+  }
+  // بازیکنان آنلاین
+  if (NET.on) for (const p of NET.players) {
+    if (!p.pos || p.id === NET.meId) continue;
+    const [x, y] = mapPos(p.pos[0], p.pos[1], w, h);
+    ctx.font = (w * 0.055) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🌐', x, y);
+  }
+  // قلعه‌ی خودی
+  ctx.font = (w * 0.085) + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(224,177,60,.8)'; ctx.shadowBlur = 14;
+  ctx.fillText('🏰', hx, hy);
+  ctx.shadowBlur = 0;
+
+  // ارتش در حال حرکت
+  const m = S.march;
+  if (m) {
+    let px, py;
+    const [tx, ty] = mapPos(m.x, m.y, w, h);
+    if (m.phase === 'go') { const k = clamp(m.t / m.goT, 0, 1); px = hx + (tx - hx) * k; py = hy + (ty - hy) * k; }
+    else if (m.phase === 'back') { const k = clamp(m.t / m.goT, 0, 1); px = tx + (hx - tx) * k; py = ty + (hy - ty) * k; }
+    else { px = tx; py = ty; }
+    ctx.font = (w * 0.05) + 'px serif';
+    ctx.fillText('⚔️', px, py - w * 0.02);
+  }
+
+  // مه
+  const fog = document.createElement('canvas');
+  fog.width = w; fog.height = h;
+  const fc = fog.getContext('2d');
+  fc.fillStyle = 'rgba(6,4,14,.93)';
+  fc.fillRect(0, 0, w, h);
+  fc.globalCompositeOperation = 'destination-out';
+  const rr = revealR() / 100 * w;
+  let g2 = fc.createRadialGradient(hx, hy, rr * 0.55, hx, hy, rr);
+  g2.addColorStop(0, 'rgba(0,0,0,1)'); g2.addColorStop(1, 'rgba(0,0,0,0)');
+  fc.fillStyle = g2; fc.beginPath(); fc.arc(hx, hy, rr, 0, 7); fc.fill();
+  for (const e of (S.explored || [])) {
+    const [ex, ey] = mapPos(e[0], e[1], w, h);
+    const er = 12 / 100 * w;
+    const g3 = fc.createRadialGradient(ex, ey, er * 0.4, ex, ey, er);
+    g3.addColorStop(0, 'rgba(0,0,0,.95)'); g3.addColorStop(1, 'rgba(0,0,0,0)');
+    fc.fillStyle = g3; fc.beginPath(); fc.arc(ex, ey, er, 0, 7); fc.fill();
+  }
+  ctx.drawImage(fog, 0, 0);
+}
+
+function mapLoop() {
+  if (VIEW === 'camp') drawMap();
+  mapAnim = requestAnimationFrame(mapLoop);
+}
+function stopMapLoop() { if (mapAnim) cancelAnimationFrame(mapAnim); mapAnim = null; }
+
+function onMapTap(e) {
+  const cv = $('#mapCv');
+  const r = cv.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width * 100;
+  const y = (e.clientY - r.top) / r.height * 100;
+  let best = null, bd = 7;
+  const consider = (obj, kind) => {
+    if (!isRevealed(obj.x, obj.y)) return;
+    const d = Math.hypot(obj.x - x, obj.y - y);
+    if (d < bd) { bd = d; best = { obj, kind }; }
+  };
+  for (const n of MAP.nodes) if (n.amount > 0) consider(n, 'node');
+  for (const c of MAP.camps) if (!c.dead) consider(c, 'camp');
+  for (const a of MAP.ais) consider(a, 'ai');
+  if (NET.on) for (const p of NET.players) { if (p.pos && p.id !== NET.meId) consider({ x: p.pos[0], y: p.pos[1], p }, 'player'); }
+  if (!best) return;
+  sfx.tap();
+  if (best.kind === 'node') nodeModal(best.obj);
+  else if (best.kind === 'camp') campModal(best.obj, false);
+  else if (best.kind === 'ai') campModal(best.obj, true);
+  else playerModal(best.obj.p);
+}
+
+function nodeModal(n) {
+  const ic = { food: '🌾', wood: '🪵', stone: '🪨', gold: '🪙' }[n.t];
+  const t = marchTime(n.x, n.y);
+  modal(ic, 'منبع ' + RN[n.t],
+    '<div class="stat"><span>موجودی منبع</span><b>' + fmt(n.amount) + '</b></div>' +
+    statRow('⏱️ زمان رفت', fmtT(t)) +
+    statRow('🧺 ظرفیت کاروان', fmt(carryCap())) +
+    statRow('⚡ سرعت برداشت', fa(Math.round(gatherRate())) + ' در ثانیه') +
+    '<div class="hint" style="margin-top:8px">ارتش برای محافظت همراه کاروان می‌رود؛ تا برگشتن، در دسترس نبرد نیست… نه، نگران نباش: فقط یک کاروان هم‌زمان حرکت می‌کند.</div>',
+    [{ t: 'بی‌خیال', sec: true, act: closeModal },
+     { t: '🧺 اعزام کاروان', act: () => { startGather(n.id); closeModal(); } }]);
+}
+function campModal(c, isAi) {
+  const fp = armyPower(c.army, 1 + (c.lv - 1) * 0.07, 1 + (c.lv - 1) * 0.06);
+  const mp = myPower();
+  const ratio = mp / Math.max(1, fp);
+  const cls = ratio > 1.4 ? 'good' : ratio > 0.85 ? 'mid' : 'bad';
+  modal(isAi ? '🏯' : '👹', isAi ? c.n : 'اردوی هیولاها — سطح ' + fa(c.lv),
+    '<div class="pw mine"><span>👑 ' + fmt(mp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(mp / (mp + fp) * 100, 3, 97)) + '%"></i></div></div>' +
+    '<div class="pw theirs"><span>⚔️ ' + fmt(fp) + '</span><div class="bar"><i style="width:' + Math.round(clamp(fp / (mp + fp) * 100, 3, 97)) + '%"></i></div></div>' +
+    '<div style="text-align:left;margin:4px 0 8px"><span class="odds ' + cls + '">' + (ratio > 1.4 ? 'پیروزی آسان' : ratio > 0.85 ? 'نبرد نزدیک' : 'خطرناک') + '</span></div>' +
+    statRow('⏱️ زمان حرکت', fmtT(marchTime(c.x, c.y))) +
+    statRow('💰 پاداش تقریبی', isAi ? fmt(200 * c.lv) + ' طلا' : fmt(150 * c.lv) + ' طلا + غذا') +
+    '<div class="hint" style="margin-top:8px">🦁 نبرد به فرماندهان تجربه می‌دهد و سطح آن‌ها را بالا می‌برد.</div>',
+    [{ t: 'بی‌خیال', sec: true, act: closeModal },
+     { t: '⚔️ حمله', act: () => { startHunt(c.id, isAi); closeModal(); } }]);
+}
+function playerModal(p) {
+  const fp = armyPower(p.army || {}, 1, 1);
+  modal('🌐', 'قلعه‌ی ' + p.name,
+    '<div class="stat"><span>قدرت</span><b>' + fmt(p.power || fp) + '</b></div>' +
+    statRow('🏰 قصر', 'سطح ' + fa(p.castle || 1)) +
+    statRow('🏆 پیروزی‌ها', fa(p.wins || 0)) +
+    statRow('⏱️ زمان حرکت', fmtT(marchTime(p.pos[0], p.pos[1]))) +
+    '<div class="hint" style="margin-top:8px">با حمله به بازیکنان واقعی، منابع غارت می‌کنی و در چت جهان نامت می‌درخشد!</div>',
+    [{ t: 'بی‌خیال', sec: true, act: closeModal },
+     { t: '⚔️ حمله', act: () => { startPvp(p.id, p.pos[0], p.pos[1], p.name); closeModal(); } }]);
+}
+
+/* ---------- صفحه‌ی جهان (بازسازی) ---------- */
+function renderCampV2() {
+  const v = $('#v-camp');
+  v.innerHTML = '';
+  if (!MAP) genMap();
+
+  if (S.march) {
+    const m = S.march;
+    const total = m.phase === 'work' ? 1 : m.goT;
+    const pct = m.phase === 'work' ? 100 : clamp(m.t / total * 100, 0, 100);
+    const bar = el('div', 'marchbar');
+    bar.innerHTML = '<span>🐎 ' + m.label + ' · ' + (m.phase === 'go' ? 'در حرکت' : m.phase === 'work' ? 'در حال برداشت/نبرد' : 'بازگشت') + '</span>' +
+      '<div class="pbar mil"><i style="width:' + pct + '%"></i></div><span>' + fmtT(Math.max(0, m.goT - m.t)) + '</span>';
+    v.appendChild(bar);
+  }
+
+  const mw = el('div', 'mapwrap');
+  mw.innerHTML = '<canvas id="mapCv" width="480" height="480"></canvas>' +
+    '<div class="maphud"><span>🌫️ مه با رشد قصر کنار می‌رود</span><span>👁️ شعاع دید: ' + fa(Math.round(revealR())) + '</span></div>';
+  v.appendChild(mw);
+  setTimeout(() => { const cv = $('#mapCv'); if (cv) cv.addEventListener('pointerdown', onMapTap); drawMap(); }, 0);
+
+  v.appendChild(el('div', 'secttl', '🎁 ماموریت‌ها'));
+  let claimed = 0;
+  for (const q of QUESTS) {
+    const done = !!S.q[q.id];
+    const ok = !done && q.c(S);
+    if (done) claimed++;
+    const d = el('div', 'quest' + (done ? ' done' : ''));
+    d.innerHTML = '<span class="qi">' + (done ? '✅' : q.i) + '</span><div class="qt"><b>' + q.n + '</b><small>' + q.d + ' · پاداش: ' + Object.keys(q.rw).map((k) => RI[k] + fmt(q.rw[k])).join(' ') + '</small></div>' +
+      (ok ? '<button class="qbtn" data-act="quest" data-id="' + q.id + '">دریافت</button>' : '');
+    v.appendChild(d);
+  }
+  v.appendChild(el('div', 'hint', '🎁 ' + fa(claimed) + ' از ' + fa(QUESTS.length) + ' ماموریت کامل شده · روی نقشه ضربه بزن: منبع 🌾 برای جمع‌آوری، هیولا 👹 برای شکار، قلعه 🏯/🌐 برای حمله.'));
+
+  v.appendChild(el('div', 'secttl', '🗺️ پادشاهی‌های دشمن (کمپین)'));
+  const mp = myPower();
+  FOES.forEach((f, i) => {
+    const fp = foePower(f);
+    const ratio = mp / Math.max(1, fp);
+    const cls = ratio > 1.4 ? 'good' : ratio > 0.85 ? 'mid' : 'bad';
+    const n = el('div', 'foe' + (S.beaten[i] ? ' beaten' : ''));
+    n.innerHTML = '<div class="fhead"><div class="uic">' + f.i + '</div><div style="flex:1"><b>' + f.n + '</b>' +
+      '<small>سطح ' + fa(f.lv) + (S.beaten[i] ? ' · فتح شده ✓' : '') + '</small></div>' +
+      '<span class="odds ' + cls + '">' + (ratio > 1.4 ? 'آسان' : ratio > 0.85 ? 'نزدیک' : 'خطر') + '</span></div>' +
+      '<button class="btn red" data-act="attack" data-i="' + i + '"' + (armyCount() < 1 ? ' disabled' : '') + '>⚔️ حمله</button>';
+    v.appendChild(n);
+  });
+}
+
+/* ---------- فرماندهان در صفحه‌ی ارتش ---------- */
+function renderCmds(v) {
+  v.appendChild(el('div', 'secttl', '🦁 فرماندهان افسانه‌ای'));
+  for (const k in CMD) {
+    const c = CMD[k], lv = cmdLvl(S, k);
+    const xp = S.cxp[k] || 0;
+    const next = 40 * (lv + 1) * (lv + 1);
+    const d = el('div', 'cmd');
+    d.innerHTML = '<div class="cico">' + c.i + '</div><div class="ci"><b>' + c.n + '</b><small>' + c.d + '</small>' +
+      '<div class="pbar" style="margin:4px 0 0"><i style="width:' + clamp(xp / next * 100, 0, 100) + '%"></i></div></div>' +
+      '<div class="cl">سطح ' + fa(lv) + '</div>';
+    v.appendChild(d);
+  }
+  v.appendChild(el('div', 'hint', '💡 فرماندهان با هر نبرد تجربه می‌گیرند و برای همیشه قوی‌تر می‌شوند.'));
+}
+
+/* ---------- انیمیشن نبرد ---------- */
+function battleAnim(canvas, win) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const my = [], fo = [];
+  for (let i = 0; i < 14; i++) { my.push({ x: w * 0.12 + Math.random() * w * 0.1, y: h * 0.25 + Math.random() * h * 0.5, vx: 1.4 + Math.random() }); fo.push({ x: w * 0.78 + Math.random() * w * 0.1, y: h * 0.25 + Math.random() * h * 0.5, vx: -(1.4 + Math.random()) }); }
+  const parts = [];
+  let t0 = performance.now();
+  function fr(t) {
+    const dt = (t - t0) / 16; t0 = t;
+    ctx.fillStyle = '#0a0714'; ctx.fillRect(0, 0, w, h);
+    const g = ctx.createLinearGradient(0, h * 0.7, 0, h); g.addColorStop(0, 'rgba(122,58,237,.12)'); g.addColorStop(1, 'rgba(0,0,0,.4)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    const clash = w / 2;
+    for (const s of my) { s.x += s.vx * dt; if (s.x > clash - 6 + Math.random() * 8) { if (Math.random() < 0.08) parts.push({ x: s.x, y: s.y, l: 12 }); s.x -= 3; } }
+    for (const s of fo) { s.x += s.vx * dt; if (s.x < clash + 6 - Math.random() * 8) { if (Math.random() < 0.08) parts.push({ x: s.x, y: s.y, l: 12 }); s.x += 3; } }
+    ctx.fillStyle = '#f2c95c'; for (const s of my) ctx.fillRect(s.x, s.y, 4, 4);
+    ctx.fillStyle = '#e0705f'; for (const s of fo) ctx.fillRect(s.x, s.y, 4, 4);
+    for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.l -= dt; if (p.l <= 0) { parts.splice(i, 1); continue; } ctx.fillStyle = 'rgba(255,220,120,' + (p.l / 12) + ')'; ctx.fillRect(p.x + (Math.random() - .5) * 6, p.y + (Math.random() - .5) * 6, 3, 3); }
+    if (win === false) { ctx.fillStyle = 'rgba(180,40,30,.08)'; ctx.fillRect(0, 0, w, h); }
+    requestAnimationFrame(fr);
+  }
+  requestAnimationFrame(fr);
+}
+
+/* ==========================================================================
+   ماژول آنلاین (NET)
+   ========================================================================== */
+const NET = { on: false, token: null, meId: null, me: null, lb: [], players: [], als: [], msgs: [], amsgs: [], lastTs: 0 };
+async function netPing() {
+  if (location.protocol === 'file:') { NET.on = false; return; }
+  try {
+    const r = await fetch('api/ping'); const j = await r.json();
+    NET.on = !!j.ok;
+    if (NET.on) {
+      NET.token = localStorage.getItem('tep_token');
+      if (NET.token) { await netMe(); }
+      netPoll();
+    }
+  } catch (e) { NET.on = false; }
+  if (VIEW === 'net') render();
+}
+async function netMe() {
+  try {
+    const r = await fetch('api/leaderboard'); const j = await r.json();
+    if (j.ok) {
+      NET.lb = j.list;
+      const me = j.list.find((p) => p.id === NET.meId) || null;
+      if (!NET.meId) {
+        // توکن داریم ولی id نداریم: از سرور بخواه
+        const l = await fetch('api/load?token=' + encodeURIComponent(NET.token)); const lj = await l.json();
+        if (lj.ok) { NET.meId = lj.player.id; NET.me = lj.player; if (lj.save && lj.save.lvl) { /* ذخیره ابری موجود */ NET.cloud = lj.save; } }
+        else { NET.token = null; localStorage.removeItem('tep_token'); }
+      }
+    }
+  } catch (e) {}
+}
+async function netRegister(name) {
+  try {
+    const r = await fetch('api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) });
+    const j = await r.json();
+    if (j.ok) {
+      NET.token = j.token; NET.meId = j.player.id; NET.me = j.player;
+      localStorage.setItem('tep_token', j.token);
+      toast('🌐 به دنیای آنلاین پیوستی!', 'good');
+      netSave(); netPoll(); render();
+    }
+  } catch (e) { toast('❌ اتصال به سرور ممکن نشد', 'bad'); }
+}
+async function netSave() {
+  if (!NET.on || !NET.token) return;
+  try {
+    await fetch('api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: NET.token, data: { name: S.name, power: myPower(), castle: S.lvl.castle, wins: S.stats.wins, army: S.units, alliance: S.alliance || null, save: S } }) });
+  } catch (e) {}
+}
+async function netPoll() {
+  if (!NET.on) return;
+  try {
+    const [lb, pl, als] = await Promise.all([
+      fetch('api/leaderboard').then((r) => r.json()),
+      fetch('api/players').then((r) => r.json()),
+      fetch('api/alliances').then((r) => r.json())
+    ]);
+    if (lb.ok) NET.lb = lb.list;
+    if (pl.ok) NET.players = pl.list;
+    if (als.ok) NET.als = als.list;
+    const chs = [fetch('api/chat?ch=world&after=' + NET.lastTs).then((r) => r.json())];
+    if (NET.me && NET.me.alliance) chs.push(fetch('api/chat?ch=al-' + NET.me.alliance + '&after=' + NET.lastTs).then((r) => r.json()));
+    const rs = await Promise.all(chs);
+    if (rs[0].ok) { NET.msgs = NET.msgs.concat(rs[0].msgs).slice(-80); NET.lastTs = Math.max(NET.lastTs, ...rs[0].msgs.map((m) => m.ts), 0); }
+    if (rs[1] && rs[1].ok) NET.amsgs = NET.amsgs.concat(rs[1].msgs).slice(-80);
+    if (VIEW === 'net' || VIEW === 'camp') render();
+  } catch (e) {}
+}
+async function netChat(ch, text) {
+  if (!NET.on || !NET.token) return;
+  try { await fetch('api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: NET.token, ch, text }) }); netPoll(); } catch (e) {}
+}
+
+/* ---------- صفحه‌ی اتحاد/آنلاین ---------- */
+function renderNet() {
+  const v = $('#v-net');
+  v.innerHTML = '';
+  v.appendChild(el('div', 'tabart netart'));
+  const badge = NET.on ? '<span class="online-badge on">● آنلاین</span>' : '<span class="online-badge off">● آفلاین</span>';
+  v.appendChild(el('div', 'kp', '<h3>🌐 دنیای آنلاین ' + badge + '</h3><p>پروفایل بازیکن، ذخیره‌ی ابری، رتبه‌بندی جهانی، چت و اتحاد — همه روی سرور رایگان خود بازی.</p>'));
+
+  if (!NET.on) {
+    v.appendChild(el('div', 'hint', '📴 الان به سرور متصل نیستی (شاید نسخه‌ی آفلاین/APK را اجرا می‌کنی). بازی کامل قابل بازی است؛ بخش آنلاین وقتی فعال می‌شود که بازی از طریق مرورگرِ متصل به سرور باز شود.'));
+    v.appendChild(el('div', 'secttl', '✨ در حالت آنلاین چه چیزی فعال می‌شود؟'));
+    ['🧑🤝‍ اتحاد با بازیکنان واقعی و چت اختصاصی اتحاد', '💬 چت جهانی زنده', '🏆 رتبه‌بندی قدرت بین همه‌ی بازیکنان', '⚔️ حمله‌ی واقعی به قلعه‌ی بازیکنان دیگر (PvP)', '☁️ ذخیره‌ی ابری پیشرفت — روی هر دستگاهی ادامه بده'].forEach((t) => v.appendChild(el('div', 'quest', '<span class="qi">⭐</span><div class="qt"><b>' + t + '</b></div>')));
+    return;
+  }
+
+  if (!NET.token) {
+    v.appendChild(el('div', 'secttl', '🚪 ورود به دنیا'));
+    const c = el('div', 'card');
+    c.innerHTML = '<div class="hint">نام پادشاهت در دنیای آنلاین:</div><input id="netName" maxlength="16" value="' + S.name.replace(/"/g, '') + '" style="width:100%;padding:11px;border-radius:10px;border:1px solid rgba(224,177,60,.3);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:14px;text-align:center;margin-bottom:8px"><button class="btn" data-act="netjoin">🌐 ساخت پروفایل و ورود</button>';
+    v.appendChild(c);
+    return;
+  }
+
+  // پروفایل
+  const me = NET.me;
+  const pc = el('div', 'card');
+  pc.innerHTML = '<div class="chead"><div class="cico">🧑🌾</div><div class="cname"><b>' + S.name + '</b><small>قدرت ' + fmt(myPower()) + ' · قصر ' + fa(S.lvl.castle) + ' · ' + fa(S.stats.wins) + ' پیروزی</small></div></div>' +
+    '<div class="row2"><button class="btn sec sm" data-act="netsave">☁️ ذخیره‌ی ابری</button><button class="btn ghost sm" data-act="netload"' + (NET.cloud ? '' : ' disabled') + '>📥 بارگیری از ابر</button></div>';
+  v.appendChild(pc);
+
+  // اتحاد
+  v.appendChild(el('div', 'secttl', '🛡️ اتحاد'));
+  const ac = el('div', 'card');
+  if (me && me.alliance) {
+    const al = NET.als.find((a) => a.id === me.alliance);
+    ac.innerHTML = '<div class="chead"><div class="cico">🛡️</div><div class="cname"><b>' + (al ? al.name : 'اتحاد') + '</b><small>' + (al ? fa(al.members) + ' عضو · قدرت کل ' + fmt(al.power) : '') + '</small></div><button class="btn red sm" data-act="alleave">ترک</button></div>' +
+      '<div class="chatbox" id="achatBox">' + NET.amsgs.map((m) => '<div class="msg"><b>' + m.name + ':</b> ' + m.text + '</div>').join('') + '</div>' +
+      '<div class="chatin"><input id="achatIn" maxlength="140" placeholder="پیام اتحاد…"><button class="btn sm" data-act="achatsend">➤</button></div>';
+  } else {
+    let h = '<div class="row2" style="margin-bottom:8px"><input id="alName" maxlength="16" placeholder="نام اتحاد" style="padding:8px;border-radius:9px;border:1px solid rgba(224,177,60,.25);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:12px"><input id="alTag" maxlength="4" placeholder="نشان" style="padding:8px;border-radius:9px;border:1px solid rgba(224,177,60,.25);background:rgba(0,0,0,.35);color:#fff;font-family:inherit;font-size:12px;text-align:center"></div>' +
+      '<button class="btn sec" data-act="alcreate" style="margin-bottom:8px">🛡️ تأسیس اتحاد</button>';
+    if (NET.als.length) {
+      h += '<div class="secttl">اتحادهای موجود</div>';
+      for (const a of NET.als.slice(0, 8)) h += '<div class="lb"><span class="rk">[' + a.tag + ']</span><span class="nm">' + a.name + '</span><span class="pw">' + fa(a.members) + ' عضو</span><button class="btn sm" data-act="aljoin" data-id="' + a.id + '">پیوستن</button></div>';
+    } else h += '<div class="hint">هنوز اتحادی ساخته نشده. اولین باش!</div>';
+    ac.innerHTML = h;
+  }
+  v.appendChild(ac);
+
+  // رتبه‌بندی
+  v.appendChild(el('div', 'secttl', '🏆 رتبه‌بندی جهانی'));
+  const lb = el('div', 'card');
+  if (!NET.lb.length) lb.innerHTML = '<div class="hint">هنوز بازیکنی ثبت نشده. تو اولین پادشاه باش!</div>';
+  else lb.innerHTML = NET.lb.slice(0, 15).map((p, i) =>
+    '<div class="lb' + (p.id === NET.meId ? ' me' : '') + '"><span class="rk' + (i < 3 ? ' top' : '') + '">' + fa(i + 1) + '</span><span class="nm">' + (i === 0 ? '👑 ' : '') + p.name + (p.alliance ? ' <small style="color:#8f7bd8">[' + p.alliance.slice(0, 4) + ']</small>' : '') + '</span><span class="pw">⚡' + fmt(p.power) + '</span><button class="btn sm" data-act="pvmap" data-id="' + p.id + '">🗺️</button></div>'
+  ).join('');
+  v.appendChild(lb);
+
+  // چت جهانی
+  v.appendChild(el('div', 'secttl', '💬 چت جهانی'));
+  const cc = el('div', 'card');
+  cc.innerHTML = '<div class="chatbox" id="chatBox">' + NET.msgs.map((m) => '<div class="msg' + (m.text.startsWith('⚔️') ? ' sys' : '') + '"><b>' + m.name + ':</b> ' + m.text + '</div>').join('') + '</div>' +
+    '<div class="chatin"><input id="chatIn" maxlength="140" placeholder="پیام به دنیا…"><button class="btn sm" data-act="chatsend">➤</button></div>';
+  v.appendChild(cc);
+  setTimeout(() => { const b = $('#chatBox'); if (b) b.scrollTop = b.scrollHeight; const a = $('#achatBox'); if (a) a.scrollTop = a.scrollHeight; }, 0);
+}
+
+/* ==========================================================================
+   نسخه‌ی ۲ — عملیات آنلاین (اتحاد/ابر/PvP)
+   ========================================================================== */
+async function netAlCreate() {
+  const n = $('#alName') ? $('#alName').value.trim() : '';
+  const t = $('#alTag') ? $('#alTag').value.trim() : '';
+  if (!n) { toast('🚫 نام اتحاد را بنویس', 'bad'); return; }
+  try {
+    const r = await fetch('api/alliance/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: NET.token, name: n, tag: t }) });
+    const j = await r.json();
+    if (j.ok) { toast('🛡️ اتحاد «' + n + '» تأسیس شد!', 'good'); NET.me.alliance = j.id; netSave(); netPoll(); render(); }
+  } catch (e) { toast('❌ خطا در اتصال', 'bad'); }
+}
+async function netAlJoin(id) {
+  try {
+    const r = await fetch('api/alliance/join', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: NET.token, id }) });
+    const j = await r.json();
+    if (j.ok) { toast('🛡️ به اتحاد پیوستی!', 'good'); NET.me.alliance = id; netSave(); netPoll(); render(); }
+  } catch (e) {}
+}
+async function netAlLeave() {
+  try {
+    await fetch('api/alliance/leave', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: NET.token }) });
+    NET.me.alliance = null; netSave(); netPoll(); render();
+  } catch (e) {}
+}
+function netLoadCloud() {
+  if (!NET.cloud) return;
+  const d = NET.cloud;
+  const base = freshState(d.name);
+  for (const k in base) if (d[k] === undefined) d[k] = base[k];
+  S = d;
+  genMap();
+  save(); render();
+  toast('📥 پیشرفت از ابر بارگیری شد', 'good');
+}
+function doPvMap(id) {
+  const p = NET.players.find((x) => x.id === id);
+  if (!p) return;
+  go('camp');
+  setTimeout(() => playerModal(p), 300);
+}
+
+
+/* ==========================================================================
+   نسخه‌ی ۳ — لودینگ، حساب جیمیل، شهر اسپرایتی، دنیای جدا
+   ========================================================================== */
+const IMG = {
+  load: 'img/bg-load.jpg', city: 'img/bg-city.jpg', world: 'img/bg-world.jpg',
+  keep: 'img/spr2-keep.png', farm: 'img/spr2-farm.png', lumber: 'img/spr2-lumber.png',
+  quarry: 'img/spr2-quarry.png', mine: 'img/spr2-mine.png', barracks: 'img/spr2-barracks.png',
+  hospital: 'img/spr-hospital.png', house: 'img/spr2-house.png', range: 'img/spr2-range.png',
+  stable: 'img/spr2-stable.png', market: 'img/spr-market.png', library: 'img/spr-library.png',
+  camp: 'img/spr-camp.png', foe: 'img/spr-foe.png', lord: 'img/lord.png'
+};
+const SPRITES = {};
+const SLOTS = {
+  castle: [50, 18, 30], library: [29, 27, 12], hospital: [71, 27, 12],
+  house: [14, 38, 11], barracks: [35, 42, 14], market: [65, 42, 13],
+  mine: [86, 38, 11], range: [50, 54, 12], farm: [20, 64, 14],
+  lumber: [38, 70, 13], quarry: [62, 70, 13], stable: [80, 64, 13], wall: [50, 88, 16]
+};
+const B_EMOJI = { castle: '🏰', farm: '🌾', lumber: '🪓', quarry: '⛏️', mine: '💎', house: '🏠', barracks: '🎖️', range: '🏹', stable: '🐎', wall: '🛡️', hospital: '🏥', market: '⚖️', library: '📚' };
+
+function chromaKey(img) {
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth || 512; c.height = img.naturalHeight || 512;
+  const x = c.getContext('2d');
+  x.drawImage(img, 0, 0, c.width, c.height);
+  let d;
+  try { d = x.getImageData(0, 0, c.width, c.height); } catch (e) { return null; }
+  const p = d.data;
+  for (let i = 0; i < p.length; i += 4) {
+    const r = p[i], g = p[i + 1], b = p[i + 2];
+    if (g > 110 && g > r + 25 && g > b + 25) p[i + 3] = 0;
+    else if (g > 90 && g > r + 12 && g > b + 12) p[i + 3] = 90;
+  }
+  x.putImageData(d, 0, 0);
+  return c.toDataURL();
+}
+function loadSprite(key) {
+  return new Promise((ok) => {
+    const im = new Image();
+    const to = setTimeout(() => ok(null), 4000);
+    im.onload = () => { clearTimeout(to); ok(chromaKey(im)); };
+    im.onerror = () => { clearTimeout(to); ok(null); };
+    im.src = IMG[key];
+  });
+}
+
+/* ---------- لودینگ ۰ تا ۱۰ ---------- */
+async function v3Loading() {
+  const scr = $('#loadScreen');
+  if (!scr) return;
+  const bar = $('#loadBar'), pct = $('#loadPct'), tip = $('#loadTip');
+  const tips = ['بیدار کردن اژدها…', 'تیز کردن شمشیرها…', 'شمردن گندم انبارها…', 'کاوش در مه نقشه…', 'صیقل دادن تاج پادشاهی…', 'گرم کردن طبل‌های جنگ…'];
+  const assets = Object.values(IMG).concat(['icon-512.png']);
+  let loaded = 0, total = 0, done = 0;
+  const t0 = Date.now();
+  const jobs = assets.map((a) => fetch(a).then(async (r) => {
+    const len = +(r.headers.get('content-length') || 0);
+    total += len;
+    if (r.body && len) {
+      const rd = r.body.getReader();
+      for (;;) { const ch = await rd.read(); if (ch.done) break; loaded += ch.value.length; }
+    }
+  }).catch(() => {}).then(() => { done++; }));
+  const sprJobs = Object.keys(IMG).filter((k) => IMG[k].endsWith('.png')).map(async (k) => { SPRITES[k] = await loadSprite(k); });
+  let shown = 0;
+  const iv = setInterval(() => {
+    const bp = total ? (loaded / total) * 82 : (done / assets.length) * 82;
+    const sp = (done / assets.length) * 14;
+    shown = Math.max(shown, Math.min(96, Math.round(bp + sp)));
+    bar.style.width = shown + '%'; pct.textContent = fa(shown) + '٪';
+    tip.textContent = '⬇ ' + tips[Math.floor((Date.now() - t0) / 800) % tips.length];
+  }, 90);
+  await Promise.all(jobs);
+  await Promise.all(sprJobs);
+  clearInterval(iv);
+  const wait = Math.max(0, 3200 - (Date.now() - t0));
+  await new Promise((r) => setTimeout(r, wait));
+  await new Promise((ok) => {
+    let v = shown;
+    const iv2 = setInterval(() => {
+      v += 1; bar.style.width = Math.min(100, v) + '%'; pct.textContent = fa(Math.min(100, v)) + '٪';
+      if (v >= 100) { clearInterval(iv2); ok(); }
+    }, 24);
+  });
+  tip.textContent = '⚔️ آماده‌ی نبرد!';
+  await new Promise((r) => setTimeout(r, 400));
+  scr.style.transition = 'opacity .6s'; scr.style.opacity = '0';
+  setTimeout(() => scr.remove(), 700);
+}
+/* ---------- حساب جیمیل ---------- */
+function v3LoginGate() {
+  return new Promise((ok) => {
+    const email = localStorage.getItem('tep_email');
+    if (email && NET.on) { autoLogin(email).then(ok); return; }
+    if (email && !NET.on) { hideLogin(); ok(); return; }
+    const scr = $('#loginScreen');
+    scr.style.display = 'flex';
+    const go = async () => {
+      const em = ($('#gmail') ? $('#gmail').value.trim() : '').toLowerCase();
+      const nm = ($('#pname') ? $('#pname').value.trim() : '') || 'پادشاه';
+      if (!em.includes('@') || em.length < 5) { toast('📧 یک جیمیل معتبر بنویس', 'bad'); return; }
+      localStorage.setItem('tep_email', em);
+      if (!NET.on) { S.name = nm; save(); hideLogin(); if (S.music) musicStart(); ok(); return; }
+      await loginWithEmail(em, nm);
+      hideLogin(); if (S.music) musicStart(); ok();
+    };
+    $('#btnGmail').addEventListener('click', go);
+    const off = $('#btnOffline');
+    if (off) off.addEventListener('click', () => { hideLogin(); ok(); });
+    if (!NET.on && off) off.style.display = 'block';
+  });
+}
+function hideLogin() { const s = $('#loginScreen'); if (s) { s.style.transition = 'opacity .5s'; s.style.opacity = '0'; setTimeout(() => s.remove(), 600); } }
+async function loginWithEmail(email, name) {
+  try {
+    const r = await fetch('api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name || S.name, email }) });
+    const j = await r.json();
+    if (j.ok) {
+      NET.token = j.token; NET.meId = j.player.id; NET.me = j.player;
+      localStorage.setItem('tep_token', j.token);
+      if (j.save && j.save.lvl) { adoptCloud(j.save); toast('☁️ پادشاهی قبلی‌ات از ابر برگشت!', 'good'); }
+      else { S.name = name || S.name; netSave(); }
+      toast('🔗 حساب به ' + email + ' وصل شد', 'good');
+      netPoll();
+    }
+  } catch (e) { toast('❌ اتصال برقرار نشد؛ حالت آفلاین', 'bad'); }
+}
+async function autoLogin(email) {
+  try {
+    const r = await fetch('api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: S.name, email }) });
+    const j = await r.json();
+    if (j.ok) {
+      NET.token = j.token; NET.meId = j.player.id; NET.me = j.player;
+      localStorage.setItem('tep_token', j.token);
+      if (j.save && j.save.lvl && (!S.stats || j.save.stats.played > S.stats.played)) adoptCloud(j.save);
+      netPoll();
+    }
+  } catch (e) {}
+}
+function adoptCloud(d) {
+  const base = freshState(d.name);
+  for (const k in base) if (d[k] === undefined) d[k] = base[k];
+  S = d; genMap(); save(); render();
+}
+
+/* ---------- شهر اسپرایتی ---------- */
+function renderCity() {
+  const v = $('#v-city');
+  v.innerHTML = '';
+
+  const nq = QUESTS.find((q) => !S.q[q.id] && q.c(S));
+  if (nq) {
+    const qb = el('div', 'quest');
+    qb.innerHTML = '<span class="qi">' + nq.i + '</span><div class="qt"><b>' + nq.n + '</b><small>' + nq.d + '</small></div><button class="qbtn" data-act="quest" data-id="' + nq.id + '">دریافت 🎁</button>';
+    v.appendChild(qb);
+  }
+
+  const sc = el('div', 'scene');
+  sc.innerHTML = '<div class="scenetitle">🏰 قلعه‌ی ' + S.name + ' · سطح ' + fa(S.lvl.castle) + '</div>';
+  for (const id in SLOTS) {
+    const [x, y, w] = SLOTS[id];
+    const lv = S.lvl[id] || 0;
+    const b = B[id];
+    const slot = el('div', 'slot');
+    slot.style.left = x + '%'; slot.style.top = y + '%'; slot.style.width = (w * (0.78 + (y / 100) * 0.55)).toFixed(1) + '%'; slot.style.zIndex = 2 + Math.round(y / 5);
+    let inner = '';
+    if (SPRITES[id === 'castle' ? 'keep' : id]) {
+      inner = '<img src="' + SPRITES[id === 'castle' ? 'keep' : id] + '" alt="">';
+    } else {
+      inner = '<div class="plq">' + B_EMOJI[id] + '</div>';
+    }
+    const busy = S.build && S.build.id === id;
+    inner += '<div class="tag">' + b.n + ' <b>' + (lv > 0 ? fa(lv) : '') + '</b></div>';
+    if (busy) inner += '<div class="pbar"><i style="width:' + clamp(S.build.done / S.build.total * 100, 0, 100) + '%"></i></div>';
+    if (lv === 0 && !busy) inner += '<div class="newdot">+</div>';
+    slot.innerHTML = inner;
+    slot.addEventListener('click', () => { sfx.tap(); confirmBuild(id); });
+    sc.appendChild(slot);
+  }
+  v.appendChild(sc);
+  v.appendChild(el('div', 'hint', '👆 روی هر ساختمان بزن تا بسازی یا ارتقا بدی. سطح <b>قصر</b> سقف بقیه است.'));
+
+  // فرماندهان و آمار زیر صحنه
+  const bs = el('div', 'bigstat');
+  bs.innerHTML = '<div class="bs"><b>' + fmt(myPower()) + '</b><small>قدرت</small></div>' +
+    '<div class="bs"><b>' + fa(armyCount()) + '</b><small>سرباز</small></div>' +
+    '<div class="bs"><b>' + fa(Object.keys(S.ach).length) + '</b><small>دستاورد</small></div>';
+  v.appendChild(bs);
+}
+
+/* ---------- دنیای جدا ---------- */
+function renderCampV2() {
+  const v = $('#v-camp');
+  v.innerHTML = '';
+  if (!MAP) genMap();
+
+  const sc = el('div', 'wscene');
+  sc.innerHTML = '<canvas id="mapCv" class="fogcv" width="480" height="480"></canvas>' +
+    '<button class="backcity" data-act="backcity">🏰 بازگشت به قلعه</button>' +
+    '<div class="wtitle">🗺️ سرزمین پادشاهان</div>';
+
+  const home = el('div', 'went homee');
+  home.style.left = MAP.home.x + '%'; home.style.top = MAP.home.y + '%';
+  home.innerHTML = (SPRITES.keep ? '<img src="' + SPRITES.keep + '">' : '<div class="plq">🏰</div>') + '<div class="tag">قلعه‌ی تو</div>';
+  sc.appendChild(home);
+
+  for (const n of MAP.nodes) {
+    if (n.amount <= 0 || !isRevealed(n.x, n.y)) continue;
+    const e = el('div', 'went node');
+    e.style.left = n.x + '%'; e.style.top = n.y + '%';
+    e.innerHTML = '<span>' + RI[n.t] + '</span>';
+    e.addEventListener('click', () => { sfx.tap(); nodeModal(n); });
+    sc.appendChild(e);
+  }
+  for (const c of MAP.camps) {
+    if (c.dead || !isRevealed(c.x, c.y)) continue;
+    const e = el('div', 'went camp');
+    e.style.left = c.x + '%'; e.style.top = c.y + '%';
+    e.innerHTML = (SPRITES.camp ? '<img src="' + SPRITES.camp + '">' : '<span>👹</span>') + '<small>' + fa(c.lv) + '</small>';
+    e.addEventListener('click', () => { sfx.tap(); campModal(c, false); });
+    sc.appendChild(e);
+  }
+  for (const a of MAP.ais) {
+    if (!isRevealed(a.x, a.y)) continue;
+    const e = el('div', 'went foe');
+    e.style.left = a.x + '%'; e.style.top = a.y + '%';
+    e.innerHTML = (SPRITES.foe ? '<img src="' + SPRITES.foe + '">' : '<span>🏯</span>') + '<small>' + fa(a.lv) + '</small>';
+    e.addEventListener('click', () => { sfx.tap(); campModal(a, true); });
+    sc.appendChild(e);
+  }
+  if (NET.on) for (const p of NET.players) {
+    if (!p.pos || p.id === NET.meId) continue;
+    const e = el('div', 'went plyr');
+    e.style.left = p.pos[0] + '%'; e.style.top = p.pos[1] + '%';
+    e.innerHTML = '<span>🌐</span><small>' + p.name + '</small>';
+    e.addEventListener('click', () => { sfx.tap(); playerModal(p); });
+    sc.appendChild(e);
+  }
+  if (S.march) {
+    const m = S.march;
+    const e = el('div', 'went march');
+    e.id = 'marchDot';
+    e.style.left = MAP.home.x + '%'; e.style.top = MAP.home.y + '%';
+    e.innerHTML = '<span>⚔️</span>';
+    sc.appendChild(e);
+  }
+  v.appendChild(sc);
+  animateMarchDot();
+
+  if (S.march) {
+    const m = S.march;
+    const bar = el('div', 'marchbar');
+    bar.innerHTML = '<span>🐎 ' + m.label + '</span><div class="pbar mil"><i style="width:' + clamp(m.t / m.goT * 100, 0, 100) + '%"></i></div><span>' + fmtT(Math.max(0, m.goT - m.t)) + '</span>';
+    v.appendChild(bar);
+  }
+
+  v.appendChild(el('div', 'secttl', '🎁 ماموریت‌ها'));
+  let claimed = 0;
+  for (const q of QUESTS) {
+    const done = !!S.q[q.id]; const okk = !done && q.c(S); if (done) claimed++;
+    const d = el('div', 'quest' + (done ? ' done' : ''));
+    d.innerHTML = '<span class="qi">' + (done ? '✅' : q.i) + '</span><div class="qt"><b>' + q.n + '</b><small>' + q.d + '</small></div>' + (okk ? '<button class="qbtn" data-act="quest" data-id="' + q.id + '">دریافت</button>' : '');
+    v.appendChild(d);
+  }
+
+  v.appendChild(el('div', 'secttl', '🗺️ کمپین فتح پادشاهی‌ها'));
+  const mp = myPower();
+  FOES.forEach((f, i) => {
+    const fp = foePower(f);
+    const ratio = mp / Math.max(1, fp);
+    const cls = ratio > 1.4 ? 'good' : ratio > 0.85 ? 'mid' : 'bad';
+    const n = el('div', 'foe' + (S.beaten[i] ? ' beaten' : ''));
+    n.innerHTML = '<div class="fhead"><div class="uic">' + f.i + '</div><div style="flex:1"><b>' + f.n + '</b><small>سطح ' + fa(f.lv) + (S.beaten[i] ? ' · فتح شده ✓' : '') + '</small></div><span class="odds ' + cls + '">' + (ratio > 1.4 ? 'آسان' : ratio > 0.85 ? 'نزدیک' : 'خطر') + '</span></div>' +
+      '<button class="btn red" data-act="attack" data-i="' + i + '"' + (armyCount() < 1 ? ' disabled' : '') + '>⚔️ حمله</button>';
+    v.appendChild(n);
+  });
+
+  setTimeout(() => { const cv = $('#mapCv'); if (cv) drawFogOnly(cv); }, 0);
+}
+function drawFogOnly(cv) {
+  const w = cv.width, h = cv.height, ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(6,4,14,.93)'; ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'destination-out';
+  const [hx, hy] = [MAP.home.x / 100 * w, MAP.home.y / 100 * h];
+  const rr = revealR() / 100 * w;
+  const g2 = ctx.createRadialGradient(hx, hy, rr * 0.5, hx, hy, rr);
+  g2.addColorStop(0, 'rgba(0,0,0,1)'); g2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(hx, hy, rr, 0, 7); ctx.fill();
+  for (const e of (S.explored || [])) {
+    const ex = e[0] / 100 * w, ey = e[1] / 100 * h, er = 12 / 100 * w;
+    const g3 = ctx.createRadialGradient(ex, ey, er * 0.4, ex, ey, er);
+    g3.addColorStop(0, 'rgba(0,0,0,.95)'); g3.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g3; ctx.beginPath(); ctx.arc(ex, ey, er, 0, 7); ctx.fill();
+  }
+}
+function animateMarchDot() {
+  const d = $('#marchDot');
+  if (!d || !S.march || !MAP) return;
+  const m = S.march;
+  const [hx, hy] = [MAP.home.x, MAP.home.y];
+  let px, py;
+  if (m.phase === 'go') { const k = clamp(m.t / m.goT, 0, 1); px = hx + (m.x - hx) * k; py = hy + (m.y - hy) * k; }
+  else if (m.phase === 'back') { const k = clamp(m.t / m.goT, 0, 1); px = m.x + (hx - m.x) * k; py = m.y + (hy - m.y) * k; }
+  else { px = m.x; py = m.y; }
+  d.style.left = px + '%'; d.style.top = py + '%';
+}
+
+
+/* ==========================================================================
+   v3.5 — موسیقی متن، صفحه‌ی فرمانده، تم قرون‌وسطایی، حالت افقی
+   ========================================================================== */
+const MUSIC = { iv: null };
+function ensureAC() {
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (AC && AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function tone(ac, f, dur, type, vol) {
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.value = f;
+  o.connect(g); g.connect(ac.destination);
+  const t = ac.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+function pluck(ac, f) {
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = 'triangle'; o.frequency.value = f;
+  const fl = ac.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = 1800;
+  o.connect(fl); fl.connect(g); g.connect(ac.destination);
+  const t = ac.currentTime;
+  g.gain.setValueAtTime(0.06, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+  o.start(t); o.stop(t + 0.55);
+}
+function darbuka(ac, vol) {
+  const len = ac.sampleRate * 0.12, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const fl = ac.createBiquadFilter(); fl.type = 'bandpass'; fl.frequency.value = 220;
+  const g = ac.createGain(); g.gain.value = vol;
+  src.connect(fl); fl.connect(g); g.connect(ac.destination);
+  src.start();
+}
+function musicStart() {
+  const ac = ensureAC(); if (!ac || MUSIC.iv) return;
+  const D2 = 73.42;
+  const scale = [146.83, 174.61, 196, 220, 261.63, 293.66, 349.23];
+  let step = 0;
+  MUSIC.iv = setInterval(() => {
+    if (!S.music) return;
+    if (step % 32 === 0) { tone(ac, D2, 7.4, 'sawtooth', 0.03); tone(ac, D2 * 1.5, 7.4, 'sawtooth', 0.02); tone(ac, D2 * 4, 3.7, 'triangle', 0.028); }
+    if (step % 8 === 4) tone(ac, 49, 1.3, 'sine', 0.17);
+    if (step % 4 === 0) darbuka(ac, step % 8 === 0 ? 0.55 : 0.3);
+    if (step % 2 === 0 && Math.random() < 0.45) pluck(ac, scale[Math.floor(Math.random() * scale.length)] * (Math.random() < 0.25 ? 2 : 1));
+    if (step % 16 === 12) { tone(ac, 220, 2.6, 'sawtooth', 0.045); tone(ac, 233.08, 2.6, 'sawtooth', 0.038); }
+    if (step % 64 === 40) { tone(ac, 98, 4.8, 'sawtooth', 0.05); tone(ac, 146.83, 4.8, 'sawtooth', 0.04); }
+    step++;
+  }, 210);
+}
+function musicStop() { if (MUSIC.iv) { clearInterval(MUSIC.iv); MUSIC.iv = null; } }
+
+/* ---------- تجهیزات (دراپ از شکار) ---------- */
+const GEAR_SLOTS = { weapon: ['⚔️', 'حمله'], helmet: ['🪖', 'دفاع'], armor: ['🥋', 'دفاع'], boots: ['🥾', 'سرعت'], ring: ['💍', 'حمله'], cape: ['🧣', 'جان'] };
+function dropGear(lv) {
+  if (Math.random() > 0.6) return;
+  const keys = Object.keys(GEAR_SLOTS);
+  const k = keys[Math.floor(Math.random() * keys.length)];
+  const g = { slot: k, lvl: lv, atk: (k === 'weapon' || k === 'ring') ? 2 + lv : 0, def: (k === 'helmet' || k === 'armor') ? 2 + lv : 0 };
+  S.gear = S.gear || {};
+  S.gear[k] = g;
+  toast('🎁 تجهیز نو: ' + GEAR_SLOTS[k][0] + ' سطح ' + fa(lv), 'good');
+  addEvent('🎁', 'تجهیز «' + GEAR_SLOTS[k][0] + '» سطح ' + fa(lv) + ' یافت شد', 'win');
+}
+
+/* ---------- صفحه‌ی فرمانده ---------- */
+function openCmd() {
+  const st = S.stats;
+  const tot = st.wins + st.losses;
+  const wr = tot > 0 ? Math.round(st.wins / tot * 100) : 0;
+  let h = '<div class="cmdwrap">' +
+    '<div class="lordart"><img src="img/lord.png" alt=""><span class="lordlv">سطح ' + fa(Math.max.apply(null, Object.keys(CMD).map((k) => cmdLvl(S, k))) || 1) + '</span></div>' +
+    '<div class="lordstats">' +
+    statRow('⚡ قدرت کل', fmt(myPower())) +
+    statRow('💀 کشته‌های دشمن', fmt(st.kills || 0)) +
+    statRow('🏆 پیروزی', fa(st.wins)) +
+    statRow('🩸 شکست', fa(st.losses)) +
+    statRow('🎯 نرخ پیروزی', fa(wr) + '٪') +
+    '</div></div><div class="divider"></div>';
+  h += '<div class="secttl">🛡️ تجهیزات جنگی</div><div class="geargrid">';
+  for (const k in GEAR_SLOTS) {
+    const g = (S.gear || {})[k];
+    h += '<div class="gear' + (g ? '' : ' off') + '"><span class="gi">' + (g ? GEAR_SLOTS[k][0] : '🔒') + '</span><small>' + (g ? 'سطح ' + fa(g.lvl) + ' · +' + fa(g.atk || g.def) + '٪ ' + GEAR_SLOTS[k][1] : 'از شکار هیولا') + '</small></div>';
+  }
+  h += '</div><div class="divider"></div><div class="secttl">🦁 فرماندهان افسانه‌ای</div>';
+  for (const k in CMD) {
+    const c = CMD[k], lv = cmdLvl(S, k), xp = S.cxp[k] || 0, next = 40 * (lv + 1) * (lv + 1);
+    h += '<div class="cmd"><div class="cico">' + c.i + '</div><div class="ci"><b>' + c.n + '</b><small>' + c.d + '</small><div class="pbar" style="margin:4px 0 0"><i style="width:' + clamp(xp / next * 100, 0, 100) + '%"></i></div></div><div class="cl">سطح ' + fa(lv) + '</div></div>';
+  }
+  h += '<div class="hint">💡 تجهیزات از شکار هیولاها و قلعه‌ها می‌افتد؛ فرماندهان با هر نبرد تجربه می‌گیرند.</div>';
+  modal('🦁', 'فرمانده‌ی پادشاهی — ' + S.name, h, [{ t: 'بازگشت به نبرد', act: closeModal }]);
+}
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'btnLord') { sfx.tap(); openCmd(); }
+  if (e.target.id === 'btnMusic') { S.music = !S.music; save(); if (S.music) musicStart(); else musicStop(); renderHeader(); }
+});
+
+/* ---------- CSS v3.5 ---------- */
+(function () {
+  const st = document.createElement('style');
+  st.textContent = `
+  .lordbtn{background:radial-gradient(circle at 35% 30%,#f2c95c,#8a5a12);border-color:#f2c95c}
+  .cmdwrap{display:flex;gap:12px;align-items:stretch}
+  .lordart{position:relative;width:42%;border-radius:14px;overflow:hidden;border:2px solid rgba(224,177,60,.5);box-shadow:0 8px 22px rgba(0,0,0,.6)}
+  .lordart img{width:100%;display:block}
+  .lordlv{position:absolute;bottom:6px;right:6px;background:linear-gradient(180deg,#f2c95c,#d4a12e);color:#1a1206;font-size:10px;font-weight:800;border-radius:8px;padding:2px 8px}
+  .lordstats{flex:1}
+  .geargrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .gear{background:rgba(122,58,237,.12);border:1px solid rgba(122,58,237,.4);border-radius:11px;padding:7px 4px;text-align:center}
+  .gear .gi{font-size:20px;display:block}
+  .gear small{font-size:8.5px;color:#c9b8ef}
+  .gear.off{opacity:.5;border-style:dashed}
+  /* تم چوب و طلای قرون‌وسطایی */
+  header{background:linear-gradient(180deg,rgba(64,42,18,.92),rgba(30,20,40,.85));border-bottom:2px solid rgba(224,177,60,.5)}
+  nav{background:linear-gradient(0deg,#2a1a0c,#3a2412 70%,rgba(58,36,18,.95));border-top:2px solid rgba(224,177,60,.55)}
+  nav button.on{color:#ffd76a;text-shadow:0 0 10px rgba(255,215,106,.6)}
+  .btn{border:1px solid #8a5a12;background:linear-gradient(180deg,#ffe08a,#d4a12e 55%,#a8761c);box-shadow:0 3px 0 #4a2f0a,inset 0 1px 0 #fff6d0}
+  .card{border:1px solid rgba(224,177,60,.28);background:linear-gradient(165deg,rgba(70,50,25,.35),rgba(20,14,32,.6))}
+  .modal{border-top:3px solid #d4a12e;background:linear-gradient(180deg,#2b2140,#191227)}
+  #netDot{margin-left:2px}
+  /* ========== کل بازی افقی (مثل فری‌فایر) ========== */
+  #rotateHint{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 35%,#2a1c4a,#07050f 75%);text-align:center;color:#e0b13c;font-size:22px;font-family:inherit}
+  #rotateHint b{display:block;margin-top:10px}
+  #rotateHint small{display:block;color:#9a8fb5;font-size:12px;margin-top:6px}
+  #rotateHint .arw{font-size:44px;animation:rotw 1.6s ease-in-out infinite;display:inline-block}
+  @keyframes rotw{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
+  .tabart{height:96px;border-radius:14px;background:center/cover no-repeat;border:2px solid rgba(224,177,60,.4);margin-bottom:10px;box-shadow:0 8px 22px rgba(0,0,0,.5)}
+  .armyart{background-image:url('img/banner-army.jpg')}
+  .netart{background-image:url('img/banner-net.jpg')}
+  #questbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:24;align-items:center;gap:8px;
+    background:linear-gradient(180deg,rgba(42,26,12,.96),rgba(18,10,4,.98));border-top:2px solid rgba(224,177,60,.5);
+    padding:6px 12px;font-size:11px;color:#ffe9ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #questbar b{color:#ffd76a}
+  @media (orientation: portrait){
+    #rotateHint{display:flex}
+    #app,#loadScreen,#loginScreen{display:none !important}
+  }
+  @media (orientation: landscape){
+    #app{max-width:none;width:100%}
+    main{padding:8px 14px 74px}
+    /* صحنه قلعه و جهان: تمام صفحه */
+    .scene,.wscene{aspect-ratio:auto;height:calc(100vh - 190px);height:calc(100dvh - 190px);
+      min-height:210px;max-height:600px;width:100%;margin:0 auto 10px}
+    /* لیست‌ها دوستونه */
+    #v-army,#v-camp,#v-res,#v-more,#v-net{columns:2;column-gap:12px}
+    #v-army>*,#v-camp>*,#v-res>*,#v-more>*,#v-net>*{break-inside:avoid}
+    .secttl{column-span:all}
+    /* مودال وسط صفحه */
+    .ovl{align-items:center;padding:14px}
+    .modal{max-width:660px;max-height:92vh;border-radius:18px;border-bottom:1px solid rgba(224,177,60,.28)}
+    /* ورود و لودینگ */
+    .lgpanel{width:min(94vw,520px);padding:16px 22px}
+    .lgpanel input{height:40px}
+    .lwrap{width:min(92vw,600px);max-width:600px}
+    /* هدر و نویگیشن */
+    .resbar{grid-template-columns:repeat(4,1fr);max-width:54%;margin-right:auto}
+    .king b{max-width:200px}
+    nav button{font-size:9px}
+    nav button i{font-size:17px}
+    .cmdwrap{max-width:620px}
+    #log{max-width:60%}
+    nav{left:auto;bottom:auto;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;border-top:none;background:none;padding:0}
+    nav button{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4a3418,#241708);border:2px solid rgba(224,177,60,.55);box-shadow:0 4px 12px rgba(0,0,0,.6);font-size:8px;padding:3px 0;gap:1px}
+    nav button i{font-size:16px}
+    main{padding:8px 62px 44px 14px}
+    #questbar{display:flex}
+    .scene,.wscene{height:calc(100vh - 175px);height:calc(100dvh - 175px)}
+  }
+  `;
+  if (document.head) document.head.appendChild(st);
+  if (document.body) {
+    const hint = document.createElement('div');
+    hint.id = 'rotateHint';
+    hint.innerHTML = '<div><span class="arw">📱</span><b>گوشی را افقی بگیر</b><small>تاج پارسی فقط در حالت افقی اجرا می‌شود</small></div>';
+    document.body.appendChild(hint);
+    document.addEventListener('click', function () {
+      try { if (screen.orientation && screen.orientation.lock) { const r = screen.orientation.lock('landscape'); if (r && r.catch) r.catch(() => {}); } } catch (e) {}
+    }, { once: true, capture: true });
+  }
+})();
+
+/* ---------- i18n: فارسی / English / العربية ---------- */
+let LANG = 'fa';
+try { LANG = localStorage.getItem('tep_lang') || 'fa'; } catch (e) {}
+if (typeof window !== 'undefined') window.LANGX = { cur: LANG };
+const TR = {
+  en: {
+    'تاج پارسی — خشم پادشاهان': 'Persian Crown — Rage of Kings',
+    'تاج پارسی فقط در حالت افقی اجرا می‌شود': 'Persian Crown runs in landscape mode only',
+    'گوشی را افقی بگیر': 'Rotate your phone to landscape',
+    'تاج پارسی': 'Persian Crown',
+    'خشم پادشاهان · نسخه‌ی ۳': 'Rage of Kings · v3',
+    'خشم پادشاهان': 'Rage of Kings',
+    'پادشاهی‌ات برای همیشه روی جیمیل تو ذخیره می‌شود': 'Your kingdom is saved forever on your Gmail',
+    'نام پادشاه': 'King name',
+    '🔗 اتصال به جیمیل و ورود': '🔗 Connect Gmail & Enter',
+    '▶ ادامه به‌صورت آفلاین': '▶ Continue Offline',
+    '📧 یک جیمیل معتبر بنویس': '📧 Enter a valid Gmail address',
+    'در حال آماده‌سازی…': 'Preparing…',
+    'بیدار کردن اژدها…': 'Waking the dragon…',
+    'تیز کردن شمشیرها…': 'Sharpening swords…',
+    'شمردن گندم انبارها…': 'Counting granary wheat…',
+    'کاوش در مه نقشه…': 'Scouting the map fog…',
+    'صیقل دادن تاج پادشاهی…': 'Polishing the royal crown…',
+    'گرم کردن طبل‌های جنگ…': 'Warming the war drums…',
+    '⚔️ آماده‌ی نبرد!': '⚔️ Ready for battle!',
+    '● سرور متصل': '● Server connected',
+    '● آفلاین': '● Offline',
+    '● آنلاین': '● Online',
+    '☀️ روز': '☀️ Day',
+    '🌙 شب و روز:': '🌙 Night & Day:',
+    '🌙 شب': '🌙 Night',
+    'شب': 'night',
+    'روز': 'day',
+    'موسیقی روشن': 'Music on',
+    'موسیقی خاموش': 'Music off',
+    'موسیقی': 'Music',
+    'صدا روشن': 'Sound on',
+    'صدا خاموش': 'Sound off',
+    'صدا': 'Sound',
+    'منو': 'Menu',
+    'فرمانده': 'Commander',
+    'قلعه‌ی تو': 'Your Castle',
+    'قلعه‌ی': 'Castle of',
+    'قلعه': 'Castle',
+    'قصر': 'Palace',
+    'مزرعه': 'Farm',
+    'چوب‌بری': 'Sawmill',
+    'معدن سنگ': 'Quarry',
+    'معدن طلا': 'Gold Mine',
+    'سربازخانه': 'Barracks',
+    'بیمارستان': 'Hospital',
+    'خانه': 'House',
+    'میدان تیراندازی': 'Archery Range',
+    'طویله': 'Stable',
+    'بازار': 'Market',
+    'کتابخانه': 'Library',
+    'دیوار شهر': 'City Wall',
+    '🌾 غذا': '🌾 Food',
+    'غذا': 'Food',
+    '🪵 چوب': '🪵 Wood',
+    'چوب': 'Wood',
+    '🪨 سنگ': '🪨 Stone',
+    'سنگ': 'Stone',
+    '🪙 طلا': '🪙 Gold',
+    'طلا': 'Gold',
+    'ارتش': 'Army',
+    'جهان': 'World',
+    'اتحاد': 'Alliance',
+    'تحقیق': 'Research',
+    'پادشاه': 'King',
+    'سطح فعلی': 'Current level',
+    'سطح بعدی': 'Next level',
+    'سطح': 'Level',
+    'ساخته نشده': 'Not built',
+    'ساختن': 'Build',
+    'بساز': 'Build',
+    'ساخت': 'Build',
+    '⬆️ ارتقا بده': '⬆️ Upgrade',
+    '⬆️ ارتقا به سطح': '⬆️ Upgrade to level',
+    'ارتقای': 'Upgrade',
+    'ارتقا': 'Upgrade',
+    '⏳ اول صبر کن ساخت فعلی تمام شود': '⏳ Wait for the current build to finish',
+    '⏳ تا پایان ساخت فعلی صبر کن': '⏳ Wait for the current build',
+    '⏳ اول آموزش فعلی تمام شود': '⏳ Wait for current training',
+    '⏳ اول تحقیق فعلی تمام شود': '⏳ Wait for current research',
+    '⏳ یک گروه در حال حرکت است': '⏳ A group is already marching',
+    '⏳ درمان در جریان است': '⏳ Healing in progress',
+    'در حال ساخت…': 'Building…',
+    'در حال تحقیق…': 'Researching…',
+    'در حال برداشت/نبرد': 'Gathering / fighting',
+    'در حرکت': 'Marching',
+    'باقی‌مانده': 'left',
+    '✅ به حداکثر سطح رسیده': '✅ Max level reached',
+    'حداکثر سطح': 'Max level',
+    '💎 هزینه': '💎 Cost',
+    '💎 هزینه‌ی هر سرباز': '💎 Cost per soldier',
+    '💎 هزینه‌ی ۵ سرباز': '💎 Cost of 5 soldiers',
+    '💰 غنیمت': '💰 Loot',
+    '💰 پاداش تقریبی': '💰 Approximate reward',
+    '🎁 ماموریت‌ها': '🎁 Quests',
+    '🎁 پاداش ماموریت «': '🎁 Quest reward "',
+    '🎁 تجهیز نو:': '🎁 New gear:',
+    '🏅 دستاورد:': '🏅 Achievement:',
+    '🏅 دستاوردها': '🏅 Achievements',
+    '🏆 رتبه‌بندی جهانی': '🏆 World Ranking',
+    '🏆 رتبه‌بندی قدرت بین همه‌ی بازیکنان': '🏆 Power ranking among all players',
+    '🏆 فتح:': '🏆 Conquered:',
+    '🏆 پیروزی!': '🏆 Victory!',
+    '🏆 پیروزی': 'Victory',
+    '🏆 پیروزی‌ها': '🏆 Victories',
+    '🏰 بازگشت به قلعه': '🏰 Back to Castle',
+    '🏰 سقف سطح ساختمان‌ها:': '🏰 Building level cap:',
+    '🏰 قصر': '🏰 Palace',
+    '🏰 قلعه‌ی': '🏰 Castle of',
+    '️ سرزمین پادشاهان': '🗺️ Land of Kings',
+    '🗺️ پادشاهی‌های دشمن (کمپین)': '🗺️ Enemy Kingdoms (Campaign)',
+    '🗺️ کمپین فتح پادشاهی‌ها': '🗺️ Kingdom Conquest Campaign',
+    '💬 چت جهانی زنده': '💬 Live World Chat',
+    '💬 چت جهانی': '💬 World Chat',
+    '📖 رویدادها': '📖 Events',
+    '⚙️ تنظیمات': '⚙️ Settings',
+    'زبان': 'Language',
+    '✏️ تغییر نام پادشاه': '✏️ Rename King',
+    '❓ راهنمای بازی': '❓ Game Guide',
+    '🗑️ شروع بازی جدید': '🗑️ New Game',
+    '📲 نصب روی گوشی': '📲 Install on Phone',
+    '☁️ ذخیره‌ی ابری': '☁️ Cloud Save',
+    '☁️ در ابر ذخیره شد': '☁️ Saved to cloud',
+    '☁️ پادشاهی قبلی‌ات از ابر برگشت!': '☁️ Your previous kingdom returned from the cloud!',
+    '📥 بارگیری از ابر': '📥 Load from cloud',
+    '📥 پیشرفت از ابر بارگیری شد': '📥 Progress loaded from cloud',
+    '🌐 دنیای آنلاین': '🌐 Online World',
+    '🌐 به دنیای آنلاین پیوستی!': '🌐 You joined the online world!',
+    '🌐 ساخت پروفایل و ورود': '🌐 Create profile & enter',
+    '✨ در حالت آنلاین چه چیزی فعال می‌شود؟': '✨ What unlocks online?',
+    '⚔️ حمله‌ی واقعی به قلعه‌ی بازیکنان دیگر (PvP)': '⚔️ Real attacks on other players (PvP)',
+    '🧑🤝‍ اتحاد با بازیکنان واقعی و چت اختصاصی اتحاد': '🧑🤝‍ Alliance with real players + alliance chat',
+    'با حمله به بازیکنان واقعی، منابع غارت می‌کنی و در چت جهان نامت می‌درخشد!': 'Attack real players, plunder resources and shine in world chat!',
+    'نام پادشاهت در دنیای آنلاین:': 'Your king name in the online world:',
+    'نام پادشاهی خودت را بنویس:': 'Write your kingdom name:',
+    'نام پادشاهی‌ات را انتخاب کن:': 'Choose your kingdom name:',
+    '🚪 ورود به دنیا': '🚪 Enter the world',
+    'هنوز بازیکنی ثبت نشده. تو اولین پادشاه باش!': 'No players yet. Be the first king!',
+    'هنوز اتحادی ساخته نشده. اولین باش!': 'No alliance yet. Be the first!',
+    'هنوز رویدادی ثبت نشده. شروع به ساخت و نبرد کن!': 'No events yet. Start building and fighting!',
+    'اتحادهای موجود': 'Existing alliances',
+    '🛡️ تأسیس اتحاد': '🛡️ Found Alliance',
+    '🛡️ اتحاد «': '🛡️ Alliance "',
+    '🛡️ به اتحاد پیوستی!': '🛡️ You joined the alliance!',
+    '🛡️ حمله‌ی دشمن را دفع کردی!': '🛡️ You repelled the enemy attack!',
+    '🛡️ دفاع': '🛡️ Defense',
+    '🛡️ تجهیزات جنگی': '🛡️ War Gear',
+    'پیوستن': 'Join',
+    'ترک': 'Leave',
+    'عضو': 'member',
+    'عضو · قدرت کل': 'members · total power',
+    'قدرت کل': 'Total Power',
+    'قدرت': 'Power',
+    '⚡ قدرت کل': '⚡ Total Power',
+    '💪 سهم از قدرت': '💪 Power share',
+    '📊 نسبت قدرت': '📊 Power ratio',
+    'قدرت دشمن': 'Enemy power',
+    '⚔️ قدرت ارتش تو': '⚔️ Your army power',
+    '⚔️ واحدهای نظامی': '⚔️ Military Units',
+    'نیزه‌دار': 'Spearman',
+    'شمشیرزن': 'Swordsman',
+    'کماندار': 'Archer',
+    'شوالیه': 'Knight',
+    'سوارکار': 'Rider',
+    'آموزش': 'Train',
+    '⏱️ زمان آموزش': '⏱️ Training time',
+    '⏱️ زمان ساخت': '⏱️ Build time',
+    '⏱️ زمان حرکت': '⏱️ March time',
+    '⏱️ زمان رفت': '⏱️ Travel time',
+    '⏱️ زمان': '⏱️ Time',
+    'حمله': 'Attack',
+    '⚔️ حمله': '⚔️ Attack',
+    'حمله‌ی': 'Attack on',
+    'حمله به': 'Attack',
+    'دفاع': 'Defense',
+    'جان': 'HP',
+    '❤️ جان': '❤️ HP',
+    'سرعت': 'Speed',
+    '⚡ سرعت برداشت': '⚡ Gathering speed',
+    'ظرفیت': 'Capacity',
+    '👥 ظرفیت': '👥 Capacity',
+    '👥 فضای خالی': '👥 Free space',
+    '👥 ظرفیت جمعیت پر است. <b>خانه</b> یا <b>قصر</b> را ارتقا بده.': '👥 Population cap full. Upgrade <b>House</b> or <b>Palace</b>.',
+    '🚫 ظرفیت جمعیت پر است': '🚫 Population cap is full',
+    '🚫 منابع کافی نداری': '🚫 Not enough resources',
+    '🚫 سرباز لازم است': '🚫 Soldiers required',
+    '🚫 هیچ سربازی نداری!': '🚫 You have no soldiers!',
+    '🚫 نام اتحاد را بنویس': '🚫 Write the alliance name',
+    '🚫 برای درمان غذا و طلا لازم است': '🚫 Healing needs food and gold',
+    'سرباز': 'Soldier',
+    'سربازان': 'Soldiers',
+    'نفر': ' troops',
+    'زخمی': 'Wounded',
+    'سرباز زخمی': 'wounded soldier',
+    'درمان': 'Heal',
+    '⚕️ درمان همه (': '⚕️ Heal all (',
+    'درمان شدند': 'Healed',
+    '🏥 نجات': '🏥 Rescue',
+    '🏥 نجات‌یافته در بیمارستان': '🏥 Rescued at hospital',
+    'نجات سربازان زخمی': 'Rescues wounded soldiers',
+    'بخشی از سربازان کشته‌شده را نجات می‌دهد.': 'Rescues part of your fallen soldiers.',
+    '💀 تلفات': '💀 Losses',
+    '💀 شکست': '💀 Defeat',
+    '💀 کشته‌های دشمن': '💀 Enemy kills',
+    '🩸 شکست': '🩸 Defeat',
+    'شکست': 'Defeat',
+    'پیروزی': 'Victory',
+    'نبرد نزدیک': 'Close battle',
+    'نزدیک': 'close',
+    'خطرناک': 'dangerous',
+    'خطر': 'danger',
+    'دشمن نابود شد': 'Enemy destroyed',
+    'دشمنان نابودشده': 'Enemies destroyed',
+    'مهاجم کشته شد': 'Attacker slain',
+    'غارت': 'Plunder',
+    'غارتگران': 'Plunderers',
+    'منابع غارت‌شده': 'Plundered resources',
+    'طلا غارت شد': 'Gold was plundered',
+    'را غارت کرد!': 'plundered!',
+    'جمع‌آوری': 'Collect',
+    '🧺 اعزام کاروان': '🧺 Send Caravan',
+    '🧺 ظرفیت کاروان': '🧺 Caravan capacity',
+    'گروه جمع‌آوری به سمت منبع': 'Gathering group to resource',
+    'از نقشه‌ی جهان منبع جمع کن': 'Gather resources from the world map',
+    'دریافت 🎁': 'Claim 🎁',
+    'دریافت': 'Claim',
+    '🎖️ سطح': '🎖️ Level',
+    '🎯 نرخ پیروزی': '🎯 Win rate',
+    '🦁 فرماندهان افسانه‌ای': '🦁 Legendary Commanders',
+    '🦁 نبرد به فرماندهان تجربه می‌دهد و سطح آن‌ها را بالا می‌برد.': '🦁 Battles give commanders XP and level them up.',
+    '💡 فرماندهان با هر نبرد تجربه می‌گیرند و برای همیشه قوی‌تر می‌شوند.': '💡 Commanders gain XP each battle and grow stronger forever.',
+    'رستم': 'Rostam',
+    'داریوش': 'Darius',
+    'کوروش': 'Cyrus',
+    'آرش': 'Arash',
+    'فرمانده‌ی پادشاهی —': 'Kingdom commander —',
+    'فرمانده‌سالار': 'Commander-in-Chief',
+    'دژ خون': 'Blood Fort',
+    'دژ سنگ‌سیاه': 'Blackrock Fort',
+    'جنگل الف‌ها': 'Elf Forest',
+    'شهر آهنین': 'Iron City',
+    'دشت سوارکاران': 'Riders Plain',
+    'قلعه‌ی سایه': 'Shadow Castle',
+    'امپراتوری اژدها': 'Dragon Empire',
+    'پایتخت': 'Capital',
+    'قلعه‌ی سایه را فتح کن': 'Conquer the Shadow Castle',
+    'هر ۸ پادشاهی را فتح کن': 'Conquer all 8 kingdoms',
+    'همه‌ی ۸ پادشاهی را فتح کن': 'Conquer all 8 kingdoms',
+    '· فتح شده ✓': '· Conquered ✓',
+    'فتح شده ✓': 'Conquered ✓',
+    'فتح': 'Conquest',
+    '· همه‌ی پادشاهی‌ها فتح شد! 🏆': '· All kingdoms conquered! 🏆',
+    'تو شاهِ شاهانی! همه‌ی پادشاهی‌ها زیر پرچم تو هستند. 👑': 'You are the King of Kings! All kingdoms bow to your flag. 👑',
+    'شاهِ شاهان': 'King of Kings',
+    'کشاورزی': 'Farming',
+    'فنون رزم': 'Combat Arts',
+    'مهندسی بارو': 'Fortification',
+    'پزشکی': 'Medicine',
+    'تدارکات': 'Logistics',
+    '🔬 شروع تحقیق': '🔬 Start Research',
+    '🔬 تحقیق ·': '🔬 Research ·',
+    '📜 درخت دانش': '📜 Tree of Knowledge',
+    'تحقیق «': 'Research "',
+    'یک تحقیق کامل کن': 'Complete a research',
+    '🔒 کتابخانه سطح': '🔒 Library level',
+    'لازم است': 'required',
+    'کتابخانه بساز': 'Build the Library',
+    'سربازخانه بساز': 'Build the Barracks',
+    'سربازخانه سطح ۳ لازم است': 'Barracks level 3 required',
+    'سربازخانه سطح ۵ لازم است': 'Barracks level 5 required',
+    'قصر سطح ۲ لازم است': 'Palace level 2 required',
+    'قصر سطح ۳ لازم است': 'Palace level 3 required',
+    'قصر سطح ۴ لازم است': 'Palace level 4 required',
+    'قصر سطح ۵ لازم است': 'Palace level 5 required',
+    'قصر باید سطح': 'Palace must be level',
+    'قصر را به سطح ۱۰ برسان': 'Raise the Palace to level 10',
+    'قصر را به سطح ۲۰ برسان': 'Raise the Palace to level 20',
+    'مزرعه را به سطح ۳ برسان': 'Raise the Farm to level 3',
+    'قلب پادشاهی. سطح قصر، سقف سطح بقیه‌ی ساختمان‌ها را تعیین می‌کند.': 'Heart of the kingdom. Palace level sets the cap for all buildings.',
+    '🏰 <b>قصر</b> را بالا ببر؛ سقف سطح بقیه‌ی ساختمان‌ها به قصر وابسته است.': '🏰 Raise the <b>Palace</b>; other buildings caps depend on it.',
+    'غذای سربازان و مردم را تولید می‌کند.': 'Produces food for soldiers and people.',
+    'چوب تولید می‌کند؛ ماده‌ی اصلی ساخت‌وساز.': 'Produces wood; the main building material.',
+    'سنگ تولید می‌کند؛ برای دیوار و ساختمان‌های سنگی.': 'Produces stone; for walls and stone buildings.',
+    'طلا تولید می‌کند؛ برای ارتقای پیشرفته و تحقیق.': 'Produces gold; for advanced upgrades and research.',
+    'ظرفیت سربازان را افزایش می‌دهد.': 'Increases soldier capacity.',
+    'ظرفیت تحقیق را باز می‌کند.': 'Unlocks research capacity.',
+    'تبدیل منابع و تولید طلای اضافه.': 'Trades resources and makes extra gold.',
+    'میلاد و نیزه‌دار آموزش می‌دهد.': 'Trains militia and spearmen.',
+    'کماندار آموزش می‌دهد. نیازمند سربازخانه سطح ۳.': 'Trains archers. Requires Barracks level 3.',
+    'سوارکار آموزش می‌دهد. نیازمند سربازخانه سطح ۵.': 'Trains riders. Requires Barracks level 5.',
+    'جمع‌آوری منابع +۴٪ در هر سطح': 'Resource gathering +4% per level',
+    'حمله‌ی ارتش +۳٪ در هر سطح': 'Army attack +3% per level',
+    'دفاع ارتش +۳٪ در هر سطح': 'Army defense +3% per level',
+    'سرعت حرکت و ساخت +۲٪ در هر سطح': 'March & build speed +2% per level',
+    'در دفاع، قدرت ارتش شما را چند برابر می‌کند.': 'Multiplies your army power in defense.',
+    '👆 روی هر ساختمان بزن تا بسازی یا ارتقا بدی. سطح <b>قصر</b> سقف بقیه است.': '👆 Tap any building to build or upgrade. <b>Palace</b> level is the cap.',
+    '🏗️ ساختمان‌ها': '🏗️ Buildings',
+    '🏗️ ساختن': '🏗️ Building',
+    '🏗️ بساز': '🏗️ Build',
+    '🏗️ اول': '🏗️ First',
+    'ساختمان': 'Building',
+    'دستاورد': 'Achievement',
+    '🎖️ ۵ نفر آموزش بده': '🎖️ Train 5 troops',
+    'ماموریت فعال:': 'Active quest:',
+    '🎯 ماموریت': 'Quest',
+    'ماموریت «': 'Quest "',
+    'یک نبرد را ببر': 'Win a battle',
+    'یک پادشاهی را فتح کن': 'Conquer a kingdom',
+    'یک اردوی هیولاها را نابود کن': 'Destroy a monster camp',
+    'یک جنگجوی اژدها بساز': 'Train a dragon warrior',
+    'یک فرمانده به سطح ۳ برسان': 'Raise a commander to level 3',
+    '۱۰ بار ساختمان ارتقا بده': 'Upgrade buildings 10 times',
+    '۴۰ بار ساختمان ارتقا بده': 'Upgrade buildings 40 times',
+    '۲۵ سرباز داشته باش': 'Have 25 soldiers',
+    '۲۰۰ سرباز داشته باش': 'Have 200 soldiers',
+    '۱۰۰۰ طلا جمع کن': 'Collect 10,000 gold',
+    '۳ حمله‌ی دشمن را دفع کن': 'Repel 3 enemy attacks',
+    '۵ پادشاهی را فتح کن': 'Conquer 5 kingdoms',
+    'به قدرت ۲٬۰۰۰ برس': 'Reach 2,000 power',
+    '۱) قلعه بساز.': '1) Build your castle.',
+    '۲) ارتش بساز.': '2) Build an army.',
+    '۳) حمله کن.': '3) Attack.',
+    '۴) تحقیق کن.': '4) Research.',
+    '۵) دفاع کن.': '5) Defend.',
+    '۶) آفلاین هم کار می‌کند.': '6) Works offline too.',
+    'اردوگاه راهزنان': 'Bandit camp',
+    'اردوی هیولاها': 'Monster camp',
+    'اردوی هیولاها — سطح': 'Monster camp — level',
+    '⚔️ بعد ارتش بساز و اولین <b>اردوگاه راهزنان</b> را فتح کن.': '⚔️ Build an army then conquer the first <b>bandit camp</b>.',
+    '⚔️ بعد ارتش بساز و اولین': '⚔️ Then build an army and the first',
+    'را فتح کن.': 'conquer.',
+    'را در بخش قلعه بساز.': 'build it in the Castle tab.',
+    'را در بخش قلعه بساز (قصر سطح ۴ لازم است).': 'build it in the Castle tab (Palace level 4 required).',
+    'برای درمان سربازان، اول <b>بیمارستان</b> را در بخش قلعه بساز.': 'To heal soldiers, first build the <b>Hospital</b> in the Castle tab.',
+    'برای درمان سربازان، اول': 'To heal soldiers, first',
+    'را بالا ببر؛ سقف سطح بقیه‌ی ساختمان‌ها به قصر وابسته است.': 'raise it; other buildings caps depend on the Palace.',
+    'را ارتقا بده تا منابع جریان پیدا کند.': 'upgrade it so resources flow.',
+    'مزرعه و چوب‌بری منابع می‌سازند. سطح': 'Farm and Sawmill make resources. Level',
+    'در بخش «ارتش» سرباز آموزش بده. ظرفیت جمعیت با': 'Train soldiers in the Army tab. Population cap grows with',
+    'برای فتح بعدی، قدرت ارتشت را بالای قدرت دشمن ببر.': 'For the next conquest, raise your army power above the enemy.',
+    '🌫️ مه با رشد قصر کنار می‌رود': '🌫️ Fog clears as the Palace grows',
+    '👁️ شعاع دید:': '👁️ Vision radius:',
+    'نکته:': 'Tip:',
+    'فهمیدم 👑': 'Got it 👑',
+    'باشه': 'OK',
+    'بی‌خیال': 'Cancel',
+    'بله، پاک کن': 'Yes, wipe it',
+    'نه، برگرد': 'No, go back',
+    'همه‌ی پیشرفت تو پاک می‌شود: ساختمان‌ها، ارتش، تحقیق‌ها و فتح‌ها. مطمئنی؟': 'All your progress will be wiped: buildings, army, research and conquests. Sure?',
+    'خوش برگشتی،': 'Welcome back,',
+    'به تاج پارسی خوش آمدی!': 'Welcome to Persian Crown!',
+    'ای که نبودی، پادشاهی‌ات کار کرد:': 'while you were away, your kingdom worked:',
+    'ای که نبودی، پادشاهی‌ات کار کرد:</p>': 'while you were away, your kingdom worked:</p>',
+    'روز از آغاز پادشاهی تو گذشته · بازی به‌صورت خودکار روی همین گوشی ذخیره می‌شود.': 'days since your kingdom began · the game auto-saves on this phone.',
+    'حداکثر ۱۲ ساعت پیشرفت آفلاین محاسبه می‌شود.': 'Up to 12 hours of offline progress is counted.',
+    'همین حالا': 'just now',
+    ' د پیش': ' min ago',
+    ' س پیش': ' h ago',
+    ' روز پیش': ' days ago',
+    'ثانیه': 'sec',
+    'دقیقه': 'min',
+    'ساعت و': 'h',
+    'روز و': 'd',
+    'ساعت': 'hour',
+    'دفاع سربازان': 'Soldier defense',
+    'حمله‌ی سربازان': 'Soldier attack',
+    'طلای سربازان': 'Soldier gold',
+    '🌐 زبان / Language:': '🌐 Language / زبان:',
+    'زبان / Language:': 'Language:',
+    'پادشاهی تأسیس شد': 'Kingdom founded',
+    'پادشاهی': 'Kingdom',
+    '👑 پادشاهی': '👑 Kingdom',
+    '👑 آغاز پادشاهی': '👑 Begin Reign',
+    'اتحاد با بازیکنان واقعی': 'Alliance with real players',
+    'بازگشت به نبرد': 'Back to battle',
+    'بازگشت': 'Back',
+    'کامل شد': 'completed',
+    'کامل شد — سطح': 'completed — level',
+    '» کامل شد': ' completed',
+    '» سطح': ' level',
+    '» آغاز شد': ' started',
+    '» باز شد': ' unlocked',
+    '» تأسیس شد!': ' founded!',
+    '» حرکت کرد': ' marched',
+    '» دریافت شد': ' claimed',
+    '» دفع شد!': ' repelled!',
+    'آغاز شد': 'started',
+    'حرکت کرد': 'marched',
+    'رسید': 'arrived',
+    'رسید!': 'arrived!',
+    'به انبار رسید': 'delivered to storage',
+    'به ارتش پیوستند': 'joined the army',
+    'سرباز آغاز شد': 'soldiers started',
+    'سرباز از دست رفت': 'soldiers lost',
+    'سرباز در خانه ماندند': 'soldiers stayed home',
+    'سربازان از دست رفته': 'soldiers lost',
+    'سرباز):': 'soldiers):',
+    'سرباز)': 'soldiers)',
+    'سرباز /': 'Soldiers /',
+    'سطح <b>قصر</b> سقف بقیه است.': '<b>Palace</b> level is the cap.',
+    'سطح <b>قصر</b>': '<b>Palace</b> level',
+    'سقف سطح بقیه‌ی ساختمان‌هاست، پس قصر را همیشه ارتقا بده.': 'is the cap for other buildings, so always upgrade the Palace.',
+    'موجودی منبع': 'Resource stock',
+    'وضعیت فعلی': 'Current status',
+    'اثر فعلی': 'Current effect',
+    'اثر بعدی': 'Next effect',
+    'در سطح بعدی': 'At next level',
+    'بعد از ارتقا': 'After upgrade',
+    'بعد ارتقا': 'after upgrade',
+    'به سطح': 'to level',
+    'سطح ': 'Level ',
+    'باشد': '',
+    'کاروان با': 'Caravan with',
+    'تجهیز «': 'Gear "',
+    'یافت شد': 'found',
+    'عالی! 👑': 'Excellent! 👑',
+    'پیروزی آسان': 'Easy victory',
+    'پیروزی در': 'Victory at',
+    'پیروزی در نبرد «': 'Victory in battle "',
+    'پیروزی نخست': 'First Victory',
+    'شکست در': 'Defeat at',
+    'شکست در «': 'Defeat at "',
+    'نبرد': 'Battle',
+    'نخستین سربازان': 'First Soldiers',
+    'نخستین پیروزی': 'First Victory',
+    'کشاورز ماهر': 'Skilled Farmer',
+    'سازنده': 'Builder',
+    'جنگجوی اژدها': 'Dragon Warrior',
+    'شکارچی هیولا': 'Monster Hunter',
+    'فاتح': 'Conqueror',
+    'شکست‌ناپذیر': 'Invincible',
+    'ثروتمند': 'Wealthy',
+    'قلعه‌دار': 'Castellan',
+    'اهل دانش': 'Scholar',
+    'شهرنشین': 'Citizen',
+    'قدرت‌نمایی': 'Show of Force',
+    'ارتش نوپا': 'Rising Army',
+    'ارتش‌دار': 'Warlord',
+    'گردآورنده': 'Gatherer',
+    'پژوهشگر': 'Researcher',
+    'دانشمند': 'Scientist',
+    'از شکار هیولا': 'From monster hunting',
+    '❌ اتصال برقرار نشد؛ حالت آفلاین': '❌ Connection failed; offline mode',
+    '❌ اتصال به سرور ممکن نشد': '❌ Could not reach the server',
+    '❌ خطا در اتصال': '❌ Connection error',
+    '🔗 حساب به': '🔗 Account linked to',
+    'وصل شد': 'connected',
+    '⚠️ جا نبود؛': '⚠️ No space;',
+    '⚡ دشمن حمله کرد و شکست خوردی!': '⚡ The enemy attacked and you lost!',
+    'به سود تو تمام شد.': 'ended in your favor.',
+    'به سود دشمن تمام شد. ارتش را تقویت کن و دوباره حمله کن.': 'ended in the enemy favor. Strengthen your army and attack again.',
+    'در حال ساخت': 'building',
+    'در حال تحقیق': 'researching',
+    'بیمارستان</b> را در بخش قلعه بساز.': 'Hospital</b> in the Castle tab.',
+    'دنیای آنلاین': 'Online World',
+    '☁️ ذخیره‌ی ابری پیشرفت — روی هر دستگاهی ادامه بده': '☁️ Cloud save — continue on any device',
+    '📲 در منوی مرورگر گزینه‌ی «افزودن به صفحه‌ی اصلی» را بزن': '📲 In the browser menu tap "Add to Home Screen"',
+    'طلا در ثانیه': 'Gold per second',
+    'در ثانیه': 'per second',
+    '/ث': '/s',
+    'هزار': 'K',
+    'میلیون': 'M',
+    'میلیارد': 'B',
+    '⏳ تا پایان ساخت فعلی صبر کن</div>': '⏳ Wait for the current build to finish</div>',
+    'در دست ساخت': 'under construction',
+    'جنگل‌داری': 'Forestry',
+    'زره‌سازی': 'Armorsmith',
+    'استخراج': 'Mining',
+    'تولید غذا': 'Food production',
+    'تولید چوب': 'Wood production',
+    'تولید سنگ و طلا': 'Stone & gold production',
+    'سرعت ساخت و آموزش': 'Build & train speed',
+    'بازار': 'Market',
+    'کمپین': 'Campaign',
+    'رتبه‌بندی': 'Ranking',
+    'چت': 'Chat',
+    'تنظیمات': 'Settings',
+    'راهنما': 'Guide',
+    'ذخیره': 'Save',
+    'ابر': 'Cloud',
+    'یخ': 'Ice',
+    'طوفان': 'Storm',
+    'خاکستر': 'Ash',
+    'افسانه': 'Legend',
+    'آسان': 'Easy',
+    'منبع': 'Resource',
+  },
+  ar: {}
+};
+TR.ar = {
+  'تاج پارسی — خشم پادشاهان': 'التاج الفارسي — غضب الملوك',
+  'تاج پارسی فقط در حالت افقی اجرا می‌شود': 'تاج فارسي يعمل بالوضع الأفقي فقط',
+  'گوشی را افقی بگیر': 'أمسك الهاتف بالعرض',
+  'تاج پارسی': 'التاج الفارسي',
+  'خشم پادشاهان · نسخه‌ی ۳': 'غضب الملوك · الإصدار ٣',
+  'خشم پادشاهان': 'غضب الملوك',
+  'پادشاهی‌ات برای همیشه روی جیمیل تو ذخیره می‌شود': 'تُحفظ مملكتك للأبد على بريدك جيميل',
+  'نام پادشاه': 'اسم الملك',
+  '🔗 اتصال به جیمیل و ورود': '🔗 ربط جيميل والدخول',
+  '▶ ادامه به‌صورت آفلاین': '▶ المتابعة دون اتصال',
+  '📧 یک جیمیل معتبر بنویس': '📧 أدخل بريداً صالحاً',
+  'در حال آماده‌سازی…': 'جارٍ التحضير…',
+  'بیدار کردن اژدها…': 'إيقاظ التنين…',
+  'تیز کردن شمشیرها…': 'شحذ السيوف…',
+  'شمردن گندم انبارها…': 'عدّ قمح المخازن…',
+  'کاوش در مه نقشه…': 'استكشاف ضباب الخريطة…',
+  'صیقل دادن تاج پادشاهی…': 'صقل التاج الملكي…',
+  'گرم کردن طبل‌های جنگ…': 'تسخين طبول الحرب…',
+  '⚔️ آماده‌ی نبرد!': '⚔️ جاهز للمعركة!',
+  '● سرور متصل': '● الخادم متصل',
+  '● آفلاین': '● دون اتصال',
+  '● آنلاین': '● متصل',
+  '☀️ روز': '☀️ نهار',
+  '🌙 شب و روز:': '🌙 الليل والنهار:',
+  '🌙 شب': '🌙 ليل',
+  'شب': 'ليل',
+  'روز': 'نهار',
+  'موسیقی روشن': 'الموسيقى تعمل',
+  'موسیقی خاموش': 'الموسيقى موقفة',
+  'موسیقی': 'موسيقى',
+  'صدا روشن': 'الصوت يعمل',
+  'صدا خاموش': 'الصوت muted',
+  'صدا': 'صوت',
+  'منو': 'قائمة',
+  'فرمانده': 'قائد',
+  'قلعه‌ی تو': 'قلعتك',
+  'قلعه‌ی': 'قلعة',
+  'قلعه': 'قلعة',
+  'قصر': 'قصر',
+  'مزرعه': 'مزرعة',
+  'چوب‌بری': 'منشرة',
+  'معدن سنگ': 'محجر',
+  'معدن طلا': 'منجم ذهب',
+  'سربازخانه': 'ثكنة',
+  'بیمارستان': 'مستشفى',
+  'خانه': 'منزل',
+  'میدان تیراندازی': 'ميدان رماية',
+  'طویله': 'اسطبل',
+  'بازار': 'سوق',
+  'کتابخانه': 'مكتبة',
+  'دیوار شهر': 'سور المدينة',
+  '🌾 غذا': '🌾 طعام',
+  'غذا': 'طعام',
+  '🪵 چوب': '🪵 خشب',
+  'چوب': 'خشب',
+  '🪨 سنگ': '🪨 حجر',
+  'سنگ': 'حجر',
+  '🪙 طلا': '🪙 ذهب',
+  'طلا': 'ذهب',
+  'ارتش': 'جيش',
+  'جهان': 'عالم',
+  'اتحاد': 'تحالف',
+  'تحقیق': 'بحث',
+  'پادشاه': 'ملك',
+  'سطح فعلی': 'المستوى الحالي',
+  'سطح بعدی': 'المستوى التالي',
+  'سطح': 'مستوى',
+  'ساخته نشده': 'غير مبني',
+  'ساختن': 'بناء',
+  'بساز': 'ابنِ',
+  'ساخت': 'بناء',
+  '⬆️ ارتقا بده': '⬆️ ترقية',
+  '⬆️ ارتقا به سطح': '⬆️ ترقية إلى مستوى',
+  'ارتقای': 'ترقية',
+  'ارتقا': 'ترقية',
+  '⏳ اول صبر کن ساخت فعلی تمام شود': '⏳ انتظر انتهاء البناء الحالي',
+  '⏳ تا پایان ساخت فعلی صبر کن': '⏳ انتظر انتهاء البناء',
+  '⏳ اول آموزش فعلی تمام شود': '⏳ انتظر انتهاء التدريب الحالي',
+  '⏳ اول تحقیق فعلی تمام شود': '⏳ انتظر انتهاء البحث الحالي',
+  '⏳ یک گروه در حال حرکت است': '⏳ مجموعة تتحرك بالفعل',
+  '⏳ درمان در جریان است': '⏳ العلاج جارٍ',
+  'در حال ساخت…': 'جارٍ البناء…',
+  'در حال تحقیق…': 'جارٍ البحث…',
+  'در حال برداشت/نبرد': 'جمع/قتال',
+  'در حرکت': 'يتحرك',
+  'باقی‌مانده': 'متبقٍ',
+  '✅ به حداکثر سطح رسیده': '✅ بلغت الحد الأقصى',
+  'حداکثر سطح': 'أقصى مستوى',
+  '💎 هزینه': '💎 تكلفة',
+  '💎 هزینه‌ی هر سرباز': '💎 تكلفة كل جندي',
+  '💎 هزینه‌ی ۵ سرباز': '💎 تكلفة ٥ جنود',
+  '💰 غنیمت': '💰 غنائم',
+  '💰 پاداش تقریبی': '💰 مكافأة تقريبية',
+  '🎁 ماموریت‌ها': '🎁 المهام',
+  '🎁 پاداش ماموریت «': '🎁 مكافأة مهمة "',
+  '🎁 تجهیز نو:': '🎁 عتاد جديد:',
+  '🏅 دستاورد:': '🏅 إنجاز:',
+  '🏅 دستاوردها': '🏅 الإنجازات',
+  '🏆 رتبه‌بندی جهانی': '🏆 التصنيف العالمي',
+  '🏆 رتبه‌بندی قدرت بین همه‌ی بازیکنان': '🏆 تصنيف القوة بين اللاعبين',
+  '🏆 فتح:': '🏆 فُتح:',
+  '🏆 پیروزی!': '🏆 نصر!',
+  '🏆 پیروزی': 'نصر',
+  '🏆 پیروزی‌ها': '🏆 انتصارات',
+  '🏰 بازگشت به قلعه': '🏰 العودة إلى القلعة',
+  '🏰 سقف سطح ساختمان‌ها:': '🏰 سقف مستوى المباني:',
+  '🏰 قصر': '🏰 قصر',
+  '🏰 قلعه‌ی': '🏰 قلعة',
+  '🗺️ سرزمین پادشاهان': '🗺️ أرض الملوك',
+  '🗺️ پادشاهی‌های دشمن (کمپین)': '🗺️ ممالك الأعداء (حملة)',
+  '🗺️ کمپین فتح پادشاهی‌ها': '🗺️ حملة فتح الممالك',
+  '💬 چت جهانی زنده': '💬 دردشة العالم المباشرة',
+  '💬 چت جهانی': '💬 دردشة العالم',
+  '📖 رویدادها': '📖 الأحداث',
+  '⚙️ تنظیمات': '⚙️ الإعدادات',
+  'زبان': 'لغة',
+  '✏️ تغییر نام پادشاه': '✏️ تغيير اسم الملك',
+  '❓ راهنمای بازی': '❓ دليل اللعبة',
+  '🗑️ شروع بازی جدید': '🗑️ لعبة جديدة',
+  '📲 نصب روی گوشی': '📲 تثبيت على الهاتف',
+  '☁️ ذخیره‌ی ابری': '☁️ حفظ سحابي',
+  '☁️ در ابر ذخیره شد': '☁️ حُفظ في السحابة',
+  '☁️ پادشاهی قبلی‌ات از ابر برگشت!': '☁️ عادت مملكتك السابقة من السحابة!',
+  '📥 بارگیری از ابر': '📥 تحميل من السحابة',
+  '📥 پیشرفت از ابر بارگیری شد': '📥 حُمّل التقدم من السحابة',
+  '🌐 دنیای آنلاین': '🌐 العالم عبر الإنترنت',
+  '🌐 به دنیای آنلاین پیوستی!': '🌐 انضممت إلى العالم!',
+  '🌐 ساخت پروفایل و ورود': '🌐 إنشاء ملف والدخول',
+  '✨ در حالت آنلاین چه چیزی فعال می‌شود؟': '✨ ماذا يُفتح عبر الإنترنت؟',
+  '⚔️ حمله‌ی واقعی به قلعه‌ی بازیکنان دیگر (PvP)': '⚔️ هجمات حقيقية على اللاعبين (PvP)',
+  '🧑🤝‍ اتحاد با بازیکنان واقعی و چت اختصاصی اتحاد': '🧑🤝‍ تحالف مع لاعبين حقيقيين ودردشة خاصة',
+  'با حمله به بازیکنان واقعی، منابع غارت می‌کنی و در چت جهان نامت می‌درخشد!': 'هاجم لاعبين حقيقيين وانهب الموارد ولمع في دردشة العالم!',
+  'نام پادشاهت در دنیای آنلاین:': 'اسم ملكك في العالم:',
+  'نام پادشاهی خودت را بنویس:': 'اكتب اسم مملكتك:',
+  'نام پادشاهی‌ات را انتخاب کن:': 'اختر اسم مملكتك:',
+  '🚪 ورود به دنیا': '🚪 دخول العالم',
+  'هنوز بازیکنی ثبت نشده. تو اولین پادشاه باش!': 'لا لاعبين بعد. كن أول ملك!',
+  'هنوز اتحادی ساخته نشده. اولین باش!': 'لا تحالف بعد. كن الأول!',
+  'هنوز رویدادی ثبت نشده. شروع به ساخت و نبرد کن!': 'لا أحداث بعد. ابدأ البناء والقتال!',
+  'اتحادهای موجود': 'التحالفات الموجودة',
+  '🛡️ تأسیس اتحاد': '🛡️ تأسيس تحالف',
+  '🛡️ اتحاد «': '🛡️ تحالف "',
+  '🛡️ به اتحاد پیوستی!': '🛡️ انضممت إلى التحالف!',
+  '🛡️ حمله‌ی دشمن را دفع کردی!': '🛡️ صدقت هجوم العدو!',
+  '🛡️ دفاع': '🛡️ دفاع',
+  '🛡️ تجهیزات جنگی': '🛡️ عتاد الحرب',
+  'پیوستن': 'انضمام',
+  'ترک': 'مغادرة',
+  'عضو': 'عضو',
+  'عضو · قدرت کل': 'عضو · القوة الكلية',
+  'قدرت کل': 'القوة الكلية',
+  'قدرت': 'قوة',
+  '⚡ قدرت کل': '⚡ القوة الكلية',
+  '💪 سهم از قدرت': '💪 حصة من القوة',
+  '📊 نسبت قدرت': '📊 نسبة القوة',
+  'قدرت دشمن': 'قوة العدو',
+  '⚔️ قدرت ارتش تو': '⚔️ قوة جيشك',
+  '⚔️ واحدهای نظامی': '⚔️ الوحدات العسكرية',
+  'نیزه‌دار': 'رامح',
+  'شمشیرزن': 'سيّاف',
+  'کماندار': 'رامٍ',
+  'شوالیه': 'فارس',
+  'سوارکار': 'فارس خيال',
+  'آموزش': 'تدريب',
+  '⏱️ زمان آموزش': '⏱️ زمن التدريب',
+  '⏱️ زمان ساخت': '⏱️ زمن البناء',
+  '⏱️ زمان حرکت': '⏱️ زمن التحرك',
+  '⏱️ زمان رفت': '⏱️ زمن الذهاب',
+  '⏱️ زمان': '⏱️ زمن',
+  'حمله': 'هجوم',
+  '⚔️ حمله': '⚔️ هجوم',
+  'حمله‌ی': 'هجوم على',
+  'حمله به': 'هجوم على',
+  'دفاع': 'دفاع',
+  'جان': 'نقاط حياة',
+  '❤️ جان': '❤️ حياة',
+  'سرعت': 'سرعة',
+  '⚡ سرعت برداشت': '⚡ سرعة الجمع',
+  'ظرفیت': 'سعة',
+  '👥 ظرفیت': '👥 سعة',
+  '👥 فضای خالی': '👥 مساحة فارغة',
+  '👥 ظرفیت جمعیت پر است. <b>خانه</b> یا <b>قصر</b> را ارتقا بده.': '👥 السعة ممتلئة. رقِّ <b>المنزل</b> أو <b>القصر</b>.',
+  '🚫 ظرفیت جمعیت پر است': '🚫 السعة ممتلئة',
+  '🚫 منابع کافی نداری': '🚫 موارد غير كافية',
+  '🚫 سرباز لازم است': '🚫 يلزم جنود',
+  '🚫 هیچ سربازی نداری!': '🚫 لا جنود لديك!',
+  '🚫 نام اتحاد را بنویس': '🚫 اكتب اسم التحالف',
+  '🚫 برای درمان غذا و طلا لازم است': '🚫 العلاج يحتاج طعاماً وذهباً',
+  'سرباز': 'جندي',
+  'سربازان': 'جنود',
+  'نفر': ' جندي',
+  'زخمی': 'جريح',
+  'سرباز زخمی': 'جندي جريح',
+  'درمان': 'علاج',
+  '⚕️ درمان همه (': '⚕️ علاج الكل (',
+  'درمان شدند': 'تم العلاج',
+  '🏥 نجات': '🏥 إنقاذ',
+  '🏥 نجات‌یافته در بیمارستان': '🏥 أُنقذ في المستشفى',
+  'نجات سربازان زخمی': 'ينقذ الجنود الجرحى',
+  'بخشی از سربازان کشته‌شده را نجات می‌دهد.': 'ينقذ جزءاً من الجنود القتلى.',
+  '💀 تلفات': '💀 خسائر',
+  '💀 شکست': '💀 هزيمة',
+  '💀 کشته‌های دشمن': '💀 قتلى العدو',
+  '🩸 شکست': '🩸 هزيمة',
+  'شکست': 'هزيمة',
+  'پیروزی': 'نصر',
+  'نبرد نزدیک': 'معركة متكافئة',
+  'نزدیک': 'متكافئ',
+  'خطرناک': 'خطر',
+  'خطر': 'خطر',
+  'دشمن نابود شد': 'دُمّر العدو',
+  'دشمنان نابودشده': 'أعداء مدمّرون',
+  'مهاجم کشته شد': 'قُتل المهاجم',
+  'غارت': 'نهب',
+  'غارتگران': 'نهابون',
+  'منابع غارت‌شده': 'موارد منهوبة',
+  'طلا غارت شد': 'نُهب الذهب',
+  'را غارت کرد!': 'نهب!',
+  'جمع‌آوری': 'جمع',
+  '🧺 اعزام کاروان': '🧺 إرسال قافلة',
+  '🧺 ظرفیت کاروان': '🧺 سعة القافلة',
+  'گروه جمع‌آوری به سمت منبع': 'مجموعة الجمع نحو المورد',
+  'از نقشه‌ی جهان منبع جمع کن': 'اجمع الموارد من خريطة العالم',
+  'دریافت 🎁': 'استلام 🎁',
+  'دریافت': 'استلام',
+  '🎖️ سطح': '🎖️ مستوى',
+  '🎯 نرخ پیروزی': '🎯 نسبة النصر',
+  '🦁 فرماندهان افسانه‌ای': '🦁 القادة الأسطوريون',
+  '🦁 نبرد به فرماندهان تجربه می‌دهد و سطح آن‌ها را بالا می‌برد.': '🦁 المعارك تمنح القادة خبرة وترفع مستواهم.',
+  '💡 فرماندهان با هر نبرد تجربه می‌گیرند و برای همیشه قوی‌تر می‌شوند.': '💡 يكتسب القادة خبرة بكل معركة ويصبحون أقوى للأبد.',
+  'رستم': 'رستم',
+  'داریوش': 'داريوش',
+  'کوروش': 'قورش',
+  'آرش': 'آرش',
+  'فرمانده‌ی پادشاهی —': 'قائد المملكة —',
+  'فرمانده‌سالار': 'القائد الأعلى',
+  'دژ خون': 'حصن الدم',
+  'دژ سنگ‌سیاه': 'حصن الصخر الأسود',
+  'جنگل الف‌ها': 'غابة الجان',
+  'شهر آهنین': 'المدينة الحديدية',
+  'دشت سوارکاران': 'سهل الفرسان',
+  'قلعه‌ی سایه': 'قلعة الظل',
+  'امپراتوری اژدها': 'إمبراطورية التنين',
+  'پایتخت': 'العاصمة',
+  'قلعه‌ی سایه را فتح کن': 'افتح قلعة الظل',
+  'هر ۸ پادشاهی را فتح کن': 'افتح الممالك الثماني',
+  'همه‌ی ۸ پادشاهی را فتح کن': 'افتح الممالك الثماني',
+  '· فتح شده ✓': '· مفتوح ✓',
+  'فتح شده ✓': 'مفتوح ✓',
+  'فتح': 'فتح',
+  '· همه‌ی پادشاهی‌ها فتح شد! 🏆': '· فُتحت كل الممالك! 🏆',
+  'تو شاهِ شاهانی! همه‌ی پادشاهی‌ها زیر پرچم تو هستند. 👑': 'أنت ملك الملوك! كل الممالك تحت رايتك. 👑',
+  'شاهِ شاهان': 'ملك الملوك',
+  'کشاورزی': 'زراعة',
+  'فنون رزم': 'فنون القتال',
+  'مهندسی بارو': 'هندسة التحصين',
+  'پزشکی': 'طب',
+  'تدارکات': 'إمدادات',
+  '🔬 شروع تحقیق': '🔬 بدء البحث',
+  '🔬 تحقیق ·': '🔬 بحث ·',
+  '📜 درخت دانش': '📜 شجرة المعرفة',
+  'تحقیق «': 'بحث "',
+  'یک تحقیق کامل کن': 'أكمل بحثاً',
+  '🔒 کتابخانه سطح': '🔒 مكتبة مستوى',
+  'لازم است': 'مطلوب',
+  'کتابخانه بساز': 'ابنِ المكتبة',
+  'سربازخانه بساز': 'ابنِ الثكنة',
+  'سربازخانه سطح ۳ لازم است': 'يلزم ثكنة مستوى ٣',
+  'سربازخانه سطح ۵ لازم است': 'يلزم ثكنة مستوى ٥',
+  'قصر سطح ۲ لازم است': 'يلزم قصر مستوى ٢',
+  'قصر سطح ۳ لازم است': 'يلزم قصر مستوى ٣',
+  'قصر سطح ۴ لازم است': 'يلزم قصر مستوى ٤',
+  'قصر سطح ۵ لازم است': 'يلزم قصر مستوى ٥',
+  'قصر باید سطح': 'يجب أن يكون القصر مستوى',
+  'قصر را به سطح ۱۰ برسان': 'ارفع القصر إلى مستوى ١٠',
+  'قصر را به سطح ۲۰ برسان': 'ارفع القصر إلى مستوى ٢٠',
+  'مزرعه را به سطح ۳ برسان': 'ارفع المزرعة إلى مستوى ٣',
+  'قلب پادشاهی. سطح قصر، سقف سطح بقیه‌ی ساختمان‌ها را تعیین می‌کند.': 'قلب المملكة. مستوى القصر يحدد سقف باقي المباني.',
+  '🏰 <b>قصر</b> را بالا ببر؛ سقف سطح بقیه‌ی ساختمان‌ها به قصر وابسته است.': '🏰 ارفع <b>القصر</b>؛ سقف باقي المباني يتعلق به.',
+  'غذای سربازان و مردم را تولید می‌کند.': 'ينتج طعام الجنود والشعب.',
+  'چوب تولید می‌کند؛ ماده‌ی اصلی ساخت‌وساز.': 'ينتج الخشب؛ مادة البناء الأساسية.',
+  'سنگ تولید می‌کند؛ برای دیوار و ساختمان‌های سنگی.': 'ينتج الحجر؛ للأسوار والمباني.',
+  'طلا تولید می‌کند؛ برای ارتقای پیشرفته و تحقیق.': 'ينتج الذهب؛ للترقيات المتقدمة والبحث.',
+  'ظرفیت سربازان را افزایش می‌دهد.': 'يزيد سعة الجنود.',
+  'ظرفیت تحقیق را باز می‌کند.': 'يفتح سعة البحث.',
+  'تبدیل منابع و تولید طلای اضافه.': 'يحوّل الموارد وينتج ذهباً إضافياً.',
+  'میلاد و نیزه‌دار آموزش می‌دهد.': 'يدرّب الميليشيا والرماح.',
+  'کماندار آموزش می‌دهد. نیازمند سربازخانه سطح ۳.': 'يدرّب الرماة. يتطلب ثكنة مستوى ٣.',
+  'سوارکار آموزش می‌دهد. نیازمند سربازخانه سطح ۵.': 'يدرّب الفرسان. يتطلب ثكنة مستوى ٥.',
+  'جمع‌آوری منابع +۴٪ در هر سطح': 'جمع الموارد +٤٪ لكل مستوى',
+  'حمله‌ی ارتش +۳٪ در هر سطح': 'هجوم الجيش +٣٪ لكل مستوى',
+  'دفاع ارتش +۳٪ در هر سطح': 'دفاع الجيش +٣٪ لكل مستوى',
+  'سرعت حرکت و ساخت +۲٪ در هر سطح': 'سرعة التحرك والبناء +٢٪ لكل مستوى',
+  'در دفاع، قدرت ارتش شما را چند برابر می‌کند.': 'يضاعف قوة جيشك في الدفاع.',
+  '👆 روی هر ساختمان بزن تا بسازی یا ارتقا بدی. سطح <b>قصر</b> سقف بقیه است.': '👆 اضغط على أي مبنى للبناء أو الترقية. مستوى <b>القصر</b> هو السقف.',
+  '🏗️ ساختمان‌ها': '🏗️ المباني',
+  '🏗️ ساختن': '🏗️ بناء',
+  '🏗️ بساز': '🏗 ابنِ',
+  '🏗️ اول': '🏗 أولاً',
+  'ساختمان': 'مبنى',
+  'دستاورد': 'إنجاز',
+  '🎖️ ۵ نفر آموزش بده': '🎖️ درّب ٥ جنود',
+  'ماموریت فعال:': 'المهمة النشطة:',
+  'ماموریت «': 'مهمة "',
+  'یک نبرد را ببر': 'اربح معركة',
+  'یک پادشاهی را فتح کن': 'افتح مملكة',
+  'یک اردوی هیولاها را نابود کن': 'دمّر معسكراً للوحوش',
+  'یک جنگجوی اژدها بساز': 'درّب محارب تنين',
+  'یک فرمانده به سطح ۳ برسان': 'ارفع قائداً إلى مستوى ٣',
+  '۱۰ بار ساختمان ارتقا بده': 'رقِّ المباني ١٠ مرات',
+  '۴۰ بار ساختمان ارتقا بده': 'رقِّ المباني ٤٠ مرة',
+  '۲۵ سرباز داشته باش': 'املِك ٢٥ جندياً',
+  '۲۰۰ سرباز داشته باش': 'املِك ٢٠٠ جندي',
+  '۱۰٬۰۰ طلا جمع کن': 'اجمع ١٠٬٠٠٠ ذهب',
+  '۳ حمله‌ی دشمن را دفع کن': 'صدّ ٣ هجمات',
+  '۵ پادشاهی را فتح کن': 'افتح ٥ ممالك',
+  'به قدرت ۲٬۰۰ برس': 'ابلغ قوة ٢٬٠٠٠',
+  '۱) قلعه بساز.': '١) ابنِ قلعتك.',
+  '۲) ارتش بساز.': '٢) ابنِ جيشاً.',
+  '۳) حمله کن.': '٣) اهجم.',
+  '۴) تحقیق کن.': '٤) ابحث.',
+  '۵) دفاع کن.': '٥) دافع.',
+  '۶) آفلاین هم کار می‌کند.': '٦) يعمل دون اتصال أيضاً.',
+  'اردوگاه راهزنان': 'معسكر قطاع الطرق',
+  'اردوی هیولاها': 'معسكر الوحوش',
+  'اردوی هیولاها — سطح': 'معسكر الوحوش — مستوى',
+  '⚔️ بعد ارتش بساز و اولین <b>اردوگاه راهزنان</b> را فتح کن.': '⚔ ابنِ جيشاً ثم افتح أول <b>معسكر قطاع الطرق</b>.',
+  '⚔️ بعد ارتش بساز و اولین': '⚔ ثم ابنِ جيشاً وافتح أول',
+  'را فتح کن.': 'افتح.',
+  'را در بخش قلعه بساز.': 'ابنِه في تبويب القلعة.',
+  'را در بخش قلعه بساز (قصر سطح ۴ لازم است).': 'ابنِه في تبويب القلعة (يلزم قصر مستوى ٤).',
+  'برای درمان سربازان، اول <b>بیمارستان</b> را در بخش قلعه بساز.': 'لعلاج الجنود، ابنِ <b>المستشفى</b> أولاً في تبويب القلعة.',
+  'برای درمان سربازان، اول': 'لعلاج الجنود، أولاً',
+  'را بالا ببر؛ سقف سطح بقیه‌ی ساختمان‌ها به قصر وابسته است.': 'ارفعه؛ سقف باقي المباني يتعلق بالقصر.',
+  'را ارتقا بده تا منابع جریان پیدا کند.': 'رقِّه لتتدفق الموارد.',
+  'مزرعه و چوب‌بری منابع می‌سازند. سطح': 'المزرعة والمنشرة تنتجان الموارد. مستوى',
+  'در بخش «ارتش» سرباز آموزش بده. ظرفیت جمعیت با': 'درّب الجنود في تبويب الجيش. السعة تزيد مع',
+  'برای فتح بعدی، قدرت ارتشت را بالای قدرت دشمن ببر.': 'للفتح التالي، ارفع قوة جيشك فوق قوة العدو.',
+  '🌫️ مه با رشد قصر کنار می‌رود': '🌫️ يزول الضباب بنمو القصر',
+  '👁️ شعاع دید:': '👁️ مدى الرؤية:',
+  'نکته:': 'ملاحظة:',
+  'فهمیدم 👑': 'فهمت 👑',
+  'باشه': 'حسناً',
+  'بی‌خیال': 'إلغاء',
+  'بله، پاک کن': 'نعم، امسح',
+  'نه، برگرد': 'لا، رجوع',
+  'همه‌ی پیشرفت تو پاک می‌شود: ساختمان‌ها، ارتش، تحقیق‌ها و فتح‌ها. مطمئنی؟': 'سيُمحى كل تقدمك: مبانٍ وجيش وأبحاث وفتوح. متأكد؟',
+  'خوش برگشتی،': 'مرحباً بعودتك،',
+  'به تاج پارسی خوش آمدی!': 'مرحباً بك في التاج الفارسي!',
+  'ای که نبودی، پادشاهی‌ات کار کرد:': 'حين كنت غائباً، عملت مملكتك:',
+  'روز از آغاز پادشاهی تو گذشته · بازی به‌صورت خودکار روی همین گوشی ذخیره می‌شود.': 'يوماً منذ بداية مملكتك · تُحفظ اللعبة تلقائياً على هذا الهاتف.',
+  'حداکثر ۱۲ ساعت پیشرفت آفلاین محاسبه می‌شود.': 'تُحسب حتى ١٢ ساعة تقدم دون اتصال.',
+  'همین حالا': 'الآن',
+  ' د پیش': ' د',
+  ' س پیش': ' س',
+  ' روز پیش': ' يوم',
+  'ثانیه': 'ث',
+  'دقیقه': 'د',
+  'ساعت و': 'س و',
+  'روز و': 'ي و',
+  'ساعت': 'ساعة',
+  'دفاع سربازان': 'دفاع الجنود',
+  'حمله‌ی سربازان': 'هجوم الجنود',
+  '🌐 زبان / Language:': '🌐 اللغة / Language:',
+  'زبان / Language:': 'اللغة:',
+  'پادشاهی تأسیس شد': 'تأسست المملكة',
+  'پادشاهی': 'مملكة',
+  '👑 پادشاهی': '👑 مملكة',
+  '👑 آغاز پادشاهی': '👑 بداية الحكم',
+  'بازگشت به نبرد': 'عودة للمعركة',
+  'بازگشت': 'رجوع',
+  'کامل شد': 'اكتمل',
+  'کامل شد — سطح': 'اكتمل — مستوى',
+  '» کامل شد': ' اكتمل',
+  '» سطح': ' مستوى',
+  '» آغاز شد': ' بدأ',
+  '» باز شد': ' فُتح',
+  '» تأسیس شد!': ' تأسس!',
+  '» حرکت کرد': ' تحرك',
+  '» دریافت شد': ' استُلم',
+  '» دفع شد!': ' صُدّ!',
+  'آغاز شد': 'بدأ',
+  'حرکت کرد': 'تحرك',
+  'رسید': 'وصل',
+  'رسید!': 'وصل!',
+  'به انبار رسید': 'وصل إلى المخزن',
+  'به ارتش پیوستند': 'انضموا إلى الجيش',
+  'سرباز آغاز شد': 'جندياً بدأ',
+  'سرباز از دست رفت': 'جندي ضاع',
+  'سرباز در خانه ماندند': 'جندياً بقوا في المنزل',
+  'سربازان از دست رفته': 'جنود ضائعون',
+  'سرباز)': 'جندي)',
+  'سرباز /': 'جنود /',
+  'موجودی منبع': 'مخزون المورد',
+  'وضعیت فعلی': 'الوضع الحالي',
+  'اثر فعلی': 'الأثر الحالي',
+  'اثر بعدی': 'الأثر التالي',
+  'در سطح بعدی': 'في المستوى التالي',
+  'بعد از ارتقا': 'بعد الترقية',
+  'به سطح': 'إلى مستوى',
+  'سطح ': 'مستوى ',
+  'کاروان با': 'قافلة بـ',
+  'تجهیز «': 'عتاد "',
+  'یافت شد': 'وُجد',
+  'عالی! 👑': 'ممتاز! 👑',
+  'پیروزی آسان': 'نصر سهل',
+  'پیروزی در': 'نصر في',
+  'پیروزی در نبرد «': 'نصر في معركة "',
+  'پیروزی نخست': 'النصر الأول',
+  'شکست در': 'هزيمة في',
+  'شکست در «': 'هزيمة في "',
+  'نبرد': 'معركة',
+  'نخستین سربازان': 'أول الجنود',
+  'نخستین پیروزی': 'أول نصر',
+  'کشاورز ماهر': 'مزارع ماهر',
+  'سازنده': 'بنّاء',
+  'جنگجوی اژدها': 'محارب التنين',
+  'شکارچی هیولا': 'صائد الوحوش',
+  'فاتح': 'فاتح',
+  'شکست‌ناپذیر': 'لا يُقهر',
+  'ثروتمند': 'ثري',
+  'قلعه‌دار': 'صاحب القلعة',
+  'اهل دانش': 'أهل العلم',
+  'شهرنشین': 'ساكن المدينة',
+  'قدرت‌نمایی': 'استعراض القوة',
+  'ارتش نوپا': 'جيش ناشئ',
+  'ارتش‌دار': 'قائد الجيش',
+  'گردآورنده': 'جامع',
+  'پژوهشگر': 'باحث',
+  'دانشمند': 'عالم',
+  'از شکار هیولا': 'من صيد الوحوش',
+  '❌ اتصال برقرار نشد؛ حالت آفلاین': '❌ فشل الاتصال؛ وضع دون اتصال',
+  '❌ اتصال به سرور ممکن نشد': '❌ تعذّر الوصول للخادم',
+  '❌ خطا در اتصال': '❌ خطأ في الاتصال',
+  '🔗 حساب به': '🔗 رُبط الحساب بـ',
+  'وصل شد': 'اتصل',
+  '⚠️ جا نبود؛': '⚠️ لا مساحة؛',
+  '⚡ دشمن حمله کرد و شکست خوردی!': '⚡ هاجم العدو وخسرت!',
+  'به سود تو تمام شد.': 'انتهى لصالحك.',
+  'به سود دشمن تمام شد. ارتش را تقویت کن و دوباره حمله کن.': 'انتهى لصالح العدو. قوِّ جيشك وهاجم مجدداً.',
+  'طلا در ثانیه': 'ذهب في الثانية',
+  'در ثانیه': 'في الثانية',
+  '/ث': '/ث',
+  'هزار': 'ألف',
+  'میلیون': 'مليون',
+  'میلیارد': 'مليار',
+  'جنگل‌داری': 'حراجة',
+  'زره‌سازی': 'صناعة الدروع',
+  'استخراج': 'تعدين',
+  'تولید غذا': 'إنتاج الطعام',
+  'تولید چوب': 'إنتاج الخشب',
+  'تولید سنگ و طلا': 'إنتاج الحجر والذهب',
+  'سرعت ساخت و آموزش': 'سرعة البناء والتدريب',
+  'کمپین': 'حملة',
+  'رتبه‌بندی': 'تصنيف',
+  'چت': 'دردشة',
+  'تنظیمات': 'إعدادات',
+  'راهنما': 'دليل',
+  'ذخیره': 'حفظ',
+  'ابر': 'سحابة',
+  'یخ': 'جليد',
+  'طوفان': 'عاصفة',
+  'خاکستر': 'رماد',
+  'افسانه': 'أسطورة',
+  'آسان': 'سهل',
+  'منبع': 'مورد'
+};
+const TRKEYS = Object.keys(TR.en).sort((a, b) => b.length - a.length);
+function trStr(s) {
+  if (LANG === 'fa' || !TR[LANG]) return s;
+  const d = TR[LANG];
+  let out = s;
+  for (let i = 0; i < TRKEYS.length; i++) {
+    const k = TRKEYS[i];
+    if (out.indexOf(k) !== -1 && d[k] !== undefined) out = out.split(k).join(d[k]);
+  }
+  return out;
+}
+function translateNode(n) {
+  if (LANG === 'fa') return;
+  if (n.nodeType === 1 && (n.tagName === 'SCRIPT' || n.tagName === 'STYLE')) return;
+  if (n.nodeType === 3) {
+    if (n.nodeValue && /[\u0600-\u06FF]/.test(n.nodeValue)) {
+      const t = trStr(n.nodeValue);
+      if (t !== n.nodeValue) n.nodeValue = t;
+    }
+    return;
+  }
+  if (n.nodeType === 1) {
+    try {
+      if (n.hasAttribute && n.hasAttribute('placeholder')) {
+        const pv = n.getAttribute('placeholder'); const t = trStr(pv); if (t !== pv) n.setAttribute('placeholder', t);
+      }
+      if (n.hasAttribute && n.hasAttribute('title')) {
+        const tv = n.getAttribute('title'); const t = trStr(tv); if (t !== tv) n.setAttribute('title', t);
+      }
+    } catch (e) {}
+    const ch = n.childNodes;
+    for (let i = 0; i < ch.length; i++) translateNode(ch[i]);
+  }
+}
+function translateDoc() {
+  if (document.body) translateNode(document.body);
+  document.title = trStr('تاج پارسی — خشم پادشاهان');
+}
+function applyLangDoc() {
+  if (typeof window !== 'undefined') window.LANGX.cur = LANG;
+  if (document.documentElement) {
+    document.documentElement.lang = LANG;
+    document.documentElement.dir = (LANG === 'en') ? 'ltr' : 'rtl';
+  }
+  translateDoc();
+  if (typeof S !== 'undefined' && S && typeof render === 'function') render();
+}
+if (typeof MutationObserver !== 'undefined' && document.body) {
+  new MutationObserver((muts) => {
+    if (LANG === 'fa') return;
+    for (const m of muts) for (const n of m.addedNodes) translateNode(n);
+  }).observe(document.body, { childList: true, subtree: true });
+}
+applyLangDoc();
+
+boot();
+v3Loading().then(() => v3LoginGate()).then(() => {
+  const f = $('#fabChat'); if (f) f.addEventListener('click', () => go('net'));
+  if (NET.on && NET.token) netSave();
+});
+</script>
+</body>
+</html>

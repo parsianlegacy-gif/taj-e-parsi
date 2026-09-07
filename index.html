@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persian Crown | تاج پارسی — Free Mobile Strategy MMO</title>
+<meta name="description" content="Persian Crown (تاج پارسی) is a free epic strategy MMO for Android & web: build an isometric castle, train legendary commanders, conquer 8 kingdoms, join alliances with live world chat. Persian, English & Arabic.">
+<meta name="keywords" content="Persian Crown, Taj-e Parsi, تاج پارسی, خشم پادشاهان, التاج الفارسي, Persian Crown APK, Persian Crown game, strategy game, mobile MMO, castle builder, Persian game, بازی استراتژیک, لعبة استراتيجية, Персидская Корона, 波斯王冠, Pers Tacı, Corona Persa, Couronne Perse, Persische Krone, Rise of Kingdoms alternative, free strategy game android">
+<meta name="author" content="Persian Crown Studio">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://tajeparsi.surge.sh/">
+<link rel="alternate" hreflang="en" href="https://tajeparsi.surge.sh/">
+<link rel="alternate" hreflang="fa" href="https://tajeparsi.surge.sh/">
+<link rel="alternate" hreflang="ar" href="https://tajeparsi.surge.sh/">
+<link rel="alternate" hreflang="x-default" href="https://tajeparsi.surge.sh/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Persian Crown">
+<meta property="og:title" content="Persian Crown | تاج پارسی — Rule the Burning World">
+<meta property="og:description" content="Free epic strategy MMO: isometric castle, legendary commanders, alliances, world chat, cloud save on Gmail. Android APK ~5 MB + instant web play.">
+<meta property="og:image" content="assets/og-image-1200x630.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Persian king raising a flaming sword above a burning battlefield">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Persian Crown | تاج پارسی">
+<meta name="twitter:description" content="Free epic strategy MMO for Android & web — in Persian, English and Arabic.">
+<meta name="twitter:image" content="assets/og-image-1200x630.jpg">
+<meta name="theme-color" content="#07060b">
+<link rel="icon" type="image/png" href="assets/persian-crown-king-icon-512.png">
+<link rel="preload" as="image" href="assets/hero-persian-crown-keyart.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Vazirmatn:wght@300;500;700;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  "name": "Persian Crown",
+  "alternateName": ["تاج پارسی", "Taj-e Parsi", "Taj-e Parsi: Wrath of Kings", "Persian Crown game", "Persian Crown APK", "التاج الفارسي", "لعبة التاج الفارسي", "Персидская Корона", "波斯王冠", "Pers Tacı", "Corona Persa", "Couronne Perse", "Persische Krone", "بازی تاج پارسی"],
+  "image": "assets/og-image-1200x630.jpg",
+  "screenshot": ["assets/isometric-castle-gameplay.jpg", "assets/world-map-kingdoms.jpg", "assets/persian-army-banner.jpg"],
+  "description": "Free epic mobile strategy MMO: build an isometric Persian castle, command legendary kings, conquer eight kingdoms, join alliances with live world chat.",
+  "genre": ["Strategy", "MMO", "City Builder"],
+  "gamePlatform": ["Android", "WebBrowser"],
+  "operatingSystem": "Android 7.0+, Any modern browser",
+  "inLanguage": ["en", "fa", "ar"],
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
+  "aggregateRating": null
+}
+</script>
+<style>
+:root{
+  --bg:#07060b; --panel:#100d18; --panel2:#171226; --gold:#e0b13c; --gold2:#ffd76a; --crim:#b53b34;
+  --ink:#f3ecdc; --mut:#9a8fb5; --line:rgba(224,177,60,.28);
+  --disp:'Cinzel',serif; --body:'Vazirmatn',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M36 4l8 24 24 8-24 8-8 24-8-24-24-8 24-8z' fill='none' stroke='%23e0b13c' stroke-opacity='.07'/%3E%3C/svg%3E");}
+[dir="rtl"] body, [dir="rtl"]{font-family:var(--body)}
+img{max-width:100%;display:block}
+a{color:var(--gold2);text-decoration:none}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+h1,h2,h3,.disp{font-family:var(--disp)}
+[dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3{font-family:var(--body);font-weight:900}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:linear-gradient(180deg,rgba(7,6,11,.92),rgba(7,6,11,.65) 80%,transparent);padding:14px 0}
+.navin{display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:800;color:var(--gold2);letter-spacing:1px;font-size:17px}
+[dir="rtl"] .brand{font-family:var(--body);font-weight:900}
+.brand img{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);box-shadow:0 0 14px rgba(224,177,60,.35)}
+.links{display:flex;gap:20px;margin-inline-start:auto;font-size:13.5px}
+.links a{color:var(--mut);transition:color .2s}
+.links a:hover{color:var(--gold2)}
+.langs{display:flex;gap:6px}
+.langs button{cursor:pointer;font-family:var(--body);font-size:11.5px;padding:5px 10px;border-radius:20px;border:1px solid var(--line);background:rgba(224,177,60,.08);color:var(--mut)}
+.langs button.on{background:var(--gold);color:#241a0a;font-weight:700;border-color:var(--gold)}
+#burger{display:none;margin-inline-start:auto;background:none;border:1px solid var(--line);border-radius:9px;color:var(--gold2);font-size:18px;padding:4px 10px;cursor:pointer}
+@media(max-width:860px){.links{display:none;position:absolute;top:56px;inset-inline:14px;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;gap:12px}.links.open{display:flex}#burger{display:block}}
+
+/* ---------- hero ---------- */
+header{min-height:100svh;display:flex;align-items:center;position:relative;overflow:hidden}
+#embers{position:absolute;inset:0;z-index:1}
+.heroart{position:absolute;inset:0;background:url('assets/hero-persian-crown-keyart.jpg') center 38%/cover no-repeat;transform:scale(1.06);animation:kb 22s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1.06) translateY(0)}to{transform:scale(1.14) translateY(-24px)}}
+header::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,6,11,.55),rgba(7,6,11,.25) 40%,var(--bg) 96%)}
+.heroin{position:relative;z-index:2;text-align:center;padding:110px 20px 60px;width:100%}
+.kick{display:inline-block;font-size:11px;letter-spacing:4px;color:var(--gold);border:1px solid var(--line);border-radius:30px;padding:6px 18px;background:rgba(7,6,11,.5);text-transform:uppercase}
+h1{font-size:clamp(44px,9vw,104px);line-height:1.05;margin:22px 0 6px;color:#fff;
+  background:linear-gradient(180deg,#fff8e0 8%,var(--gold2) 42%,#8a5a12 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 6px 30px rgba(224,177,60,.35))}
+.subname{font-size:clamp(15px,2.6vw,22px);color:var(--mut);letter-spacing:2px}
+.tag{max-width:640px;margin:18px auto 30px;color:#d9cfe8;font-size:clamp(14px,2vw,17px)}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:14px;font-weight:700;font-size:15px;cursor:pointer;border:1px solid #8a5a12;
+  background:linear-gradient(180deg,#ffe08a,#d4a12e 55%,#a8761c);color:#241a0a;box-shadow:0 4px 0 #4a2f0a,0 12px 34px rgba(212,161,46,.35),inset 0 1px 0 #fff6d0;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:rgba(7,6,11,.55);color:var(--gold2);border:1px solid var(--line);box-shadow:none}
+.scrollhint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;color:var(--mut);font-size:20px;animation:bob 1.8s infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:-40px 0 0;position:relative;z-index:3}
+.stat{background:linear-gradient(170deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;text-align:center;padding:20px 8px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.stat b{display:block;font-family:var(--disp);font-size:clamp(26px,4vw,40px);color:var(--gold2)}
+[dir="rtl"] .stat b{font-family:var(--body);font-weight:900}
+.stat span{font-size:12px;color:var(--mut)}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- sections ---------- */
+section{padding:88px 0 30px}
+.shead{text-align:center;margin-bottom:44px}
+.shead h2{font-size:clamp(26px,4.6vw,44px);color:#fff}
+.shead h2 em{font-style:normal;color:var(--gold2)}
+.shead p{color:var(--mut);margin-top:8px}
+.orn{display:flex;align-items:center;gap:12px;justify-content:center;color:var(--gold);margin:10px 0 0}
+.orn::before,.orn::after{content:'';width:70px;height:1px;background:linear-gradient(90deg,transparent,var(--gold));}
+.orn::after{background:linear-gradient(90deg,var(--gold),transparent)}
+
+/* features */
+.feat{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:980px){.feat{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.feat{grid-template-columns:1fr}}
+.fcard{background:linear-gradient(170deg,var(--panel2),var(--panel));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:22px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+.fcard:hover{transform:translateY(-5px);border-color:var(--line)}
+.fcard::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 0%,rgba(224,177,60,.14),transparent 60%);opacity:0;transition:opacity .25s}
+.fcard:hover::after{opacity:1}
+.fico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:25px;background:radial-gradient(circle at 35% 30%,rgba(224,177,60,.3),rgba(0,0,0,.4));border:1px solid var(--line);margin-bottom:14px}
+.fcard h3{font-size:16.5px;color:var(--gold2);margin-bottom:7px}
+.fcard p{font-size:13px;color:var(--mut)}
+
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.gal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.gal{grid-template-columns:1fr}}
+.gitem{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.gitem img{width:100%;height:210px;object-fit:cover;transition:transform .5s}
+.gitem:hover img{transform:scale(1.07)}
+.gitem figcaption{position:absolute;inset-inline:0;bottom:0;padding:26px 12px 10px;font-size:12px;color:#ffe9ad;background:linear-gradient(0deg,rgba(7,6,11,.92),transparent)}
+
+/* download */
+.dlbox{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;background:linear-gradient(160deg,var(--panel2),var(--panel));border:2px solid var(--line);border-radius:24px;padding:38px;position:relative;overflow:hidden}
+.dlbox::before{content:'';position:absolute;inset:0;background:url('assets/king-flaming-sword-art.jpg') right center/cover no-repeat;opacity:.28;mask-image:linear-gradient(270deg,#000 20%,transparent 75%);-webkit-mask-image:linear-gradient(270deg,#000 20%,transparent 75%)}
+[dir="rtl"] .dlbox::before{background-position:left center;mask-image:linear-gradient(90deg,#000 20%,transparent 75%);-webkit-mask-image:linear-gradient(90deg,#000 20%,transparent 75%)}
+.dlbox>*{position:relative}
+@media(max-width:860px){.dlbox{grid-template-columns:1fr}}
+.dlbox h3{font-size:clamp(22px,3.4vw,34px);color:#fff;margin-bottom:10px}
+.dlbox p{color:var(--mut);font-size:14px;margin-bottom:22px}
+.dlrow{display:flex;gap:12px;flex-wrap:wrap}
+.badges{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.badge{font-size:11px;color:var(--mut);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:4px 10px;background:rgba(0,0,0,.3)}
+
+/* roadmap */
+.road{position:relative;max-width:760px;margin:0 auto;padding-inline-start:26px}
+.road::before{content:'';position:absolute;inset-block:6px;inset-inline-start:8px;width:2px;background:linear-gradient(180deg,var(--gold),var(--crim),transparent)}
+.rstep{position:relative;margin-bottom:26px;background:linear-gradient(170deg,var(--panel2),var(--panel));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px 20px}
+.rstep::before{content:'';position:absolute;inset-inline-start:-24px;top:24px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.rstep.now{border-color:var(--line)}
+.rstep h3{color:var(--gold2);font-size:17px;margin-bottom:6px}
+.rstep p{color:var(--mut);font-size:13.5px}
+.rtag{position:absolute;top:14px;inset-inline-end:16px;font-size:10px;letter-spacing:1px;color:#06130a;background:linear-gradient(180deg,#7ee2a0,#3fae68);border-radius:20px;padding:2px 10px;font-weight:700}
+.rtag.soon{background:linear-gradient(180deg,#ffe08a,#d4a12e);color:#241a0a}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+details{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;padding:15px 18px;font-weight:700;color:var(--ink);list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::after{content:'＋';color:var(--gold)}
+details[open] summary::after{content:'－'}
+details p{padding:0 18px 16px;color:var(--mut);font-size:13.5px}
+
+/* footer */
+footer{margin-top:80px;border-top:1px solid var(--line);background:linear-gradient(180deg,transparent,rgba(224,177,60,.05));padding:38px 0 30px;text-align:center}
+footer .brand{justify-content:center;margin-bottom:10px}
+footer p{color:var(--mut);font-size:12.5px}
+.footlinks{display:flex;gap:18px;justify-content:center;margin:14px 0;font-size:12.5px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
+.rv.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap navin">
+    <a class="brand" href="#top"><img src="assets/persian-crown-king-icon-512.png" alt="Persian Crown logo"><span data-i="brand">PERSIAN CROWN</span></a>
+    <button id="burger" aria-label="menu">☰</button>
+    <div class="links" id="links">
+      <a href="#features" data-i="nav_f">Features</a>
+      <a href="#gallery" data-i="nav_g">Gallery</a>
+      <a href="#download" data-i="nav_d">Download</a>
+      <a href="#roadmap" data-i="nav_r">Roadmap</a>
+      <a href="#faq" data-i="nav_q">FAQ</a>
+      <a href="play/" class="btn" style="padding:7px 16px;font-size:12.5px" data-i="nav_p">▶ Play Now</a>
+    </div>
+    <div class="langs">
+      <button data-l="en" class="on">EN</button>
+      <button data-l="fa">فا</button>
+      <button data-l="ar">ع</button>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="heroart" role="img" aria-label="Persian king raising a flaming sword above a burning battlefield"></div>
+  <canvas id="embers"></canvas>
+  <div class="heroin">
+    <span class="kick" data-i="kick">A Free Epic Strategy MMO</span>
+    <h1 data-i="h1">PERSIAN CROWN</h1>
+    <div class="subname">تاج پارسی · TAJ-E PARSI · التاج الفارسي</div>
+    <p class="tag" data-i="tag">Raise your castle on a living isometric map, command legendary kings of Persia, and rule a burning world — on any phone, in your own language.</p>
+    <div class="cta">
+      <a class="btn" href="taj-e-parsi.apk" download>🤖 <span data-i="cta_dl">Download for Android</span></a>
+      <a class="btn ghost" href="play/">🌐 <span data-i="cta_play">Play in Browser</span></a>
+    </div>
+  </div>
+  <div class="scrollhint">⌄</div>
+</header>
+
+<main class="wrap">
+  <div class="stats">
+    <div class="stat rv"><b data-count="13">0</b><span data-i="st_b">Buildings</span></div>
+    <div class="stat rv"><b data-count="8">0</b><span data-i="st_k">Kingdoms to conquer</span></div>
+    <div class="stat rv"><b data-count="4">0</b><span data-i="st_c">Legendary commanders</span></div>
+    <div class="stat rv"><b data-count="3">0</b><span data-i="st_l">Languages</span></div>
+  </div>
+
+  <section id="features">
+    <div class="shead rv"><h2><span data-i="f_t1">Why kings choose</span> <em data-i="f_t2">the Crown</em></h2><div class="orn">✦</div><p data-i="f_s">Every detail forged for war and wonder.</p></div>
+    <div class="feat">
+      <div class="fcard rv"><div class="fico">🏰</div><h3 data-i="f1t">Isometric Kingdom</h3><p data-i="f1d">A hand-painted diagonal castle with rivers, ramparts and angled plots — a true war-map perspective.</p></div>
+      <div class="fcard rv"><div class="fico">⚔️</div><h3 data-i="f2t">Real PvP & Campaign</h3><p data-i="f2d">Raid real players for loot, or conquer eight enemy kingdoms from Blood Fort to the Dragon Empire.</p></div>
+      <div class="fcard rv"><div class="fico">🛡️</div><h3 data-i="f3t">Alliances & World Chat</h3><p data-i="f3d">Found an alliance, chat live with players across the world and fight under one banner.</p></div>
+      <div class="fcard rv"><div class="fico">🦁</div><h3 data-i="f4t">Legendary Commanders</h3><p data-i="f4d">Rostam, Darius, Cyrus and Arash gain XP every battle and equip gear dropped from monster hunts.</p></div>
+      <div class="fcard rv"><div class="fico">☁️</div><h3 data-i="f5t">Gmail Cloud Save</h3><p data-i="f5d">Your kingdom lives on your Gmail account — continue on any device, forever.</p></div>
+      <div class="fcard rv"><div class="fico">🌙</div><h3 data-i="f6t">Offline Progress</h3><p data-i="f6d">Up to 12 hours of farming and building while you sleep. Your realm never idles.</p></div>
+      <div class="fcard rv"><div class="fico">🥁</div><h3 data-i="f7t">Epic War Score</h3><p data-i="f7d">A dark-epic soundtrack of war drums, low brass and battle horns — generated live in-game.</p></div>
+      <div class="fcard rv"><div class="fico">🌐</div><h3 data-i="f8t">Three Languages</h3><p data-i="f8d">Full Persian, English and Arabic with native numerals and direction — one tap to switch.</p></div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="shead rv"><h2><span data-i="g_t1">Screens from</span> <em data-i="g_t2">the realm</em></h2><div class="orn">✦</div><p data-i="g_s">Painted, not plastic — every frame is a battlefield.</p></div>
+    <div class="gal">
+      <figure class="gitem rv"><img src="assets/isometric-castle-gameplay.jpg" alt="Isometric Persian castle gameplay with river and ramparts" loading="lazy"><figcaption data-i="g1">The isometric castle — angled plots, river & ramparts</figcaption></figure>
+      <figure class="gitem rv"><img src="assets/world-map-kingdoms.jpg" alt="Overworld kingdom map with roads, forests and enemy castles" loading="lazy"><figcaption data-i="g2">The world map — fog of war, camps & rival kingdoms</figcaption></figure>
+      <figure class="gitem rv"><img src="assets/persian-army-banner.jpg" alt="Persian army lined for war with banners and war elephant" loading="lazy"><figcaption data-i="g3">Your army — spearmen, archers and war elephants</figcaption></figure>
+      <figure class="gitem rv"><img src="assets/alliance-hall-banner.jpg" alt="Alliance hall with lion banners and torches" loading="lazy"><figcaption data-i="g4">The alliance hall — pact, trade and war councils</figcaption></figure>
+      <figure class="gitem rv"><img src="assets/king-flaming-sword-art.jpg" alt="King with flaming sword above burning battlefield" loading="lazy"><figcaption data-i="g5">The King — wrath of the Persian crown</figcaption></figure>
+      <figure class="gitem rv"><img src="assets/legendary-commander-portrait.png" alt="Portrait of a legendary Persian commander" loading="lazy"><figcaption data-i="g6">Commanders grow stronger with every battle</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="shead rv"><h2><span data-i="d_t1">Claim your</span> <em data-i="d_t2">throne</em></h2><div class="orn">✦</div></div>
+    <div class="dlbox rv">
+      <div>
+        <h3 data-i="d_h">Free forever. Five megabytes. One crown.</h3>
+        <p data-i="d_p">Install the Android APK (~5 MB, Android 7+) or play instantly in any browser — the web version installs on your home screen as an app. No pay-to-win walls.</p>
+        <div class="dlrow">
+          <a class="btn" href="taj-e-parsi.apk" download>🤖 <span data-i="cta_dl2">Get the APK</span></a>
+          <a class="btn ghost" href="play/">🌐 <span data-i="cta_play2">Open Web Version</span></a>
+        </div>
+        <div class="badges">
+          <span class="badge">Android 7+</span><span class="badge">~5 MB</span><span class="badge">PWA</span><span class="badge" data-i="d_b4">Offline mode</span><span class="badge">FA / EN / AR</span>
+        </div>
+      </div>
+      <div>
+        <img src="assets/persian-crown-king-icon-512.png" alt="Persian Crown app icon — king with golden crown" style="width:170px;margin:0 auto;border-radius:34px;border:2px solid var(--line);box-shadow:0 20px 60px rgba(224,177,60,.35)">
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="shead rv"><h2><span data-i="r_t1">The road</span> <em data-i="r_t2">to empire</em></h2><div class="orn">✦</div></div>
+    <div class="road">
+      <div class="rstep now rv"><span class="rtag" data-i="r_now">LIVE NOW</span><h3 data-i="r1h">Crown v4 — The Isometric Age</h3><p data-i="r1p">Isometric castle, world map, commanders & gear, alliances, Gmail cloud save, 3 languages, epic war score.</p></div>
+      <div class="rstep rv"><span class="rtag soon" data-i="r_s1">SEASON 1</span><h3 data-i="r2h">Online Wars</h3><p data-i="r2p">Live global server, real-time PvP leagues, alliance gift boxes and kingdom-vs-kingdom events.</p></div>
+      <div class="rstep rv"><span class="rtag soon" data-i="r_s2">SEASON 2</span><h3 data-i="r3h">Age of Dragons</h3><p data-i="r3p">Five dragon bloodlines, castle sieges with catapults, rune spells and march formations.</p></div>
+      <div class="rstep rv"><span class="rtag soon" data-i="r_s3">SEASON 3</span><h3 data-i="r4h">King of Kings</h3><p data-i="r4p">Cross-kingdom campaigns, capital wars, iOS build and the global store release.</p></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="shead rv"><h2 data-i="q_t">Questions of the court</h2><div class="orn">✦</div></div>
+    <div class="faq">
+      <details class="rv"><summary data-i="q1">Is Persian Crown really free?</summary><p data-i="q1a">Yes — 100% free, ~5 MB, no pay-to-win walls. Your progress saves to your Gmail and to your device.</p></details>
+      <details class="rv"><summary data-i="q2">Does it work offline?</summary><p data-i="q2a">Fully. The whole campaign, building and battles run offline with up to 12 hours of offline progress. Online mode adds PvP, chat and cloud save.</p></details>
+      <details class="rv"><summary data-i="q3">Which languages are supported?</summary><p data-i="q3a">Persian, English and Arabic — including native numerals and right-to-left layout. Switch anytime from Settings.</p></details>
+      <details class="rv"><summary data-i="q4">How do I install the APK?</summary><p data-i="q4a">Download the APK, allow “install from unknown sources” once, tap the file and open. The game locks to landscape like a true war title.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand"><img src="assets/persian-crown-king-icon-512.png" alt=""><span data-i="brand2">PERSIAN CROWN</span></div>
+    <p data-i="foot1">Forged with fire and gold — a free Persian strategy MMO for the world.</p>
+    <div class="footlinks">
+      <a href="#features" data-i="nav_f2">Features</a>
+      <a href="#download" data-i="nav_d2">Download</a>
+      <a href="play/" data-i="nav_p2">Play</a>
+    </div>
+    <p>© 2026 Persian Crown Studio · <span data-i="foot2">All kingdoms reserved.</span></p>
+  </div>
+</footer>
+
+<script>
+/* ---------- i18n ---------- */
+const I18N = {
+  en: {},
+  fa: {
+    brand: 'تاج پارسی', nav_f: 'امکانات', nav_g: 'نگارخانه', nav_d: 'دانلود', nav_r: 'نقشه راه', nav_q: 'پرسش‌ها', nav_p: '▶ بازی کن',
+    kick: 'یک MMO استراتژیک حماسی و رایگان', h1: 'تاج پارسی',
+    tag: 'قلعه‌ات را روی نقشه‌ی ایزومتریک زنده بالا ببر، فرمانده‌های افسانه‌ای ایران را فرمان ده و بر جهانی سوزان حکم بران — روی هر گوشی، به زبان خودت.',
+    cta_dl: 'دانلود برای اندروید', cta_play: 'بازی در مرورگر',
+    st_b: 'ساختمان', st_k: 'پادشاهی برای فتح', st_c: 'فرمانده‌ی افسانه‌ای', st_l: 'زبان',
+    f_t1: 'چرا پادشاهان', f_t2: 'تاج را برمی‌گزینند', f_s: 'هر جزئیات برای جنگ و شگفتی ساخته شده.',
+    f1t: 'پادشاهی ایزومتریک', f1d: 'قلعه‌ی مورب نقاشی‌شده با رود، بارو و زمین‌های کج — پرسپکتیو واقعی نقشه‌ی جنگ.',
+    f2t: 'PvP واقعی و کمپین', f2d: 'از بازیکنان واقعی غارت کن یا هشت پادشاهی دشمن را از دژ خون تا امپراتوری اژدها فتح کن.',
+    f3t: 'اتحاد و چت جهانی', f3d: 'اتحاد تأسیس کن، زنده با بازیکنان جهان چت کن و زیر یک پرچم بجنگ.',
+    f4t: 'فرمانده‌های افسانه‌ای', f4d: 'رستم، داریوش، کوروش و آرش با هر نبرد تجربه می‌گیرند و تجهیز جنگی می‌پوشند.',
+    f5t: 'ذخیره‌ی ابری جیمیل', f5d: 'پادشاهی‌ات روی جیمیل تو زندگی می‌کند — روی هر دستگاهی ادامه بده.',
+    f6t: 'پیشرفت آفلاین', f6d: 'تا ۱۲ ساعت کشاورزی و ساخت در خواب تو. قلمروت هرگز نمی‌خوابد.',
+    f7t: 'موسیقی حماسی جنگ', f7d: 'طبل جنگ، برنج‌های بم و شیپور نبرد — زنده در بازی ساخته می‌شود.',
+    f8t: 'سه زبان', f8d: 'فارسی، انگلیسی و عربی با ارقام بومی و جهت راست‌به‌چپ — با یک لمس.',
+    g_t1: 'تصاویری از', g_t2: 'قلمرو', g_s: 'نقاشی، نه پلاستیک — هر قاب یک میدان نبرد است.',
+    g1: 'قلعه‌ی ایزومتریک — زمین‌های مورب، رود و بارو', g2: 'نقشه‌ی جهان — مه جنگ، اردوگاه‌ها و پادشاهی‌های رقیب',
+    g3: 'ارتش تو — نیزه‌داران، کمانداران و فیل جنگی', g4: 'تالار اتحاد — پیمان، تجارت و شورای جنگ',
+    g5: 'پادشاه — خشم تاج پارسی', g6: 'فرمانده‌ها با هر نبرد قوی‌تر می‌شوند',
+    d_t1: 'تخت خود را', d_t2: 'بگیر', d_h: 'رایگان برای همیشه. پنج مگابایت. یک تاج.',
+    d_p: 'APK اندروید (حدود ۵ مگ، اندروید ۷+) را نصب کن یا همین حالا در مرورگر بازی کن — نسخه‌ی وب مثل اپ روی صفحه‌ی خانه می‌نشیند. بدون دیوار پولی.',
+    cta_dl2: 'دریافت APK', cta_play2: 'نسخه‌ی وب', d_b4: 'حالت آفلاین',
+    r_t1: 'جاده‌ی', r_t2: 'امپراتوری', r_now: 'هم‌اکنون زنده', r_s1: 'فصل ۱', r_s2: 'فصل ۲', r_s3: 'فصل ۳',
+    r1h: 'تاج ۴ — عصر ایزومتریک', r1p: 'قلعه‌ی ایزومتریک، نقشه‌ی جهان، فرمانده‌ها و تجهیزات، اتحاد، ذخیره‌ی ابری جیمیل، ۳ زبان، موسیقی جنگ.',
+    r2h: 'جنگ‌های آنلاین', r2p: 'سرور زنده‌ی جهانی، لیگ‌های PvP بلادرنگ، جعبه‌های هدیه‌ی اتحاد و رویدادهای پادشاهی علیه پادشاهی.',
+    r3h: 'عصر اژدهایان', r3p: 'پنج نژاد اژدها، محاصره با منجنیق، طلسم‌های رون و آرایش‌های رزم.',
+    r4h: 'شاهِ شاهان', r4p: 'کمپین‌های میان پادشاهی‌ها، جنگ پایتخت‌ها، نسخه‌ی iOS و انتشار در فروشگاه جهانی.',
+    q_t: 'پرسش‌های دربار',
+    q1: 'آیا تاج پارسی واقعاً رایگان است؟', q1a: 'بله — ۱۰۰٪ رایگان، حدود ۵ مگابایت، بدون دیوار پولی. پیشرفتت روی جیمیل و گوشی ذخیره می‌شود.',
+    q2: 'آفلاین کار می‌کند؟', q2a: 'کامل. کل کمپین، ساخت و نبردها آفلاین اجرا می‌شوند با تا ۱۲ ساعت پیشرفت آفلاین. حالت آنلاین PvP، چت و ابر را اضافه می‌کند.',
+    q3: 'کدام زبان‌ها پشتیبانی می‌شود؟', q3a: 'فارسی، انگلیسی و عربی — با ارقام بومی و چیدمان راست‌به‌چپ. هر لحظه از تنظیمات عوض کن.',
+    q4: 'APK را چگونه نصب کنم؟', q4a: 'APK را دانلود کن، یک‌بار «نصب از منابع ناشناس» را اجازه بده، روی فایل بزن و باز کن. بازی مثل یک اثر جنگی در حالت افقی قفل می‌شود.',
+    foot1: 'ساخته‌شده با آتش و طلا — یک MMO استراتژیک پارسی و رایگان برای جهان.', foot2: 'همه‌ی پادشاهی‌ها محفوظ است.',
+    nav_f2: 'امکانات', nav_d2: 'دانلود', nav_p2: 'بازی', brand2: 'تاج پارسی'
+  },
+  ar: {
+    brand: 'التاج الفارسي', nav_f: 'المزايا', nav_g: 'المعرض', nav_d: 'تحميل', nav_r: 'خارطة الطريق', nav_q: 'أسئلة', nav_p: '▶ العب الآن',
+    kick: 'لعبة MMO استراتيجية ملحمية مجانية', h1: 'التاج الفارسي',
+    tag: 'ارفع قلعتك على خريطة منظورة حية، قُد ملوك فارس الأسطوريين، واحكم عالماً يشتعل — على أي هاتف وبلاغتك.',
+    cta_dl: 'تحميل لأندرويد', cta_play: 'العب في المتصفح',
+    st_b: 'مبنى', st_k: 'ممالك للفتح', st_c: 'قادة أسطوريون', st_l: 'لغات',
+    f_t1: 'لماذا يختار الملوك', f_t2: 'التاج', f_s: 'كل تفصيلة صيغت للحرب والذهول.',
+    f1t: 'مملكة منظورة', f1d: 'قلعة مائلة مرسومة بيد مع نهر وأسوار وقطع مائلة — منظور خريطة حرب حقيقي.',
+    f2t: 'PvP حقيقي وحملة', f2d: 'انهب لاعبين حقيقيين أو افتح ثمان ممالك من حصن الدم إلى إمبراطورية التنين.',
+    f3t: 'تحالفات ودردشة العالم', f3d: 'أسّس تحالفاً، دردش مباشرة مع لاعبي العالم وقاتل تحت راية واحدة.',
+    f4t: 'قادة أسطوريون', f4d: 'رستم وداريوش وقورش وآرش يكتسبون الخبرة بكل معركة ويلبسون عتاد الحرب.',
+    f5t: 'حفظ سحابي جيميل', f5d: 'مملكتك تعيش على بريدك جيميل — أكمل على أي جهاز للأبد.',
+    f6t: 'تقدم دون اتصال', f6d: 'حتى ١٢ ساعة زراعة وبناء وأنت نائم. مملكتك لا تنام.',
+    f7t: 'موسيقى حرب ملحمية', f7d: 'طبول حرب ونحاس منخفض وأبواق معركة — تُولَّد حية داخل اللعبة.',
+    f8t: 'ثلاث لغات', f8d: 'الفارسية والإنجليزية والعربية بأرقام أصلية واتجاه rtl — بلمسة واحدة.',
+    g_t1: 'لقطات من', g_t2: 'المملكة', g_s: 'مرسوم لا بلاستيكي — كل إطار ميدان معركة.',
+    g1: 'القلعة المنظورة — قطع مائلة ونهر وأسوار', g2: 'خريطة العالم — ضباب الحرب ومعسكرات وممالك منافسة',
+    g3: 'جيشك — رماح ورماة وفيلة حرب', g4: 'قاعة التحالف — ميثاق وتجارة ومجالس حرب',
+    g5: 'الملك — غضب التاج الفارسي', g6: 'القادة يزدادون قوة مع كل معركة',
+    d_t1: 'خذ', d_t2: 'عرشك', d_h: 'مجانية للأبد. خمسة ميغا. تاج واحد.',
+    d_p: 'ثبّت APK أندرويد (نحو ٥ م، أندرويد ٧+) أو العب فوراً في أي متصفح — نسخة الويب تُثبّت كتطبيق على شاشتك. بلا جدران دفع.',
+    cta_dl2: 'احصل على APK', cta_play2: 'نسخة الويب', d_b4: 'وضع دون اتصال',
+    r_t1: 'الطريق إلى', r_t2: 'الإمبراطورية', r_now: 'مباشر الآن', r_s1: 'الموسم ١', r_s2: 'الموسم ٢', r_s3: 'الموسم ٣',
+    r1h: 'التاج ٤ — عصر المنظور', r1p: 'قلعة منظورة، خريطة عالم، قادة وعتاد، تحالفات، حفظ سحابي جيميل، ٣ لغات، موسيقى حرب.',
+    r2h: 'حروب مباشرة', r2p: 'خادم عالمي حي، بطولات PvP لحظية، صناديق هدايا التحالف وفعاليات مملكة ضد مملكة.',
+    r3h: 'عصر التنانين', r3p: 'خمسة سلالات تنانين، حصارات بالمنجنيق، تعويذات رون وتشكيلات زحف.',
+    r4h: 'ملك الملوك', r4p: 'حملات عبر الممالك، حروب العواصم، نسخة iOS وإصدار المتجر العالمي.',
+    q_t: 'أسئلة البلاط',
+    q1: 'هل التاج الفارسي مجاني فعلاً؟', q1a: 'نعم — مجاني ١٠٠٪، نحو ٥ ميغا، بلا جدران دفع. تقدمك يُحفظ على جيميل وجهازك.',
+    q2: 'هل يعمل دون اتصال؟', q2a: 'كلياً. الحملة والبناء والمعارك تعمل دون اتصال مع حتى ١٢ ساعة تقدم. الوضع عبر الإنترنت يضيف PvP والدردشة والسحابة.',
+    q3: 'ما اللغات المدعومة؟', q3a: 'الفارسية والإنجليزية والعربية — بأرقام أصلية واتجاه rtl. بدّل متى شئت من الإعدادات.',
+    q4: 'كيف أثبّت APK؟', q4a: 'حمّل APK، اسمح مرة واحدة بـ«التثبيت من مصادر مجهولة»، اضغط الملف وافتحه. تقفل اللعبة بالوضع الأفقي كعمل حربي أصيل.',
+    foot1: 'صُنع بالنار والذهب — MMO استراتيجي فارسي مجاني للعالم.', foot2: 'كل الممالك محفوظة.',
+    nav_f2: 'المزايا', nav_d2: 'تحميل', nav_p2: 'العب', brand2: 'التاج الفارسي'
+  }
+};
+let LANG = 'en';
+try { LANG = localStorage.getItem('tpc_lang') || 'en'; } catch (e) {}
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === 'en' ? 'ltr' : 'rtl';
+  const d = I18N[LANG] || {};
+  document.querySelectorAll('[data-i]').forEach((n) => {
+    const k = n.getAttribute('data-i');
+    if (d[k] !== undefined) n.textContent = d[k];
+    else if (I18N.en[k] !== undefined) n.textContent = I18N.en[k];
+  });
+  document.querySelectorAll('.langs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-l') === LANG));
+  try { localStorage.setItem('tpc_lang', LANG); } catch (e) {}
+}
+/* default = English strings already in HTML; capture them */
+document.querySelectorAll('[data-i]').forEach((n) => { I18N.en[n.getAttribute('data-i')] = n.textContent; });
+document.querySelectorAll('.langs button').forEach((b) => b.addEventListener('click', () => { LANG = b.getAttribute('data-l'); applyLang(); if (window.aiRenderChips) window.aiRenderChips(); }));
+applyLang();
+
+/* burger */
+document.getElementById('burger').addEventListener('click', () => document.getElementById('links').classList.toggle('open'));
+document.querySelectorAll('.links a').forEach((a) => a.addEventListener('click', () => document.getElementById('links').classList.remove('open')));
+
+/* reveal + counters */
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.rv').forEach((n) => io.observe(n));
+const cio = new IntersectionObserver((es) => es.forEach((e) => {
+  if (!e.isIntersecting) return;
+  const el = e.target, end = +el.getAttribute('data-count');
+  let v = 0; const t0 = performance.now();
+  const fr = (t) => { v = Math.min(end, Math.round((t - t0) / 900 * end)); el.textContent = v; if (v < end) requestAnimationFrame(fr); };
+  requestAnimationFrame(fr); cio.unobserve(el);
+}), { threshold: .6 });
+document.querySelectorAll('[data-count]').forEach((n) => cio.observe(n));
+
+/* embers */
+const cv = document.getElementById('embers'), cx = cv.getContext('2d');
+let W, H, P = [];
+function rs() { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; }
+rs(); addEventListener('resize', rs);
+for (let i = 0; i < 60; i++) P.push({ x: Math.random(), y: Math.random(), s: .4 + Math.random() * 1.4, v: .12 + Math.random() * .5, o: Math.random() * 6.28 });
+(function loop(t) {
+  cx.clearRect(0, 0, W, H);
+  for (const p of P) {
+    p.y -= p.v / H; p.x += Math.sin(t / 1400 + p.o) * .0004;
+    if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+    const a = .25 + .45 * Math.abs(Math.sin(t / 700 + p.o));
+    cx.fillStyle = 'rgba(255,' + (150 + Math.floor(60 * Math.sin(p.o))) + ',60,' + a.toFixed(2) + ')';
+    cx.beginPath(); cx.arc(p.x * W, p.y * H, p.s, 0, 6.28); cx.fill();
+  }
+  requestAnimationFrame(loop);
+})(0);
+</script>
+
+<!-- ---------- دستیار هوشمند دربار ---------- -->
+<style>
+#aibtn{position:fixed;bottom:18px;inset-inline-end:18px;z-index:80;width:58px;height:58px;border-radius:50%;border:2px solid var(--line);
+  background:radial-gradient(circle at 35% 30%,#4a3418,#1a1006);color:var(--gold2);font-size:26px;cursor:pointer;
+  box-shadow:0 8px 26px rgba(0,0,0,.6),0 0 18px rgba(224,177,60,.25);transition:transform .2s}
+#aibtn:hover{transform:scale(1.08)}
+#aipanel{position:fixed;bottom:86px;inset-inline-end:18px;z-index:80;width:min(380px,calc(100vw - 36px));height:min(560px,70vh);
+  display:none;flex-direction:column;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+  border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+#aipanel.open{display:flex}
+.aihead{display:flex;align-items:center;gap:10px;padding:13px 16px;background:linear-gradient(180deg,rgba(64,42,18,.9),rgba(30,20,40,.85));border-bottom:2px solid var(--line)}
+.aihead .av{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe08a,#a8761c);display:flex;align-items:center;justify-content:center;font-size:19px}
+.aihead b{color:var(--gold2);font-size:14px;display:block}
+.aihead small{color:var(--mut);font-size:10.5px}
+#aimsgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
+.m{max-width:86%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.7;animation:mi .25s}
+@keyframes mi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.m.bot{align-self:flex-start;background:rgba(224,177,60,.1);border:1px solid rgba(224,177,60,.25);color:var(--ink);border-start-start-radius:4px}
+.m.user{align-self:flex-end;background:linear-gradient(180deg,#3b2a12,#241708);border:1px solid var(--line);color:#ffe9ad;border-start-end-radius:4px}
+#aichips{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px}
+#aichips button{cursor:pointer;font-size:11px;color:var(--mut);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 11px;font-family:var(--body)}
+#aichips button:hover{color:var(--gold2);border-color:var(--line)}
+.airow{display:flex;gap:8px;padding:10px 12px;border-top:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.25)}
+#aiin{flex:1;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 13px;color:var(--ink);font-family:var(--body);font-size:13px;outline:none}
+#aiin:focus{border-color:var(--line)}
+#aisend{cursor:pointer;border:1px solid #8a5a12;background:linear-gradient(180deg,#ffe08a,#d4a12e 55%,#a8761c);color:#241a0a;border-radius:12px;padding:0 16px;font-size:15px;font-weight:700}
+.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-inline-end:3px;animation:tp 1s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes tp{0%,100%{opacity:.25}50%{opacity:1}}
+</style>
+<button id="aibtn" aria-label="AI assistant" title="دستیار هوشمند">🧙</button>
+<div id="aipanel" role="dialog" aria-label="Court Advisor AI">
+  <div class="aihead"><div class="av">🧙</div><div><b data-i="ai_name">Court Advisor — AI</b><small data-i="ai_sub">Answers any question about the game · FA / EN / AR</small></div></div>
+  <div id="aimsgs"></div>
+  <div id="aichips"></div>
+  <div class="airow"><input id="aiin" placeholder="Ask anything…"><button id="aisend">➤</button></div>
+</div>
+<script>
+(function () {
+  const KB = [
+    { k: ['سلام', 'hello', 'hi ', 'hi', 'مرحبا', 'hey', 'درود', 'salut', 'merhaba'],
+      fa: 'سلام ای پادشاه! 👑 من مشاور دربارم — هر سوالی درباره‌ی تاج پارسی داری بپرس: نصب، ذخیره‌ی ابری، فرمانده‌ها، اتحاد، زبان‌ها، هرچیز.',
+      en: 'Greetings, Your Majesty! 👑 I am the Court Advisor AI — ask me anything about Persian Crown: install, cloud save, commanders, alliances, languages, anything.',
+      ar: 'سلام أيها الملك! 👑 أنا مستشار البلاط — اسألني أي شيء عن التاج الفارسي: التثبيت، الحفظ السحابي، القادة، التحالفات، اللغات، أي شيء.' },
+    { k: ['نصب', 'install', 'apk', 'دانلود', 'download', 'تحميل', 'تثبي', 'installieren'],
+      fa: '📲 نصب: دکمه‌ی «Download for Android» را بزن (فایل حدود ۵ مگ)، در تنظیمات گوشی «نصب از منابع ناشناس» را یک‌بار فعال کن، روی فایل بزن و تمام. بازی خودکار افقی اجرا می‌شود.',
+      en: '📲 Install: tap “Download for Android” (~5 MB), enable “install from unknown sources” once in phone settings, tap the file — done. The game locks to landscape automatically.',
+      ar: '📲 التثبيت: اضغط «Download for Android» (نحو ٥ م)، فعّل «التثبيت من مصادر مجهولة» مرة واحدة، اضغط الملف — تم. تقفل اللعبة بالوضع الأفقي تلقائياً.' },
+    { k: ['رایگان', 'free', 'قیمت', 'price', 'پول', 'money', 'cost', 'مجاني', 'سعر', 'gratis'],
+      fa: '💰 بله، ۱۰۰٪ رایگان و همیشه رایگان. بدون دیوار پولی و بدون تبلیغ اجباری.',
+      en: '💰 Yes — 100% free, forever. No pay-to-win walls, no forced ads.',
+      ar: '💰 نعم، مجاني ١٠٠٪ وللأبد. بلا جدران دفع وبلا إعلانات إجبارية.' },
+    { k: ['حجم', 'size', 'مگابایت', 'mb', 'mega', 'كم حجم'],
+      fa: '⚖️ حجم APK فقط حدود ۵ مگابایت است — سبک‌ترین بازی استراتژیک این سبک.',
+      en: '⚖️ The APK is only ~5 MB — one of the lightest strategy games in its class.',
+      ar: '⚖️ حجم APK نحو ٥ ميغابايت فقط — من أخف ألعاب الاستراتيجية في فئتها.' },
+    { k: ['آفلاین', 'offline', 'اینترنت', 'internet', 'نت ', 'انترنت', 'بدون اتصال', 'دون اتصال', 'без интернета'],
+      fa: '🌙 بله! کل کمپین، ساخت‌وساز و نبردها بدون اینترنت اجرا می‌شوند و تا ۱۲ ساعت پیشرفت آفلاین داری. با اینترنت، PvP و چت جهانی و ابر فعال می‌شود.',
+      en: '🌙 Yes! The whole campaign, building and battles run without internet, with up to 12h offline progress. Online adds PvP, world chat and cloud save.',
+      ar: '🌙 نعم! الحملة والبناء والمعارك تعمل دون إنترنت مع حتى ١٢ ساعة تقدم. بالإنترنت يُفعَّل PvP والدردشة والسحابة.' },
+    { k: ['زبان', 'language', 'english', 'عربی', 'arabic', 'انگلیسی', 'لغة', 'lingua', 'idioma', 'язык'],
+      fa: '🌐 سه زبان کامل: فارسی، English و العربية با ارقام بومی و جهت راست‌به‌چپ. از تب پادشاه → تنظیمات → 🌐 زبان عوضش کن. همین سایت هم سه‌زبانه است!',
+      en: '🌐 Three full languages: Persian, English and Arabic with native numerals and RTL. Switch from King tab → Settings → 🌐. This website is trilingual too!',
+      ar: '🌐 ثلاث لغات كاملة: الفارسية والإنجليزية والعربية بأرقام أصلية واتجاه rtl. بدّل من تبويب الملك → الإعدادات → 🌐. وهذا الموقع ثلاثي اللغة أيضاً!' },
+    { k: ['جیمیل', 'gmail', 'ابر', 'cloud', 'ذخیره', 'save', 'حفظ', 'سحاب', 'sync', 'cloudsave'],
+      fa: '☁️ پیشرفتت با یک‌بار اتصال به جیمیل، برای همیشه در ابر ذخیره می‌شود و روی هر دستگاه دیگری ادامه می‌دهی. رمز عبور هم لازم نیست — فقط آدرس جیمیلت.',
+      en: '☁️ Connect your Gmail once and your kingdom is saved to the cloud forever — continue on any device. No password needed, just your Gmail address.',
+      ar: '☁️ اربط جيميل مرة واحدة وتُحفظ مملكتك في السحابة للأبد — أكمل على أي جهاز. بلا كلمة سر، فقط بريدك.' },
+    { k: ['پیشرفت', 'progress', 'پاک شد', 'پرید', 'gone', 'lost', 'حذف شد', 'ناپدید', 'تقدمي'],
+      fa: '😰 اگر پیشرفتت پرید: ۱) اگر جیمیل وصل بود، در صفحه‌ی ورود همان جیمیل را بزن تا از ابر برگردد. ۲) بدون جیمیل، پیشرفت روی خود گوشی ذخیره می‌شود مگر داده‌ی برنامه پاک شود. از این به بعد ابر را روشن کن!',
+      en: '😰 Lost progress? 1) If Gmail was linked, enter the same Gmail on the login screen to restore from cloud. 2) Without Gmail, progress lives on the device unless app data is wiped. Enable cloud save now!',
+      ar: '😰 ضاع تقدمك؟ ١) إن رُبط جيميل، أدخل البريد نفسه في شاشة الدخول ليعود من السحابة. ٢) بدونه يُحفظ على الجهاز ما لم تُمسح بيانات التطبيق. فعّل السحابة الآن!' },
+    { k: ['موسیقی', 'music', 'اهنگ', 'آهنگ', 'song', 'موسيقى', 'muzik'],
+      fa: '🥁 موسیقی حماسی جنگ (طبل و شیپور) بعد از ورود خودکار پخش می‌شود؛ با دکمه‌ی 🎵 بالای صفحه قطع/وصلش کن.',
+      en: '🥁 The epic war score (drums & horns) starts after login; toggle it with the 🎵 button in the header.',
+      ar: '🥁 موسيقى الحرب الملحمية تبدأ بعد الدخول؛ بدّلها بزر 🎵 في الأعلى.' },
+    { k: ['افقی', 'landscape', 'چرخش', 'rotate', 'عمودی', 'portrait', 'دوران', 'بچرخه'],
+      fa: '📱 بازی مثل آثار جنگی فقط افقی است: در APK خود اندروید صفحه را افقی می‌کند؛ در وب اگر عمودی باشی پیام «گوشی را افقی بگیر» می‌بینی.',
+      en: '📱 The game is landscape-only like true war titles: the APK forces rotation; on web you get a “rotate your phone” hint in portrait.',
+      ar: '📱 اللعبة أفقية فقط كأعمال الحرب الحقيقية: APK يفرض الدوران؛ وفي الويب تظهر رسالة «أمسك الهاتف بالعرض».' },
+    { k: ['فرمانده', 'commander', 'رستم', 'rostam', 'داریوش', 'darius', 'کوروش', 'cyrus', 'آرش', 'قائد', 'commanders'],
+      fa: '🦁 چهار فرمانده‌ی افسانه‌ای: رستم (حمله)، داریوش (دفاع)، کوروش و آرش. با هر نبرد تجربه می‌گیرند و برای همیشه قوی‌تر می‌شوند. صفحه‌شان با دکمه‌ی 🦁 بالای صفحه باز می‌شود.',
+      en: '🦁 Four legendary commanders: Rostam (attack), Darius (defense), Cyrus and Arash. They gain XP every battle and grow stronger forever. Open their screen with the 🦁 button.',
+      ar: '🦁 أربعة قادة أسطوريين: رستم (هجوم)، داريوش (دفاع)، قورش وآرش. يكتسبون الخبرة بكل معركة ويصبحون أقوى للأبد. شاشتهم بزر 🦁.' },
+    { k: ['تجهیز', 'gear', 'equipment', 'شمشیر', 'weapon', 'عتاد', 'دراب'],
+      fa: '🛡️ تجهیزات جنگی (شمشیر/کلاه/زره/چکمه/انگشتر/شنل) با ۶۰٪ شانس از شکار اردوهای هیولاها می‌افتند و حمله/دفاع ارتش را دائمی بالا می‌برند.',
+      en: '🛡️ War gear (weapon/helmet/armor/boots/ring/cape) drops at 60% chance from monster camps and permanently boosts army attack/defense.',
+      ar: '🛡️ عتاد الحرب (سلاح/خوذة/درع/حذاء/خاتم/عباءة) يسقط بنسبة ٦٠٪ من معسكرات الوحوش ويرفع هجوم/دفاع الجيش دائماً.' },
+    { k: ['اتحاد', 'alliance', 'clan', 'تحالف', 'guild'],
+      fa: '🛡️ در تب اتحاد می‌توانی اتحاد تأسیس کنی یا به اتحاد بازیکنان واقعی بپیوندی؛ چت اختصاصی اتحاد هم دارد. (آنلاین)',
+      en: '🛡️ In the Alliance tab you can found an alliance or join real players’ alliances, with a dedicated alliance chat. (online)',
+      ar: '🛡️ في تبويب التحالف يمكنك تأسيس تحالف أو الانضمام لتحالفات لاعبين حقيقيين مع دردشة خاصة. (عبر الإنترنت)' },
+    { k: ['چت', 'chat', 'گفتگو', 'دردشة', 'chatte'],
+      fa: '💬 چت جهانی زنده در تب اتحاد است — پیام‌های بازیکنان سراسر دنیا را می‌بینی و نامت آنجا می‌درخشد. (آنلاین)',
+      en: '💬 Live world chat lives in the Alliance tab — see players worldwide and shine there. (online)',
+      ar: '💬 دردشة العالم المباشرة في تبويب التحالف — ترى لاعبي العالم وتلمع هناك. (أونلاين)' },
+    { k: ['pvp', 'غارت', 'plunder', 'raid', 'بازیکن', 'player', 'حمله به', 'نهب'],
+      fa: '⚔️ در حالت آنلاین می‌توانی به قلعه‌ی بازیکنان واقعی حمله کنی و منابع غارت کنی؛ سپر دفاعی هم وجود دارد. آفلاین، کمپین ۸ پادشاهی را دارد.',
+      en: '⚔️ Online, you can raid real players’ castles and plunder resources; shields exist too. Offline, you get the 8-kingdom campaign.',
+      ar: '⚔️ أونلاين يمكنك مهاجمة قلاع لاعبين حقيقيين ونهب الموارد؛ مع دروع حماية. ودون اتصال لديك حملة الممالك الثماني.' },
+    { k: ['پادشاهی', 'kingdom', 'فتح', 'conquer', 'کمپین', 'campaign', 'ممالك', 'kingdoms'],
+      fa: '🗺️ کمپین: ۸ پادشاهی دشمن از «دژ خون» تا «امپراتوری اژدها». برای فتح بعدی، قدرت ارتشت را از قدرت دشمن بالاتر ببر. فتح همه = شاهِ شاهان!',
+      en: '🗺️ Campaign: 8 enemy kingdoms from Blood Fort to the Dragon Empire. Raise your army power above the enemy to conquer. Conquer all = King of Kings!',
+      ar: '🗺️ الحملة: ٨ ممالك من حصن الدم إلى إمبراطورية التنين. ارفع قوة جيشك فوق العدو للفتح. فتح الكل = ملك الملوك!' },
+    { k: ['ساختمان', 'building', 'ارتقا', 'upgrade', 'قصر', 'palace', 'بساز', 'build', 'ترقية', 'سطح'],
+      fa: '🏰 سطح قصر سقف سطح همه‌ی ساختمان‌هاست — همیشه اول قصر را ارتقا بده. در قلعه روی هر ساختمان بزن تا بسازی/ارتقا بدهی.',
+      en: '🏰 Palace level caps every building — always upgrade the Palace first. In the castle, tap any building to build/upgrade.',
+      ar: '🏰 مستوى القصر سقف كل المباني — رقِّ القصر أولاً دائماً. في القلعة اضغط أي مبنى للبناء/الترقية.' },
+    { k: ['منبع', 'resource', 'غذا', 'food', 'طلا', 'gold', 'سنگ', 'stone', 'چوب', 'wood', 'موارد'],
+      fa: '🌾 چهار منبع: غذا، چوب، سنگ، طلا. مزرعه/چوب‌بری/معدن‌ها تولید می‌کنند؛ شب‌ها (۲۰ تا ۶) تولید ۲۰٪ بیشتر است؛ از نقشه‌ی جهان هم با کاروان جمع کن.',
+      en: '🌾 Four resources: food, wood, stone, gold. Farm/Sawmill/mines produce; nights (20–6) give +20%; caravans gather from the world map.',
+      ar: '🌾 أربعة موارد: طعام وخشب وحجر وذهب. تنتجها المزرعة/المنشرة/المناجم؛ ليلاً +٢٠٪؛ والقوافل تجمع من خريطة العالم.' },
+    { k: ['بیمارستان', 'hospital', 'زخمی', 'wounded', 'درمان', 'heal', 'علاج', 'مستشفى'],
+      fa: '🏥 سربازان زخمی نبرد را بیمارستان نجات می‌دهد؛ اول بیمارستان را در قلعه بساز، بعد «درمان همه» بزن. غذا و طلا لازم دارد.',
+      en: '🏥 The Hospital rescues wounded soldiers; build it in the castle, then tap “Heal all”. Costs food & gold.',
+      ar: '🏥 المستشفى ينقذ الجرحى؛ ابنِه في القلعة ثم اضغط «علاج الكل». يكلف طعاماً وذهباً.' },
+    { k: ['سرباز', 'soldier', 'ارتش', 'army', 'اموزش', 'آموزش', 'train', 'جيش', 'تدريب', 'ظرفیت'],
+      fa: '⚔️ در تب ارتش سرباز آموزش بده (نیزه‌دار تا شوالیه). ظرفیت جمعیت با خانه و قصر زیاد می‌شود.',
+      en: '⚔️ Train troops in the Army tab (spearman to knight). Population capacity grows with House and Palace.',
+      ar: '⚔️ درّب الجنود في تبويب الجيش (رامح حتى فارس). السعة تكبر مع المنزل والقصر.' },
+    { k: ['دستاورد', 'achievement', 'ماموریت', 'quest', 'جایزه', 'reward', 'پاداش', 'إنجاز', 'مهمة'],
+      fa: '🎁 ماموریت‌ها و دستاوردها در تب پادشاه و نوار پایین قلعه نمایش داده می‌شوند؛ جایزه‌شان منبع و طلاست.',
+      en: '🎁 Quests & achievements show in the King tab and the castle bottom bar; rewards are resources and gold.',
+      ar: '🎁 المهام والإنجازات في تبويب الملك وشريط القلعة السفلي؛ الجوائز موارد وذهب.' },
+    { k: ['اژدها', 'dragon', 'فصل', 'season', 'اپدیت', 'update', 'بروزرسانی', 'تنين', 'dragon'],
+      fa: '🐉 اژدهایان در فصل ۲ می‌آیند: پنج نژاد (قرمز=تولید، بنفش=پیاده، آبی=سواره، سبز=کماندار، سیاه=محاصره). همین حالا فصل ۱ آنلاین در راه است.',
+      en: '🐉 Dragons arrive in Season 2: five bloodlines (Red=production, Purple=infantry, Blue=cavalry, Green=archers, Black=siege). Season 1 online is on the way now.',
+      ar: '🐉 التنانين في الموسم ٢: خمسة سلالات (أحمر=إنتاج، بنفسجي=مشاة، أزرق=فرسان، أخضر=رماة، أسود=حصار). الموسم ١ الأونلاين قادم الآن.' },
+    { k: ['ios', 'iphone', 'ایفون', 'آیفون', 'اپل', 'apple'],
+      fa: '🍏 نسخه‌ی iOS در فصل ۳ می‌آید؛ فعلاً نسخه‌ی وب روی سافاری مثل اپ نصب می‌شود (Add to Home Screen).',
+      en: '🍏 iOS build arrives in Season 3; meanwhile the web version installs on Safari like an app (Add to Home Screen).',
+      ar: '🍏 نسخة iOS في الموسم ٣؛ حالياً نسخة الويب تُثبّت على سفاري كتطبيق (إضافة إلى الشاشة الرئيسية).' },
+    { k: ['کامپیوتر', 'computer', 'pc ', 'pc', 'ویندوز', 'windows', 'لابتاپ'],
+      fa: '💻 بله! نسخه‌ی وب روی هر مرورگری (کامپیوتر/لپ‌تاپ) اجرا می‌شود — فقط پنجره را عریض کن چون بازی افقی است.',
+      en: '💻 Yes! The web version runs in any desktop browser — just keep the window wide, the game is landscape.',
+      ar: '💻 نعم! نسخة الويب تعمل في أي متصفح حاسوب — أبقِ النافذة عريضة فاللعبة أفقية.' },
+    { k: ['هنگ', 'lag', 'باگ', 'bug', 'کند', 'slow', 'crash', 'خطا', 'error', 'مشكلة', 'مشکل', 'freeze'],
+      fa: '🛠️ نسخه‌ی ۴ بهینه شده (۵ مگ، بدون بلور سنگین). اگر هنوز مشکل داری: ۱) برنامه را کامل ببند و باز کن ۲) کش مرورگر را پاک کن ۳) نسخه‌ی جدید APK را از سایت بگیر. باگ را با دکمه‌ی تماس گزارش بده.',
+      en: '🛠️ v4 is optimized (5 MB, no heavy blur). Still trouble? 1) fully restart the app 2) clear browser cache 3) get the latest APK from this site. Report bugs via contact.',
+      ar: '🛠️ الإصدار ٤ مُحسَّن (٥ م، بلا blur ثقيل). ما زالت المشكلة؟ ١) أعد تشغيل التطبيق كلياً ٢) امسح كاش المتصفح ٣) خذ أحدث APK من الموقع. أبلغ عن الأخطاء عبر الاتصال.' },
+    { k: ['تماس', 'contact', 'پشتیبانی', 'support', 'دعم', 'ایمیل سازنده', 'developer'],
+      fa: '📮 برای پشتیبانی و گزارش باگ، در چت همین سایت بنویس یا از بخش اتحادِ بازی پیام بگذار؛ تیم دربار هر روز پاسخ می‌دهد.',
+      en: '📮 For support & bug reports, write in this site’s chat or message via the in-game alliance; the court team answers daily.',
+      ar: '📮 للدعم والإبلاغ عن الأخطاء، اكتب في دردشة هذا الموقع أو عبر تحالف اللعبة؛ فريق البلاط يجيب يومياً.' },
+    { k: ['بازی انلاین', 'play', 'وب', 'browser', 'مرورگر', 'متصفح', 'online', 'بازی کنم'],
+      fa: '🌐 دکمه‌ی «Play in Browser» را بزن — بدون نصب، همین حالا بازی کن؛ روی گوشی هم می‌توانی مثل اپ نصبش کنی.',
+      en: '🌐 Tap “Play in Browser” — no install, play right now; on phones it can be installed like an app too.',
+      ar: '🌐 اضغط «Play in Browser» — بلا تثبيت، العب الآن؛ وعلى الهاتف تُثبّت كتطبيق.' },
+    { k: ['شروع جدید', 'new game', 'ریست', 'reset', 'حذف بازی', 'delete'],
+      fa: '🗑️ شروع بازی جدید: تب پادشاه → تنظیمات → 🗑️. هشدار: همه‌ی پیشرفت پاک می‌شود مگر ابر را جدا کرده باشی.',
+      en: '🗑️ New game: King tab → Settings → 🗑️. Warning: all progress is wiped unless detached from cloud.',
+      ar: '🗑️ لعبة جديدة: تبويب الملك → الإعدادات → 🗑️. تحذير: يُمحى كل التقدم.' },
+    { k: ['رمز', 'password', 'حساب', 'account', 'account', 'کلمه عبور', 'كلمة سر'],
+      fa: '🔑 رمز عبور نداریم! هوادت آدرس جیمیلت است — همان که با آن وصل شدی، کلید پادشاهی توست.',
+      en: '🔑 No passwords! Your identity is your Gmail address — the one you connected is the key to your kingdom.',
+      ar: '🔑 بلا كلمات سر! هويتك عنوان جيميل — الذي ربطته هو مفتاح مملكتك.' },
+    { k: ['دفاع', 'defense', 'دیوار', 'wall', 'حمله دشمن', 'attack me', 'هجوم العدو'],
+      fa: '🛡️ دیوار شهر و داریوش قدرت دفاع را چند برابر می‌کنند؛ اگر آفلاین باشی دشمنان مجازی حمله می‌کنند و با دفاع قوی، غنیمت می‌گیری.',
+      en: '🛡️ City Wall and Darius multiply defense; offline, virtual enemies raid you — strong defense turns raids into loot.',
+      ar: '🛡️ سور المدينة وداريوش يضاعفان الدفاع؛ دون اتصال يهاجمك أعداء افتراضيون — والدفاع القوي يحوّلها غنائم.' },
+    { k: ['کی هستی', 'who are you', 'هوش مصنوعی', ' ai', 'ai ', 'ربات', 'robot', 'bot', 'ذكاء', 'چیستی'],
+      fa: '🧙 من «مشاور دربار» هستم — هوش مصنوعی رسمی تاج پارسی که هر سوالی درباره‌ی بازی را به فارسی، انگلیسی و عربی جواب می‌دهد.',
+      en: '🧙 I am the Court Advisor — the official Persian Crown AI that answers any game question in Persian, English and Arabic.',
+      ar: '🧙 أنا «مستشار البلاط» — ذكاء التاج الفارسي الرسمي يجيب عن أي سؤال بالفارسية والإنجليزية والعربية.' },
+    { k: ['ممنون', 'thanks', 'thank', 'مرسی', 'تشکر', 'شكرا', 'danke'],
+      fa: '🙏 قربانت پادشاه! اگر سوال دیگری بود در خدمتم. پیروز باشی! 👑',
+      en: '🙏 At your service, Majesty! Ask me anything else anytime. May you conquer! 👑',
+      ar: '🙏 في خدمتك أيها الملك! اسألني متى شئت. نصرًا لك! 👑' }
+  ];
+  const CHIPS = {
+    fa: ['چطور نصب کنم؟', 'آفلاین کار می‌کند؟', 'زبان‌ها کدام‌اند؟', 'ذخیره ابری چیست؟', 'فرمانده‌ها کی‌اند؟', 'هوش مصنوعی کی هستی؟'],
+    en: ['How to install?', 'Does it work offline?', 'Which languages?', 'What is cloud save?', 'Who are the commanders?', 'Who are you?'],
+    ar: ['كيف أثبّت؟', 'يعمل دون اتصال؟', 'ما اللغات؟', 'ما الحفظ السحابي؟', 'من القادة؟', 'من أنت؟']
+  };
+  function norm(t) {
+    return (t || '').toLowerCase()
+      .replace(/[يئ]/g, 'ی').replace(/ك/g, 'ک')
+      .replace(/[ً-ْٰـ]/g, '')
+      .replace(/[^a-z0-9؀-ۿ]+/g, ' ').trim();
+  }
+  function lang() { return (typeof LANG !== 'undefined') ? LANG : 'en'; }
+  const msgs = document.getElementById('aimsgs');
+  const panel = document.getElementById('aipanel');
+  const chips = document.getElementById('aichips');
+  function addMsg(who, text) {
+    const d = document.createElement('div');
+    d.className = 'm ' + who; d.textContent = text;
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+    return d;
+  }
+  function answer(q) {
+    const nq = norm(q);
+    let best = null, bs = 0;
+    for (const e of KB) {
+      let sc = 0;
+      for (const k of e.k) { const nk = norm(k); if (nk && nq.indexOf(nk) !== -1) sc += nk.length; }
+      if (sc > bs) { bs = sc; best = e; }
+    }
+    const L = lang();
+    if (best && bs >= 3) return best[L] || best.en;
+    return {
+      fa: '🤔 سوال خوبی بود! دقیق‌اش را در دانشنامه‌ام ندارم، ولی درباره‌ی این‌ها هر چیزی بپرسی جواب می‌دهم: نصب، حجم، آفلاین، زبان‌ها، جیمیل/ابر، فرمانده‌ها، تجهیزات، اتحاد، چت، PvP، کمپین، ساختمان‌ها، منابع، بیمارستان، ماموریت‌ها، اژدهایان، iOS/کامپیوتر، باگ و پشتیبانی.',
+      en: '🤔 Good question! My codex has no exact entry, but I can answer anything about: install, size, offline, languages, Gmail/cloud, commanders, gear, alliances, chat, PvP, campaign, buildings, resources, hospital, quests, dragons, iOS/PC, bugs & support.',
+      ar: '🤔 سؤال جيد! لا مدخل دقيقاً في موسوعتي، لكن أجيب عن كل ما يخص: التثبيت، الحجم، دون اتصال، اللغات، جيميل/السحابة، القادة، العتاد، التحالفات، الدردشة، PvP، الحملة، المباني، الموارد، المستشفى، المهام، التنانين، iOS/حاسوب، الأخطاء والدعم.'
+    }[L];
+  }
+  function ask(q) {
+    addMsg('user', q);
+    const t = addMsg('bot', ''); t.classList.add('typing'); t.innerHTML = '<span></span><span></span><span></span>';
+    setTimeout(() => { t.classList.remove('typing'); t.textContent = answer(q); }, 500 + Math.random() * 500);
+  }
+  function renderChips() {
+    const L = lang();
+    chips.innerHTML = '';
+    CHIPS[L].forEach((c) => {
+      const b = document.createElement('button'); b.textContent = c;
+      b.addEventListener('click', () => ask(c));
+      chips.appendChild(b);
+    });
+  }
+  document.getElementById('aibtn').addEventListener('click', () => {
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open') && !msgs.children.length) {
+      addMsg('bot', answer(lang() === 'fa' ? 'سلام' : 'hello'));
+      renderChips();
+    }
+  });
+  document.getElementById('aisend').addEventListener('click', () => {
+    const i = document.getElementById('aiin');
+    if (i.value.trim()) { ask(i.value.trim()); i.value = ''; }
+  });
+  document.getElementById('aiin').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('aisend').click(); });
+  window.aiRenderChips = renderChips;
+})();
+</script>
+</body>
+</html>
